@@ -15,7 +15,7 @@ AWS CloudFormation Template for generating: VPC, Internet Gateway, Subnets, Rout
 |Route Tables|A Public route table and a private route table are created.  The public route table routes all traffic through the internet gateway.  The private subnets are associated with the priate route table and the public subnets are associated with the public route table. ||
 | Security Groups|Two security groups are created. sg01 allows ssh, rdp, 26257 and 8080 access from the IP entered as a parameter.    sg02 allows communication between the instances assigned to the sg02 security group.||
 
-![AWS Objets Diagram](./AWS_objects.jpeg)
+![AWS Objects Diagram](./AWS_objects.jpg)
 
 
 ## The following parameters are required during the create stack process
