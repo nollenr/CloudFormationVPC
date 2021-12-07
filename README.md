@@ -7,7 +7,7 @@ AWS CloudFormation Template for generating: VPC, Internet Gateway, Subnets, Rout
 
 | Object | Description |Example|
 |-------------|------------------------|-------------------|
-|VPC| The CIDR range is entered as a parameter.  This template was designed to use a /24 CIDR (128 addresses)|192.168.4.0|
+|VPC| The CIDR range is entered as a parameter.  This template was designed to use a /24 CIDR (256 addresses)|192.168.4.0/24|
 |Internet Gateway|The internet gateway is attached to the VPC|
 |Subnets|The template creates 6 subnets. There are a pair of subnets created in each AZ of the 3 AZs input as a parameter: one public, one private.   | ` 192.168.4.0/27 az1-private ` `192.168.4.32/27 az1-public ` |
 | | | ` 192.168.4.64/27 az2-private `  ` 192.168.4.96/27 az2-public ` | 
@@ -25,3 +25,5 @@ AWS CloudFormation Template for generating: VPC, Internet Gateway, Subnets, Rout
 |VpcNamePrefix|Used to construct the VPC name tag.  |If the parameter entered is "vpc01", the VPC name tag will be "vpc01-us-west-2"|
 |VpcAzs|3 availability zones chosen from the list of AZs.  Be careful choosing the AZs.  Not all EC2 types are available in all AZs.  2 subnets will be created in each AZ: one public and one private.|"us-west-2a, us-west-2b, us-west-2c"|
 |MyIP|An IP address which will be used to create the security group sg01.  When assigned to an EC2 instance the security group will allow SSH, RDP, 26257 and 8080 port access to this IP address.  The IP address will be appended with the CIDR range /32.  |36.250.22.1|
+
+

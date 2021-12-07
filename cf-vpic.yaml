@@ -1,4 +1,4 @@
-Description: Create a VPC with a SG which references itself
+Description: Create a VPC, Internet Gateway, Subnets, Route Tables and Security Groups
 AWSTemplateFormatVersion: '2010-09-09'
 # MyIP      68.2.245.108
 # Creating a security group that references itself
