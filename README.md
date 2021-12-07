@@ -1,6 +1,8 @@
 # CloudFormationVPC
 AWS CloudFormation Template for generating: VPC, Internet Gateway, Subnets, RouteTables and Security Groups
 
+The template must be executed in regions with at least 3 availability zones.
+
 # The following objects are created by this CloudFormation Template
 
 
@@ -26,4 +28,12 @@ AWS CloudFormation Template for generating: VPC, Internet Gateway, Subnets, Rout
 |VpcAzs|3 availability zones chosen from the list of AZs.  Be careful choosing the AZs.  Not all EC2 types are available in all AZs.  2 subnets will be created in each AZ: one public and one private.|"us-west-2a, us-west-2b, us-west-2c"|
 |MyIP|An IP address which will be used to create the security group sg01.  When assigned to an EC2 instance the security group will allow SSH, RDP, 26257 and 8080 port access to this IP address.  The IP address will be appended with the CIDR range /32.  |36.250.22.1|
 
+If you're going to execute this template in multiple regions, be sure to choose a different CIDR block for each region.  For example:
 
+|region|CIDR|
+|--------|-----------|
+|us-west-2|192.168.3.0|
+|us-east-1|192.168.4.0|
+|us-east-2|192.168.5.0|
+
+This will allow you to easily peer the 3 VPCs.  
