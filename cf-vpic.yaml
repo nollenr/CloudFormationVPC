@@ -1,0 +1,290 @@
+Description: Create a VPC with a SG which references itself
+AWSTemplateFormatVersion: '2010-09-09'
+# MyIP      68.2.245.108
+# Creating a security group that references itself
+# https://gist.github.com/alanwill/9254414
+#
+# Using parameters
+# https://curiousorbit.com/blog/cloudformation-using-parameters/
+# 
+# AWS Parameters
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-section-structure.html
+#
+# AWS Subnet Configuration
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ec2-subnet.html
+#
+# AWS Route Table Configuration
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ec2-routetable.html
+#
+# AWS Routes Configuration
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ec2-route.html
+Parameters: 
+  VpcCidrParameter: 
+    Description: "CIDR Block For the VPC"
+    Type: String
+    Default: "192.168.4.0/24"
+  VpcNamePrefix:
+    Description: "VPC Name Prefix.  The name will be the prefix plus the region name.  Ex: vpc01-us-west-2"
+    Type: String
+    Default: "vpc01"
+# See the following function which splits the /24 CIDR range into 6 CIDRs with a subnet mask "/27"
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-cidr.html
+  # SubnetIpBlocks: 
+  #   Description: "Comma-delimited list of three CIDR blocks"
+  #   Type: CommaDelimitedList
+  #   Default: "192.168.4.0/24, 192.168.4.64/24, 192.168.4.128/24"
+  VpcAzs:
+    Type: List<AWS::EC2::AvailabilityZone::Name>
+    Description: "Comma-delimited list of three AZs"
+    Default: "us-west-2a,us-west-2b,us-west-2c"
+  # VpcAzs:
+  #   Description: "Comma-delimited list of three AZs"
+  #   Type: CommaDelimitedList
+  #   Default: "us-west-2a, us-west-2b, us-west2c"
+  MyIP:
+    Type: String
+    Description: "Your IP address.  This will be used in the security group configuration to provide SSH/RDP access to EC2 instances. A CIDR range of /32 will be appended."
+    Default: "0.0.0.0"
+    AllowedPattern: (\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})
+    ConstraintDescription: must be a valid IP address of the form x.x.x.x.
+
+Resources:
+  CreateVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref "VpcCidrParameter"
+      EnableDnsSupport: false
+      EnableDnsHostnames: false
+      InstanceTenancy: default
+      Tags:
+      - Key: Name
+        Value: !Join ['-', [ !Ref 'VpcNamePrefix', !Ref 'AWS::Region']]
+
+  InternetGateway01:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+      - Key: Name
+        Value: !Join ['-', [ "ig01", !Ref 'VpcNamePrefix', !Ref 'AWS::Region']]
+
+  VPCGatewayAttachment01:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties: 
+      InternetGatewayId: !Ref InternetGateway01
+      VpcId: !Ref CreateVPC
+
+  subnet2Public:
+    Type: AWS::EC2::Subnet
+    Properties:
+      # To be clear, the first line sets up the AZ, the second line substitues the AZ (a, b, c, etc) with the reference parameter value
+      # AvailabilityZone: !Sub
+      #   - "${AWS::Region}${AZ}"
+      #   - AZ: !Select [0, !Ref VpcAzs]
+      AvailabilityZone: !Select [0, !Ref VpcAzs]
+      # AvailabilityZone: "us-west-2a"
+      VpcId: !Ref CreateVPC
+      # CidrBlock: !Select [0, !Ref SubnetIpBlocks]
+      CidrBlock: !Select [ 0, !Cidr [ !Ref VpcCidrParameter, 6, 5 ]]
+      Tags:
+      - Key: Name
+        Value: aza-pub-subnet2
+      MapPublicIpOnLaunch: true
+  subnet1Private:
+    Type: AWS::EC2::Subnet
+    Properties:
+      # To be clear, the first line sets up the AZ, the second line substitues the AZ (a, b, c, etc) with the reference parameter value
+      # AvailabilityZone: !Sub
+      #   - "${AWS::Region}${AZ}"
+      #   - AZ: !Select [0, !Ref VpcAzs]
+      AvailabilityZone: !Select [0, !Ref VpcAzs]
+      # AvailabilityZone: "us-west-2a"
+      VpcId: !Ref CreateVPC
+      # CidrBlock: !Select [0, !Ref SubnetIpBlocks]
+      CidrBlock: !Select [ 1, !Cidr [ !Ref VpcCidrParameter, 6, 5 ]]
+      Tags:
+      - Key: Name
+        Value: aza-pri-subnet1
+      MapPublicIpOnLaunch: false
+  subnet4Public:
+    Type: AWS::EC2::Subnet
+    Properties:
+      # To be clear, the first line sets up the AZ, the second line substitues the AZ (a, b, c, etc) with the reference parameter value
+      # AvailabilityZone: !Sub
+      #   - "${AWS::Region}${AZ}"
+      #   - AZ: !Select [0, !Ref VpcAzs]
+      AvailabilityZone: !Select [1, !Ref VpcAzs]
+      # AvailabilityZone: "us-west-2a"
+      VpcId: !Ref CreateVPC
+      # CidrBlock: !Select [0, !Ref SubnetIpBlocks]
+      CidrBlock: !Select [ 2, !Cidr [ !Ref VpcCidrParameter, 6, 5 ]]
+      Tags:
+      - Key: Name
+        Value: azb-pub-subnet4
+      MapPublicIpOnLaunch: True
+  subnet3Private:
+    Type: AWS::EC2::Subnet
+    Properties:
+      # To be clear, the first line sets up the AZ, the second line substitues the AZ (a, b, c, etc) with the reference parameter value
+      # AvailabilityZone: !Sub
+      #   - "${AWS::Region}${AZ}"
+      #   - AZ: !Select [0, !Ref VpcAzs]
+      AvailabilityZone: !Select [1, !Ref VpcAzs]
+      # AvailabilityZone: "us-west-2a"
+      VpcId: !Ref CreateVPC
+      # CidrBlock: !Select [0, !Ref SubnetIpBlocks]
+      CidrBlock: !Select [ 3, !Cidr [ !Ref VpcCidrParameter, 6, 5 ]]
+      Tags:
+      - Key: Name
+        Value: azb-pri-subnet3
+      MapPublicIpOnLaunch: false
+  subnet6Public:
+    Type: AWS::EC2::Subnet
+    Properties:
+      # To be clear, the first line sets up the AZ, the second line substitues the AZ (a, b, c, etc) with the reference parameter value
+      # AvailabilityZone: !Sub
+      #   - "${AWS::Region}${AZ}"
+      #   - AZ: !Select [0, !Ref VpcAzs]
+      AvailabilityZone: !Select [2, !Ref VpcAzs]
+      # AvailabilityZone: "us-west-2a"
+      VpcId: !Ref CreateVPC
+      # CidrBlock: !Select [0, !Ref SubnetIpBlocks]
+      CidrBlock: !Select [ 4, !Cidr [ !Ref VpcCidrParameter, 6, 5 ]]
+      Tags:
+      - Key: Name
+        Value: azc-pub-subnet6
+      MapPublicIpOnLaunch: True
+  subnet5Private:
+    Type: AWS::EC2::Subnet
+    Properties:
+      # To be clear, the first line sets up the AZ, the second line substitues the AZ (a, b, c, etc) with the reference parameter value
+      # AvailabilityZone: !Sub
+      #   - "${AWS::Region}${AZ}"
+      #   - AZ: !Select [0, !Ref VpcAzs]
+      AvailabilityZone: !Select [2, !Ref VpcAzs]
+      # AvailabilityZone: "us-west-2a"
+      VpcId: !Ref CreateVPC
+      # CidrBlock: !Select [0, !Ref SubnetIpBlocks]
+      CidrBlock: !Select [ 5, !Cidr [ !Ref VpcCidrParameter, 6, 5 ]]
+      Tags:
+      - Key: Name
+        Value: azc-pri-subnet5
+      MapPublicIpOnLaunch: false
+
+  routeTable01Private:
+    Type: AWS::EC2::RouteTable
+    Properties: 
+      Tags: 
+      - Key: Name
+        Value: rt01-private
+      VpcId: !Ref CreateVPC
+  routeTable02Public:
+    Type: AWS::EC2::RouteTable
+    Properties: 
+      Tags: 
+      - Key: Name
+        Value: rt02-public
+      VpcId: !Ref CreateVPC
+  privateSubnetRouteAssociations1:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        Ref: subnet1Private
+      RouteTableId:
+        Ref: routeTable01Private
+  privateSubnetRouteAssociations2:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        Ref: subnet3Private
+      RouteTableId:
+        Ref: routeTable01Private
+  privateSubnetRouteAssociations3:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        Ref: subnet5Private
+      RouteTableId:
+        Ref: routeTable01Private
+  publicSubnetRouteAssociations1:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        Ref: subnet2Public
+      RouteTableId:
+        Ref: routeTable02Public
+  publicSubnetRouteAssociations2:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        Ref: subnet4Public
+      RouteTableId:
+        Ref: routeTable02Public
+  publicSubnetRouteAssociations3:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        Ref: subnet6Public
+      RouteTableId:
+        Ref: routeTable02Public
+
+  InternetRoute:
+    Type: AWS::EC2::Route
+    DependsOn: VPCGatewayAttachment01
+    Properties:
+       RouteTableId:
+         Ref: routeTable02Public
+       DestinationCidrBlock: 0.0.0.0/0
+       GatewayId:
+         Ref: InternetGateway01
+
+  InstanceSecurityGroup01:
+    Type: AWS::EC2::SecurityGroup
+    DependsOn: CreateVPC
+    Properties:
+      Tags: 
+      - Key: Name
+        Value: sg01
+      GroupDescription: Allow desktop access (SSH, RDP, Database, HTTP) to EC2 instances
+      VpcId:
+        Ref: CreateVPC
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: !Join ['/', [ !Ref 'MyIP', '32']]
+        Description: "SSH"
+      - IpProtocol: tcp
+        FromPort: 3389
+        ToPort: 3389
+        CidrIp: !Join ['/', [ !Ref 'MyIP', '32']]
+        Description: "RDP"
+      - IpProtocol: tcp
+        FromPort: 26257
+        ToPort: 26257
+        CidrIp: !Join ['/', [ !Ref 'MyIP', '32']]
+        Description: "CockroachDB"
+      - IpProtocol: tcp
+        FromPort: 8080
+        ToPort: 8080
+        CidrIp: !Join ['/', [ !Ref 'MyIP', '32']]
+        Description: "CockroachDB UI"
+  InstanceSecurityGroup02:
+    Type: AWS::EC2::SecurityGroup
+    DependsOn: CreateVPC
+    Properties:
+      Tags: 
+        - Key: Name
+          Value: sg02
+      GroupDescription: Allow http to client host
+      VpcId:
+        Ref: CreateVPC
+  InstanceSecurityGroup02Ingress:
+    Type: AWS::EC2::SecurityGroupIngress
+    DependsOn: InstanceSecurityGroup02
+    Properties: 
+      GroupId: !Ref InstanceSecurityGroup02
+      IpProtocol: tcp
+      FromPort: 0
+      ToPort: 65535
+      SourceSecurityGroupId: !Ref InstanceSecurityGroup02
+      Description: "Intra Node Communication"
