@@ -12,8 +12,10 @@ AWS CloudFormation Template for generating: VPC, Internet Gateway, Subnets, Rout
 |Subnets|The template creates 6 subnets. There are a pair of subnets created in each AZ of the 3 AZs input as a parameter: one public, one private.   | ` 192.168.4.0/27 az1-private ` `192.168.4.32/27 az1-public ` |
 | | | ` 192.168.4.64/27 az2-private `  ` 192.168.4.96/27 az2-public ` | 
 | | | etc|
-|Route Tables|A Public route table and a private route table.  The public route table routes all traffic through the internet gateway.  The private subnets are associated with the priate route table and the public subnets are associated with the public route table. ||
+|Route Tables|A Public route table and a private route table are created.  The public route table routes all traffic through the internet gateway.  The private subnets are associated with the priate route table and the public subnets are associated with the public route table. ||
 | Security Groups|Two security groups are created. sg01 allows ssh, rdp, 26257 and 8080 access from the IP entered as a parameter.    sg02 allows communication between the instances assigned to the sg02 security group.||
+
+![AWS Objets Diagram](./AWS_objects.jpeg)
 
 
 ## The following parameters are required during the create stack process
