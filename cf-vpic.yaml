@@ -314,10 +314,10 @@ Outputs:
     Description: The ID of the security group 1 (local access to the resources)
     Value: !Ref InstanceSecurityGroup01
     Export:
-      Name:  !Sub "${AWS::StackName}-SecuirtyGroup1"
+      Name:  !Sub "${AWS::StackName}-SecurityGroup1"
   SecurityGroup2:    
     Description: The ID of the security group 2 (intranode communication)
     Value: !Ref InstanceSecurityGroup02
     Export:
-      Name:  !Sub "${AWS::StackName}-SecuirtyGroup2"
+      Name:  !Sub "${AWS::StackName}-SecurityGroup2"
 

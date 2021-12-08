@@ -37,3 +37,15 @@ If you're going to execute this template in multiple regions, be sure to choose 
 |us-east-2|192.168.5.0|
 
 This will allow you to easily peer the 3 VPCs.  
+
+# Template Exports
+The following values are exported
+
+|Resource|Export Name|Description|
+|-----------|------------|-------------|
+|VPC ID|"${AWS::StackName}-VPCID|The ID of the VPC created by this CloudFormation Template|
+|Security Group 1 ID|"${AWS::StackName}-SecurityGroup1"|The ID of the security group which allows access to public resources from a single IP|
+|Security Group 2 ID|"${AWS::StackName}-SecurityGroup1"|The ID of the security group which allows intra-node communication|
+|Public Subnet 1 ID|"${AWS::StackName}-PublicSubnet1"|A public subnet where EC2 instances will be placed|
+|Public Subnet 2 ID|"${AWS::StackName}-PublicSubnet2"|A public subnet where EC2 instances will be placed|
+|Public Subnet 3 ID|"${AWS::StackName}-PublicSubnet3"|A public subnet where EC2 instances will be placed|
