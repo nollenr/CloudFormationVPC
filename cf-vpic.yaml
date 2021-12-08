@@ -288,3 +288,36 @@ Resources:
       ToPort: 65535
       SourceSecurityGroupId: !Ref InstanceSecurityGroup02
       Description: "Intra Node Communication"
+
+Outputs:
+  StackVPC:
+    Description: The ID of the VPC
+    Value: !Ref CreateVPC
+    Export:
+      Name:  !Sub "${AWS::StackName}-VPCID"
+  SubnetPublic1:    
+    Description: The ID of the a public subnet
+    Value: !Ref subnet2Public
+    Export:
+      Name:  !Sub "${AWS::StackName}-PublicSubnet1"
+  SubnetPublic2:    
+    Description: The ID of the a public subnet
+    Value: !Ref subnet4Public
+    Export:
+      Name:  !Sub "${AWS::StackName}-PublicSubnet2"
+  SubnetPublic3:    
+    Description: The ID of the a public subnet
+    Value: !Ref subnet6Public
+    Export:
+      Name:  !Sub "${AWS::StackName}-PublicSubnet3"
+  SecurityGroup1:    
+    Description: The ID of the security group 1 (local access to the resources)
+    Value: !Ref InstanceSecurityGroup01
+    Export:
+      Name:  !Sub "${AWS::StackName}-SecuirtyGroup1"
+  SecurityGroup2:    
+    Description: The ID of the security group 2 (intranode communication)
+    Value: !Ref InstanceSecurityGroup02
+    Export:
+      Name:  !Sub "${AWS::StackName}-SecuirtyGroup2"
+
