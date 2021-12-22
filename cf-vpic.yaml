@@ -488,7 +488,13 @@ Resources:
                 echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
                 echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
                 echo "}" >> /home/ec2-user/.bashrc
-                sleep 2m; su ec2-user -lc 'CREATENODECERT; STARTCRDB'
+                echo "CREATEROOTCERT() {" >> /home/ec2-user/.bashrc
+                echo "  cockroach cert create-client \\" >> /home/ec2-user/.bashrc
+                echo '  root \' >> /home/ec2-user/.bashrc
+                echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
+                echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
+                echo "}" >> /home/ec2-user/.bashrc                
+                sleep 2m; su ec2-user -lc 'CREATENODECERT; CREATEROOTCERT; STARTCRDB'
             -
               !Sub |
                 #!/bin/bash -xe
@@ -512,7 +518,13 @@ Resources:
                 echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
                 echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
                 echo "}" >> /home/ec2-user/.bashrc
-                sleep 2m; su ec2-user -lc 'CREATENODECERT; STARTCRDB'
+                echo "CREATEROOTCERT() {" >> /home/ec2-user/.bashrc
+                echo "  cockroach cert create-client \\" >> /home/ec2-user/.bashrc
+                echo '  root \' >> /home/ec2-user/.bashrc
+                echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
+                echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
+                echo "}" >> /home/ec2-user/.bashrc                
+                sleep 2m; su ec2-user -lc 'CREATENODECERT; CREATEROOTCERT; STARTCRDB'
       NetworkInterfaces:
       - DeviceIndex: '0'
         NetworkInterfaceId: !Ref CRDBIPNode01
@@ -556,7 +568,13 @@ Resources:
                 echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
                 echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
                 echo "}" >> /home/ec2-user/.bashrc
-                sleep 2m; su ec2-user -lc 'CREATENODECERT; STARTCRDB'
+                echo "CREATEROOTCERT() {" >> /home/ec2-user/.bashrc
+                echo "  cockroach cert create-client \\" >> /home/ec2-user/.bashrc
+                echo '  root \' >> /home/ec2-user/.bashrc
+                echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
+                echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
+                echo "}" >> /home/ec2-user/.bashrc                
+                sleep 2m; su ec2-user -lc 'CREATENODECERT; CREATEROOTCERT; STARTCRDB'
             -
               !Sub |
                 #!/bin/bash -xe
@@ -580,7 +598,13 @@ Resources:
                 echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
                 echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
                 echo "}" >> /home/ec2-user/.bashrc
-                sleep 2m; su ec2-user -lc 'CREATENODECERT; STARTCRDB'
+                echo "CREATEROOTCERT() {" >> /home/ec2-user/.bashrc
+                echo "  cockroach cert create-client \\" >> /home/ec2-user/.bashrc
+                echo '  root \' >> /home/ec2-user/.bashrc
+                echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
+                echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
+                echo "}" >> /home/ec2-user/.bashrc                
+                sleep 2m; su ec2-user -lc 'CREATENODECERT; CREATEROOTCERT; STARTCRDB'
       NetworkInterfaces:
       - DeviceIndex: '0'
         NetworkInterfaceId: !Ref CRDBIPNode02
@@ -624,7 +648,13 @@ Resources:
                 echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
                 echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
                 echo "}" >> /home/ec2-user/.bashrc
-                sleep 2m; su ec2-user -lc 'CREATENODECERT; STARTCRDB'
+                echo "CREATEROOTCERT() {" >> /home/ec2-user/.bashrc
+                echo "  cockroach cert create-client \\" >> /home/ec2-user/.bashrc
+                echo '  root \' >> /home/ec2-user/.bashrc
+                echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
+                echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
+                echo "}" >> /home/ec2-user/.bashrc                
+                sleep 2m; su ec2-user -lc 'CREATENODECERT; CREATEROOTCERT; STARTCRDB'
             -
               !Sub |
                 #!/bin/bash -xe
@@ -648,7 +678,13 @@ Resources:
                 echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
                 echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
                 echo "}" >> /home/ec2-user/.bashrc
-                sleep 2m; su ec2-user -lc 'CREATENODECERT; STARTCRDB'
+                echo "CREATEROOTCERT() {" >> /home/ec2-user/.bashrc
+                echo "  cockroach cert create-client \\" >> /home/ec2-user/.bashrc
+                echo '  root \' >> /home/ec2-user/.bashrc
+                echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
+                echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
+                echo "}" >> /home/ec2-user/.bashrc                
+                sleep 2m; su ec2-user -lc 'CREATENODECERT; CREATEROOTCERT; STARTCRDB'
       NetworkInterfaces:
       - DeviceIndex: '0'
         NetworkInterfaceId: !Ref CRDBIPNode03
