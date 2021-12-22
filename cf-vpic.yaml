@@ -1,5 +1,10 @@
 Description: Create a VPC, Internet Gateway, Subnets, Route Tables and Security Groups
 AWSTemplateFormatVersion: '2010-09-09'
+#
+#  ToDo:
+#    Cluster Name
+#    Instance Type
+#
 # MyIP      68.2.245.108
 # Creating a security group that references itself
 # https://gist.github.com/alanwill/9254414
@@ -27,26 +32,39 @@ Parameters:
     Description: "VPC Name Prefix.  The name will be the prefix plus the region name.  Ex: vpc01-us-west-2"
     Type: String
     Default: "vpc01"
-# See the following function which splits the /24 CIDR range into 6 CIDRs with a subnet mask "/27"
-# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-cidr.html
-  # SubnetIpBlocks: 
-  #   Description: "Comma-delimited list of three CIDR blocks"
-  #   Type: CommaDelimitedList
-  #   Default: "192.168.4.0/24, 192.168.4.64/24, 192.168.4.128/24"
+  # See the following function which splits the /24 CIDR range into 6 CIDRs with a subnet mask "/27"
+  # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-cidr.html
   VpcAzs:
     Type: List<AWS::EC2::AvailabilityZone::Name>
     Description: "Comma-delimited list of three AZs"
     Default: "us-west-2a,us-west-2b,us-west-2c"
-  # VpcAzs:
-  #   Description: "Comma-delimited list of three AZs"
-  #   Type: CommaDelimitedList
-  #   Default: "us-west-2a, us-west-2b, us-west2c"
   MyIP:
     Type: String
     Description: "Your IP address.  This will be used in the security group configuration to provide SSH/RDP access to EC2 instances. A CIDR range of /32 will be appended."
     Default: "0.0.0.0"
     AllowedPattern: (\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})
     ConstraintDescription: must be a valid IP address of the form x.x.x.x.
+  KeyPairName: 
+    Description: "Key Pair Name (specific to a region) to be used for the EC2 instances.  This keypair must already exist prior to runing this CloudFormation script."
+    Type: "AWS::EC2::KeyPair::KeyName"
+  CRDBAMIID:
+    Description: "CockroachDB AMI ID.  This AMI should have CockroachDB installed along with a CA.  Please see {} for setting up and creating the AMI."
+    Type: AWS::EC2::Image::Id
+    Default: ami-03af6a70ccd8cb578
+  ClusterName:
+    Description: "The name for the Cockroach Cluster"
+    Type: String
+    Default: "My-CRDB-Cluster-01"
+  ExistingJoinString:
+    Description: "If you are joining the nodes being created here to another region, use the join string created previously (see the Output section of a previously executed stack in another region.  Be sure to have created the VPC Peering prior to running this CloudFormation Template."
+    Type: String
+    Default: NONE
+    AllowedValues: 
+      - default
+      - NONE 
+
+Conditions: 
+  UseNewJoinString: !Equals [!Ref ExistingJoinString, NONE]
 
 Resources:
   CreateVPC:
@@ -68,12 +86,16 @@ Resources:
         Value: !Join ['-', [ "ig01", !Ref 'VpcNamePrefix', !Ref 'AWS::Region']]
 
   VPCGatewayAttachment01:
+    DependsOn: 
+    - CreateVPC
+    - InternetGateway01
     Type: AWS::EC2::VPCGatewayAttachment
     Properties: 
       InternetGatewayId: !Ref InternetGateway01
       VpcId: !Ref CreateVPC
 
   subnet2Public:
+    DependsOn: CreateVPC
     Type: AWS::EC2::Subnet
     Properties:
       # To be clear, the first line sets up the AZ, the second line substitues the AZ (a, b, c, etc) with the reference parameter value
@@ -90,6 +112,7 @@ Resources:
         Value: aza-pub-subnet2
       MapPublicIpOnLaunch: true
   subnet1Private:
+    DependsOn: CreateVPC
     Type: AWS::EC2::Subnet
     Properties:
       # To be clear, the first line sets up the AZ, the second line substitues the AZ (a, b, c, etc) with the reference parameter value
@@ -106,6 +129,7 @@ Resources:
         Value: aza-pri-subnet1
       MapPublicIpOnLaunch: false
   subnet4Public:
+    DependsOn: CreateVPC
     Type: AWS::EC2::Subnet
     Properties:
       # To be clear, the first line sets up the AZ, the second line substitues the AZ (a, b, c, etc) with the reference parameter value
@@ -122,6 +146,7 @@ Resources:
         Value: azb-pub-subnet4
       MapPublicIpOnLaunch: True
   subnet3Private:
+    DependsOn: CreateVPC
     Type: AWS::EC2::Subnet
     Properties:
       # To be clear, the first line sets up the AZ, the second line substitues the AZ (a, b, c, etc) with the reference parameter value
@@ -138,6 +163,7 @@ Resources:
         Value: azb-pri-subnet3
       MapPublicIpOnLaunch: false
   subnet6Public:
+    DependsOn: CreateVPC
     Type: AWS::EC2::Subnet
     Properties:
       # To be clear, the first line sets up the AZ, the second line substitues the AZ (a, b, c, etc) with the reference parameter value
@@ -154,6 +180,7 @@ Resources:
         Value: azc-pub-subnet6
       MapPublicIpOnLaunch: True
   subnet5Private:
+    DependsOn: CreateVPC
     Type: AWS::EC2::Subnet
     Properties:
       # To be clear, the first line sets up the AZ, the second line substitues the AZ (a, b, c, etc) with the reference parameter value
@@ -171,6 +198,7 @@ Resources:
       MapPublicIpOnLaunch: false
 
   routeTable01Private:
+    DependsOn: CreateVPC
     Type: AWS::EC2::RouteTable
     Properties: 
       Tags: 
@@ -178,6 +206,7 @@ Resources:
         Value: rt01-private
       VpcId: !Ref CreateVPC
   routeTable02Public:
+    DependsOn: CreateVPC
     Type: AWS::EC2::RouteTable
     Properties: 
       Tags: 
@@ -185,6 +214,9 @@ Resources:
         Value: rt02-public
       VpcId: !Ref CreateVPC
   privateSubnetRouteAssociations1:
+    DependsOn: 
+    - subnet1Private
+    - routeTable01Private
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       SubnetId:
@@ -192,6 +224,9 @@ Resources:
       RouteTableId:
         Ref: routeTable01Private
   privateSubnetRouteAssociations2:
+    DependsOn:
+    - routeTable01Private
+    - subnet3Private
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       SubnetId:
@@ -199,6 +234,9 @@ Resources:
       RouteTableId:
         Ref: routeTable01Private
   privateSubnetRouteAssociations3:
+    DependsOn:
+    - routeTable01Private
+    - subnet5Private
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       SubnetId:
@@ -206,6 +244,9 @@ Resources:
       RouteTableId:
         Ref: routeTable01Private
   publicSubnetRouteAssociations1:
+    DependsOn:
+    - routeTable02Public
+    - subnet2Public
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       SubnetId:
@@ -213,6 +254,9 @@ Resources:
       RouteTableId:
         Ref: routeTable02Public
   publicSubnetRouteAssociations2:
+    DependsOn:
+    - routeTable02Public
+    - subnet4Public
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       SubnetId:
@@ -220,6 +264,9 @@ Resources:
       RouteTableId:
         Ref: routeTable02Public
   publicSubnetRouteAssociations3:
+    DependsOn:
+    - routeTable02Public
+    - subnet6Public
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       SubnetId:
@@ -229,7 +276,9 @@ Resources:
 
   InternetRoute:
     Type: AWS::EC2::Route
-    DependsOn: VPCGatewayAttachment01
+    DependsOn: 
+    - VPCGatewayAttachment01
+    - routeTable02Public
     Properties:
        RouteTableId:
          Ref: routeTable02Public
@@ -289,6 +338,152 @@ Resources:
       SourceSecurityGroupId: !Ref InstanceSecurityGroup02
       Description: "Intra Node Communication"
 
+  CRDBIPNode01:
+    DependsOn: 
+    - subnet2Public
+    - InstanceSecurityGroup01
+    - InstanceSecurityGroup02
+    Type: AWS::EC2::NetworkInterface
+    Properties:
+      PrivateIpAddress: !Join 
+      - '.' 
+      - - !Select [0, !Split ['.', !Select [0, !Cidr [ !Select [ 0, !Cidr [ !Ref VpcCidrParameter, 6, 5 ]], 16, 1] ] ] ]
+        - !Select [1, !Split ['.', !Select [0, !Cidr [ !Select [ 0, !Cidr [ !Ref VpcCidrParameter, 6, 5 ]], 16, 1] ] ] ]
+        - !Select [2, !Split ['.', !Select [0, !Cidr [ !Select [ 0, !Cidr [ !Ref VpcCidrParameter, 6, 5 ]], 16, 1] ] ] ]
+        - "4"  
+      SubnetId: !Ref subnet2Public
+      GroupSet:
+      - !Ref InstanceSecurityGroup01
+      - !Ref InstanceSecurityGroup02
+      Tags:
+      - Key: Name
+        Value: CRDBIPNode01
+  CRDBIPNode02:
+    DependsOn: 
+    - subnet4Public
+    - InstanceSecurityGroup01
+    - InstanceSecurityGroup02
+    Type: AWS::EC2::NetworkInterface
+    Properties:
+      PrivateIpAddress: !Join 
+      - '.' 
+      - - !Select [0, !Split ['.', !Select [0, !Cidr [ !Select [ 2, !Cidr [ !Ref VpcCidrParameter, 6, 5 ]], 16, 1] ] ] ]
+        - !Select [1, !Split ['.', !Select [0, !Cidr [ !Select [ 2, !Cidr [ !Ref VpcCidrParameter, 6, 5 ]], 16, 1] ] ] ]
+        - !Select [2, !Split ['.', !Select [0, !Cidr [ !Select [ 2, !Cidr [ !Ref VpcCidrParameter, 6, 5 ]], 16, 1] ] ] ]
+        - "68"  
+      SubnetId: !Ref subnet4Public
+      GroupSet: 
+      - !Ref InstanceSecurityGroup01
+      - !Ref InstanceSecurityGroup02
+      Tags:
+      - Key: Name
+        Value: CRDBIPNode02  
+  CRDBIPNode03:
+    DependsOn: 
+    - subnet6Public
+    - InstanceSecurityGroup01
+    - InstanceSecurityGroup02
+    Type: AWS::EC2::NetworkInterface
+    Properties:
+      PrivateIpAddress: !Join 
+      - '.' 
+      - - !Select [0, !Split ['.', !Select [0, !Cidr [ !Select [ 4, !Cidr [ !Ref VpcCidrParameter, 6, 5 ]], 16, 1] ] ] ]
+        - !Select [1, !Split ['.', !Select [0, !Cidr [ !Select [ 4, !Cidr [ !Ref VpcCidrParameter, 6, 5 ]], 16, 1] ] ] ]
+        - !Select [2, !Split ['.', !Select [0, !Cidr [ !Select [ 4, !Cidr [ !Ref VpcCidrParameter, 6, 5 ]], 16, 1] ] ] ]
+        - "132"  
+      SubnetId: !Ref subnet6Public
+      GroupSet:
+      - !Ref InstanceSecurityGroup01
+      - !Ref InstanceSecurityGroup02
+      Tags:
+      - Key: Name
+        Value: CRDBIPNode03
+
+  CRDBNode01:
+    DependsOn: 
+    - CRDBIPNode01
+    - CRDBIPNode01
+    - CRDBIPNode03
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      KeyName: !Ref KeyPairName
+      Tags:
+      - Key: Name
+        Value: CRDB-Node-01
+      InstanceType: t2.micro
+      ImageId: !Ref CRDBAMIID
+      UserData:
+        Fn::Base64:
+          !Sub |
+            #!/bin/bash -xe
+            echo "export JOIN_STR=${CRDBIPNode01.PrimaryPrivateIpAddress},${CRDBIPNode02.PrimaryPrivateIpAddress},${CRDBIPNode03.PrimaryPrivateIpAddress}" >> /home/ec2-user/.bashrc
+            echo "export CRDBNODE=1" >> /home/ec2-user/.bashrc
+      NetworkInterfaces:
+      - DeviceIndex: '0'
+        NetworkInterfaceId: !Ref CRDBIPNode01
+  CRDBNode02:
+    DependsOn: 
+    - CRDBIPNode01
+    - CRDBIPNode02
+    - CRDBIPNode03
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      KeyName: !Ref KeyPairName
+      Tags:
+      - Key: Name
+        Value: CRDB-Node-02
+      InstanceType: t2.micro
+      ImageId: !Ref CRDBAMIID
+      UserData:
+        Fn::Base64:
+          !Sub |
+            #!/bin/bash -xe
+            echo "export JOIN_STR=${CRDBIPNode01.PrimaryPrivateIpAddress},${CRDBIPNode02.PrimaryPrivateIpAddress},${CRDBIPNode03.PrimaryPrivateIpAddress}" >> /home/ec2-user/.bashrc
+            echo "export CRDBNODE=2" >> /home/ec2-user/.bashrc
+      NetworkInterfaces:
+      - DeviceIndex: '0'
+        NetworkInterfaceId: !Ref CRDBIPNode02
+  CRDBNode03:
+    DependsOn:
+    - CRDBIPNode01
+    - CRDBIPNode02
+    - CRDBIPNode03
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      KeyName: !Ref KeyPairName
+      Tags:
+      - Key: Name
+        Value: CRDB-Node-03
+      InstanceType: t2.micro
+      ImageId: !Ref CRDBAMIID
+      UserData:
+        Fn::Base64:
+          !Sub |
+            #!/bin/bash -xe
+            echo "export JOIN_STR=${CRDBIPNode01.PrimaryPrivateIpAddress},${CRDBIPNode02.PrimaryPrivateIpAddress},${CRDBIPNode03.PrimaryPrivateIpAddress}" >> /home/ec2-user/.bashrc
+            echo "export CRDBNODE=3" >> /home/ec2-user/.bashrc
+            echo "STARTCRDB() {" >> /home/ec2-user/.bashrc
+            echo "  cockroach start \\" >> /home/ec2-user/.bashrc
+            echo "  --locality=region=\"$aws_region\",zone=\"$aws_az\" \\" >> /home/ec2-user/.bashrc
+            echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
+            echo "  --advertise-addr=$ip_local \\" >> /home/ec2-user/.bashrc
+            echo "  --join=$JOIN_STR \\" >> /home/ec2-user/.bashrc
+            echo "  --background " >> /home/ec2-user/.bashrc
+            echo " }" >> /home/ec2-user/.bashrc
+            echo "CREATENODECERT() {" >> /home/ec2-user/.bashrc
+            echo "  cockroach cert create-node \\" >> /home/ec2-user/.bashrc
+            echo '  $ip_local \\' >> /home/ec2-user/.bashrc
+            echo '  $ip_public \\' >> /home/ec2-user/.bashrc
+            echo "  localhost \\" >> /home/ec2-user/.bashrc
+            echo "  127.0.0.1 \\" >> /home/ec2-user/.bashrc
+            echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
+            echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
+            echo "}" >> /home/ec2-user/.bashrc
+            su ec2-user -c CREATENODECERT
+      NetworkInterfaces:
+      - DeviceIndex: '0'
+        NetworkInterfaceId: !Ref CRDBIPNode03
+
 Outputs:
   StackVPC:
     Description: The ID of the VPC
@@ -320,4 +515,46 @@ Outputs:
     Value: !Ref InstanceSecurityGroup02
     Export:
       Name:  !Sub "${AWS::StackName}-SecurityGroup2"
-
+  JoinValue:
+    Description:  The Join value to be copied to additional VPC Creations
+    Value: !Join [",", [ !GetAtt CRDBIPNode01.PrimaryPrivateIpAddress, !GetAtt CRDBIPNode02.PrimaryPrivateIpAddress, !GetAtt CRDBIPNode03.PrimaryPrivateIpAddress ] ]
+    Export:
+      Name: !Sub "${AWS::StackName}-JoinValue"
+  PublicSubnet01WouldBe:
+    Description:  This is what the Private IP Would be
+    # Get the CIDR range of the 1st public subnet, then generate 16 CIDRs (for the whole range) with a /32 and select the 4th IP address
+    Value: !Select [ 0, !Cidr [ !Ref VpcCidrParameter, 6, 5 ]]
+  PrivateIP01WouldBe:
+    Description:  This is what the Private IP Would be
+    # Get the CIDR range of the 1st public subnet, then generate 16 CIDRs (for the whole range) with a /32 and select the 4th IP address
+    Value: !Select [0, !Split ['.', !Select [0, !Cidr [ !Select [ 0, !Cidr [ !Ref VpcCidrParameter, 6, 5 ]], 16, 1] ] ] ]
+  PrivateIP02WouldBe:
+    Description:  This is what the Private IP Would be
+    # Get the CIDR range of the 1st public subnet, then generate 16 CIDRs (for the whole range) with a /32 and select the 4th IP address
+    Value: !Select [1, !Split ['.', !Select [0, !Cidr [ !Select [ 0, !Cidr [ !Ref VpcCidrParameter, 6, 5 ]], 16, 1] ] ] ]
+  PrivateIP03WouldBe:
+    Description:  This is what the Private IP Would be
+    # Get the CIDR range of the 1st public subnet, then generate 16 CIDRs (for the whole range) with a /32 and select the 4th IP address
+    Value: !Select [2, !Split ['.', !Select [0, !Cidr [ !Select [ 0, !Cidr [ !Ref VpcCidrParameter, 6, 5 ]], 16, 1] ] ] ]
+  PrivateIPCombined:
+    Value: !Join 
+    - '.' 
+    - - !Select [0, !Split ['.', !Select [0, !Cidr [ !Select [ 0, !Cidr [ !Ref VpcCidrParameter, 6, 5 ]], 16, 1] ] ] ]
+      - !Select [1, !Split ['.', !Select [0, !Cidr [ !Select [ 0, !Cidr [ !Ref VpcCidrParameter, 6, 5 ]], 16, 1] ] ] ]
+      - !Select [2, !Split ['.', !Select [0, !Cidr [ !Select [ 0, !Cidr [ !Ref VpcCidrParameter, 6, 5 ]], 16, 1] ] ] ]
+  # PrivateIP02WouldBe:
+  #   Description:  This is what the Private IP Would be
+  #   # Get the CIDR range of the 1st public subnet, then generate 16 CIDRs (for the whole range) with a /32 and select the 4th IP address
+  #   Value: !Select [1, !Cidr [ !Select [ 0, !Cidr [ !Ref VpcCidrParameter, 6, 5 ]], 16, 0] ]
+  # PrivateIP03WouldBe:
+  #   Description:  This is what the Private IP Would be
+  #   # Get the CIDR range of the 1st public subnet, then generate 16 CIDRs (for the whole range) with a /32 and select the 4th IP address
+  #   Value: !Select [2, !Cidr [ !Select [ 0, !Cidr [ !Ref VpcCidrParameter, 6, 5 ]], 16, 0] ]
+  # PrivateIP04WouldBe:
+  #   Description:  This is what the Private IP Would be
+  #   # Get the CIDR range of the 1st public subnet, then generate 16 CIDRs (for the whole range) with a /32 and select the 4th IP address
+  #   Value: !Select [3, !Cidr [ !Select [ 0, !Cidr [ !Ref VpcCidrParameter, 6, 5 ]], 16, 0] ]
+  # PrivateIP16WouldBe:
+  #   Description:  This is what the Private IP Would be
+  #   # Get the CIDR range of the 1st public subnet, then generate 16 CIDRs (for the whole range) with a /32 and select the 4th IP address
+  #   Value: !Select [15, !Cidr [ !Select [ 0, !Cidr [ !Ref VpcCidrParameter, 6, 5 ]], 16, 0] ]
