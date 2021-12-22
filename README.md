@@ -1,7 +1,19 @@
 # CloudFormationVPC
-AWS CloudFormation Template for generating: VPC, Internet Gateway, Subnets, RouteTables and Security Groups
+AWS CloudFormation Template for generating: VPC, Internet Gateway, Subnets, RouteTables and Security Groups, EC2 Instances
+Once the infrastructer has been created, node certs will be generated and cockroachDB will be started (no init)
 
-The template must be executed in regions with at least 3 availability zones.
+
+Running this Cloudformation Template in multiple Regions will allow you to create a Mulit-Region Cockroach Setup, but there are a few extra steps to follow.
+Note that when the CloudFormation stack is deleted, all resources created by the template are deleted as well.
+
+Prior to running this CloudFormation template, you must have 
+- a CRDB AMI (there is a CloudFormation template to help you with that as well)
+- your public IP address (this is used to create the security group which allows only your IP to access the nodes)  You can find your IP by googling "my ip address"
+- key pair [Create One Here](https://us-west-2.console.aws.amazon.com/ec2/v2/home?region=us-west-2#KeyPairs:)
+
+A Root certificate is created on all nodes of the cluster.
+
+To initialize the cluster, you must issue the 'cockroach init' command.
 
 # The following objects are created by this CloudFormation Template
 
@@ -27,6 +39,10 @@ The template must be executed in regions with at least 3 availability zones.
 |VpcNamePrefix|Used to construct the VPC name tag.  |If the parameter entered is "vpc01", the VPC name tag will be "vpc01-us-west-2"|
 |VpcAzs|3 availability zones chosen from the list of AZs.  Be careful choosing the AZs.  Not all EC2 types are available in all AZs.  2 subnets will be created in each AZ: one public and one private.|"us-west-2a, us-west-2b, us-west-2c"|
 |MyIP|An IP address which will be used to create the security group sg01.  When assigned to an EC2 instance the security group will allow SSH, RDP, 26257 and 8080 port access to this IP address.  The IP address will be appended with the CIDR range /32.  |36.250.22.1|
+|KeyPairName|Applied to the EC2 instances when they are created.  This is a drop-down-list-box|My-us-west-2-kp|
+|CRDBAMIID|CockroachDB AMI ID.  This is an AMI which has cockroach installed along with a CA.|ami-040fadf1c90c7ef81	|
+|ClusterName|CockroachDB Cluster Name.  Appended to the "cockroach start" command.|My-CRDB-Cluster-01 |
+|ExistingJoinString|If this is a multiple region cluster, the join string is avialable in the "OUTPUTS" section of the first CloudFormation Region.  Leave this as NONE if this is the 1st region|192.168.4.4,192.168.4.68,192.168.4.132 |
 
 If you're going to execute this template in multiple regions, be sure to choose a different CIDR block for each region.  For example:
 
