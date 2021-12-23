@@ -71,6 +71,26 @@ The following values are exported
 |VPC ID|"${AWS::StackName}-VPCID|The ID of the VPC created by this CloudFormation Template|
 |Security Group 1 ID|"${AWS::StackName}-SecurityGroup1"|The ID of the security group which allows access to public resources from a single IP|
 |Security Group 2 ID|"${AWS::StackName}-SecurityGroup1"|The ID of the security group which allows intra-node communication|
-|Public Subnet 1 ID|"${AWS::StackName}-PublicSubnet1"|A public subnet where EC2 instances will be placed|
-|Public Subnet 2 ID|"${AWS::StackName}-PublicSubnet2"|A public subnet where EC2 instances will be placed|
-|Public Subnet 3 ID|"${AWS::StackName}-PublicSubnet3"|A public subnet where EC2 instances will be placed|
+|JoinValue |Use this output as the "ExistingJoinString" parameter when creating additional regions.  | The CloudFormation Template creates this value when the 1st region is created.  |
+<br><br>
+ # Multi-Region
+To create a multi-region CockroachDB Cluster:
+1.  Use the CloudFormation template to create the database in the first region.  Once the stack is complete, navigate to the "OUTPUTS" section and find the "JoinValue".  You will use this value as a parameter in all subsequent regions.
+2.  Run the CloudFormation template in additional regions.  Be sure to choose non-overlaping VPC CIDRs for each region.  In the "ExistingJoinString" parameter use the "JoinValue" from the "OUTPUTS" section of the 1st Region.  
+3.  Once the stacks are created in each Region, you'll need to create VPC peering between all regions (for 3 regions there will be 3 vpc peering connections, for 4 regions there would be 6 and so on.)
+4.  Edit the routes of public route table for each region adding the VPC CIDRs for all regions.  The Destination is the VPC CIDR routes and the target is the VPC Peering connections.  
+5.  Edit the inbound rules of the security group (instance-security-group02) in each region.   The souce should be the VPC CIDRs.
+6.  Log on to any one of the nodes and run `cockroach init`.  Once that is complete, the cluster should be up and running
+<br><br><br>
+
+|  id |       address       |     sql_address     |  build  |         started_at         |         updated_at         |             locality             | is_available | is_live|
+|-----|---------------------|---------------------|---------|----------------------------|----------------------------|----------------------------------|--------------|----------|
+   1 | 192.168.4.4:26257   | 192.168.4.4:26257   | v21.1.9 | 2021-12-23 20:00:41.289793 | 2021-12-23 20:03:54.843964 | region=us-west-2,zone=us-west-2a | true         | true
+   2 | 192.168.5.132:26257 | 192.168.5.132:26257 | v21.1.9 | 2021-12-23 20:00:42.407873 | 2021-12-23 20:03:55.921262 | region=us-east-1,zone=us-east-1c | true         | true
+   3 | 192.168.5.68:26257  | 192.168.5.68:26257  | v21.1.9 | 2021-12-23 20:00:42.778194 | 2021-12-23 20:03:56.324225 | region=us-east-1,zone=us-east-1b | true         | true
+   4 | 192.168.4.132:26257 | 192.168.4.132:26257 | v21.1.9 | 2021-12-23 20:00:42.928144 | 2021-12-23 20:03:56.477613 | region=us-west-2,zone=us-west-2c | true         | true
+   5 | 192.168.4.68:26257  | 192.168.4.68:26257  | v21.1.9 | 2021-12-23 20:00:43.165414 | 2021-12-23 20:03:56.710054 | region=us-west-2,zone=us-west-2b | true         | true
+   6 | 192.168.5.4:26257   | 192.168.5.4:26257   | v21.1.9 | 2021-12-23 20:00:43.607428 | 2021-12-23 20:03:57.129251 | region=us-east-1,zone=us-east-1a | true         | true
+   7 | 192.168.6.68:26257  | 192.168.6.68:26257  | v21.1.9 | 2021-12-23 20:03:47.825816 | 2021-12-23 20:03:56.842498 | region=us-east-2,zone=us-east-2b | true         | true
+   8 | 192.168.6.4:26257   | 192.168.6.4:26257   | v21.1.9 | 2021-12-23 20:03:48.597583 | 2021-12-23 20:03:57.61296  | region=us-east-2,zone=us-east-2a | true         | true
+   9 | 192.168.6.132:26257 | 192.168.6.132:26257 | v21.1.9 | 2021-12-23 20:03:49.241007 | 2021-12-23 20:03:53.755784 | region=us-east-2,zone=us-east-2c | true         | true
