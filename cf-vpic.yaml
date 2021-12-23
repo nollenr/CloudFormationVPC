@@ -1,4 +1,4 @@
-Description: Create a VPC, Internet Gateway, Subnets, Route Tables and Security Groups
+Description: Create a VPC, Internet Gateway, Subnets, Route Tables, Security Groups and EC2 Instances running the Cockroach Database
 AWSTemplateFormatVersion: '2010-09-09'
 #
 #  ToDo:

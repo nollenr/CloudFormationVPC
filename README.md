@@ -1,22 +1,22 @@
-# CloudFormationVPC
+# Cockroach Database CloudFormation Template
 AWS CloudFormation Template for generating: VPC, Internet Gateway, Subnets, RouteTables and Security Groups, EC2 Instances, installing CorkroachDB and certificate.
 
 Once the infrastructre has been created, node and root certs will be generated and cockroachDB will be started (no init)
 
 
-Running this Cloudformation Template in multiple Regions will allow you to create a Mulit-Region Cockroach Setup, but there are a few extra steps to follow such as peering the VPCs (see instructions below)
+Running this Cloudformation Template in multiple Regions will allow you to create a Mulit-Region Cockroach Cluster, but there are a few extra steps to follow such as peering the VPCs, modifying route tables and security groups (see instructions below).
 
 Note that when the CloudFormation stack is deleted, all resources created by the template in a region are deleted as well.
 
 Prior to running this CloudFormation template, you must have 
 - your public IP address (this is used to create the security group which allows only your IP to access the nodes)  You can find your IP by googling "my ip address"
-- key pair [Create One Here](https://us-west-2.console.aws.amazon.com/ec2/v2/home?region=us-west-2#KeyPairs:)
+- key pair [Create One Here](https://us-west-2.console.aws.amazon.com/ec2/v2/home?region=us-west-2#KeyPairs:).  The key pair information is used to allow you access the CRDB nodes.
 
 
 To initialize the cluster, you must issue the 'cockroach init' command from any one of the nodes in the cluster.
 
 # Secuirty Warnings
-The ca.crt and ca.key created by this template is the same for all executions!  Anyone with access to this CloudFormation template has the CA key for the cluster.
+The ca.crt and ca.key created by this template are the same for all executions!  Anyone with access to this CloudFormation template has the CA key for the cluster.
 
 The keys can be roated using the instructions [here](https://www.cockroachlabs.com/docs/v21.2/rotate-certificates).  
 
@@ -53,9 +53,9 @@ You can also change the key by editing the CloudFormation template prior to exec
 |ClusterName|CockroachDB Cluster Name.  Appended to the "cockroach start" command.|My-CRDB-Cluster-01 |
 |ExistingJoinString|If this is a multiple region cluster, the join string is avialable in the "OUTPUTS" section of the first CloudFormation Region.  Leave this as NONE if this is the 1st region|192.168.4.4,192.168.4.68,192.168.4.132 |
 
-If you're going to execute this template in multiple regions, be sure to choose a different CIDR block for each region.  For example:
+If you're going to execute this template in multiple regions, be sure to choose non-overlaping CIDR blocks for each region.  For example:
 
-|region|CIDR|
+|Region|CIDR|
 |--------|-----------|
 |us-west-2|192.168.3.0|
 |us-east-1|192.168.4.0|
@@ -64,7 +64,7 @@ If you're going to execute this template in multiple regions, be sure to choose 
 This will allow you to easily peer the 3 VPCs.  
 
 # Template Exports
-The following values are exported
+The following values are exported by the CloudFormation Template
 
 |Resource|Export Name|Description|
 |-----------|------------|-------------|
@@ -94,3 +94,6 @@ To create a multi-region CockroachDB Cluster:
    7 | 192.168.6.68:26257  | 192.168.6.68:26257  | v21.1.9 | 2021-12-23 20:03:47.825816 | 2021-12-23 20:03:56.842498 | region=us-east-2,zone=us-east-2b | true         | true
    8 | 192.168.6.4:26257   | 192.168.6.4:26257   | v21.1.9 | 2021-12-23 20:03:48.597583 | 2021-12-23 20:03:57.61296  | region=us-east-2,zone=us-east-2a | true         | true
    9 | 192.168.6.132:26257 | 192.168.6.132:26257 | v21.1.9 | 2021-12-23 20:03:49.241007 | 2021-12-23 20:03:53.755784 | region=us-east-2,zone=us-east-2c | true         | true
+
+
+When deleting stacks in a multi-region cluster, be sure to delete the VPC Peering Connections first.
