@@ -22,6 +22,16 @@ AWSTemplateFormatVersion: '2010-09-09'
 #
 # AWS Routes Configuration
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ec2-route.html
+Mappings:
+  amazonLinuxAmi:
+    us-east-1:
+      AMI: ami-0ed9277fb7eb570c9
+    us-east-2:
+      AMI: ami-002068ed284fb165b
+    us-west-1:
+      AMI: ami-03af6a70ccd8cb578
+    us-west-2:
+      AMI: ami-00f7e5c52c0f43726
 Parameters: 
   VpcCidrParameter: 
     Description: "CIDR Block For the VPC"
@@ -99,7 +109,7 @@ Parameters:
     Description: "Key Pair Name (specific to a region) to be used for the EC2 instances.  This keypair must already exist prior to runing this CloudFormation script."
     Type: "AWS::EC2::KeyPair::KeyName"
   CRDBAMIID:
-    Description: "Amazon Linux AMI"
+    Description: "Amazon Linux AMI.  us-east-1: ami-0ed9277fb7eb570c9, us-east-2: ami-002068ed284fb165b, us-west-1: ami-03af6a70ccd8cb578, us-west-2: ami-00f7e5c52c0f43726"
     Type: AWS::EC2::Image::Id
     Default: ami-00f7e5c52c0f43726
   ClusterName:
