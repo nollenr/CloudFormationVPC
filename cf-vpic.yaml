@@ -551,11 +551,11 @@ Resources:
                 echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
                 echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
                 echo "}" >> /home/ec2-user/.bashrc           
-                sleep 2m; su ec2-user -lc 'CREATENODECERT; CREATEROOTCERT; STARTCRDB'
+                sleep 20; su ec2-user -lc 'CREATENODECERT; CREATEROOTCERT; STARTCRDB'
             -
               !Sub |
                 #!/bin/bash -xe
-                curl https://binaries.cockroachdb.com/cockroach-v21.1.9.linux-amd64.tgz | tar -xz && cp -i cockroach-v21.1.9.linux-amd64/cockroach /usr/local/bin/
+                curl https://binaries.cockroachdb.com/cockroach-v21.2.3.linux-amd64.tgz | tar -xz && cp -i cockroach-v21.2.3.linux-amd64/cockroach /usr/local/bin/
                 su ec2-user -c 'mkdir /home/ec2-user/certs; mkdir /home/ec2-user/my-safe-directory'
                 echo '-----BEGIN RSA PRIVATE KEY-----' > /home/ec2-user/my-safe-directory/ca.key
                 echo 'MIIEowIBAAKCAQEAvQBvZGI4uUlVHD4REnyofo9D6JWQY13kSIkuOUur49paFkIf' >> /home/ec2-user/my-safe-directory/ca.key
@@ -637,7 +637,7 @@ Resources:
                 echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
                 echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
                 echo "}" >> /home/ec2-user/.bashrc                
-                sleep 2m; su ec2-user -lc 'CREATENODECERT; CREATEROOTCERT; STARTCRDB'
+                sleep 20; su ec2-user -lc 'CREATENODECERT; CREATEROOTCERT; STARTCRDB'
       NetworkInterfaces:
       - DeviceIndex: '0'
         NetworkInterfaceId: !Ref CRDBIPNode01
@@ -661,7 +661,7 @@ Resources:
             -
               !Sub |
                 #!/bin/bash -xe
-                curl https://binaries.cockroachdb.com/cockroach-v21.1.9.linux-amd64.tgz | tar -xz && cp -i cockroach-v21.1.9.linux-amd64/cockroach /usr/local/bin/
+                curl https://binaries.cockroachdb.com/cockroach-v21.2.3.linux-amd64.tgz | tar -xz && cp -i cockroach-v21.2.3.linux-amd64/cockroach /usr/local/bin/
                 su ec2-user -c 'mkdir /home/ec2-user/certs; mkdir /home/ec2-user/my-safe-directory'
                 echo '-----BEGIN RSA PRIVATE KEY-----' > /home/ec2-user/my-safe-directory/ca.key
                 echo 'MIIEowIBAAKCAQEAvQBvZGI4uUlVHD4REnyofo9D6JWQY13kSIkuOUur49paFkIf' >> /home/ec2-user/my-safe-directory/ca.key
@@ -744,11 +744,11 @@ Resources:
                 echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
                 echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
                 echo "}" >> /home/ec2-user/.bashrc           
-                sleep 2m; su ec2-user -lc 'CREATENODECERT; CREATEROOTCERT; STARTCRDB'
+                sleep 20; su ec2-user -lc 'CREATENODECERT; CREATEROOTCERT; STARTCRDB'
             -
               !Sub |
                 #!/bin/bash -xe
-                curl https://binaries.cockroachdb.com/cockroach-v21.1.9.linux-amd64.tgz | tar -xz && cp -i cockroach-v21.1.9.linux-amd64/cockroach /usr/local/bin/
+                curl https://binaries.cockroachdb.com/cockroach-v21.2.3.linux-amd64.tgz | tar -xz && cp -i cockroach-v21.2.3.linux-amd64/cockroach /usr/local/bin/
                 su ec2-user -c 'mkdir /home/ec2-user/certs; mkdir /home/ec2-user/my-safe-directory'
                 echo '-----BEGIN RSA PRIVATE KEY-----' > /home/ec2-user/my-safe-directory/ca.key
                 echo 'MIIEowIBAAKCAQEAvQBvZGI4uUlVHD4REnyofo9D6JWQY13kSIkuOUur49paFkIf' >> /home/ec2-user/my-safe-directory/ca.key
@@ -830,7 +830,7 @@ Resources:
                 echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
                 echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
                 echo "}" >> /home/ec2-user/.bashrc                
-                sleep 2m; su ec2-user -lc 'CREATENODECERT; CREATEROOTCERT; STARTCRDB'
+                sleep 20; su ec2-user -lc 'CREATENODECERT; CREATEROOTCERT; STARTCRDB'
       NetworkInterfaces:
       - DeviceIndex: '0'
         NetworkInterfaceId: !Ref CRDBIPNode02
@@ -854,7 +854,7 @@ Resources:
             -
               !Sub |
                 #!/bin/bash -xe
-                curl https://binaries.cockroachdb.com/cockroach-v21.1.9.linux-amd64.tgz | tar -xz && cp -i cockroach-v21.1.9.linux-amd64/cockroach /usr/local/bin/
+                curl https://binaries.cockroachdb.com/cockroach-v21.2.3.linux-amd64.tgz | tar -xz && cp -i cockroach-v21.2.3.linux-amd64/cockroach /usr/local/bin/
                 su ec2-user -c 'mkdir /home/ec2-user/certs; mkdir /home/ec2-user/my-safe-directory'
                 echo '-----BEGIN RSA PRIVATE KEY-----' > /home/ec2-user/my-safe-directory/ca.key
                 echo 'MIIEowIBAAKCAQEAvQBvZGI4uUlVHD4REnyofo9D6JWQY13kSIkuOUur49paFkIf' >> /home/ec2-user/my-safe-directory/ca.key
@@ -937,11 +937,11 @@ Resources:
                 echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
                 echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
                 echo "}" >> /home/ec2-user/.bashrc           
-                sleep 2m; su ec2-user -lc 'CREATENODECERT; CREATEROOTCERT; STARTCRDB'
+                sleep 20; su ec2-user -lc 'CREATENODECERT; CREATEROOTCERT; STARTCRDB'
             -
               !Sub |
                 #!/bin/bash -xe
-                curl https://binaries.cockroachdb.com/cockroach-v21.1.9.linux-amd64.tgz | tar -xz && cp -i cockroach-v21.1.9.linux-amd64/cockroach /usr/local/bin/
+                curl https://binaries.cockroachdb.com/cockroach-v21.2.3.linux-amd64.tgz | tar -xz && cp -i cockroach-v21.2.3.linux-amd64/cockroach /usr/local/bin/
                 su ec2-user -c 'mkdir /home/ec2-user/certs; mkdir /home/ec2-user/my-safe-directory'
                 echo '-----BEGIN RSA PRIVATE KEY-----' > /home/ec2-user/my-safe-directory/ca.key
                 echo 'MIIEowIBAAKCAQEAvQBvZGI4uUlVHD4REnyofo9D6JWQY13kSIkuOUur49paFkIf' >> /home/ec2-user/my-safe-directory/ca.key
@@ -1023,7 +1023,7 @@ Resources:
                 echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
                 echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
                 echo "}" >> /home/ec2-user/.bashrc                
-                sleep 2m; su ec2-user -lc 'CREATENODECERT; CREATEROOTCERT; STARTCRDB'
+                sleep 20; su ec2-user -lc 'CREATENODECERT; CREATEROOTCERT; STARTCRDB'
       NetworkInterfaces:
       - DeviceIndex: '0'
         NetworkInterfaceId: !Ref CRDBIPNode03
