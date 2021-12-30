@@ -473,181 +473,95 @@ Resources:
       ImageId: !Ref CRDBAMIID
       UserData:
         Fn::Base64:
-          !If
-            - UseNewJoinString
-            -
-              !Sub |
-                #!/bin/bash -xe
-                curl https://binaries.cockroachdb.com/cockroach-v21.2.3.linux-amd64.tgz | tar -xz && cp -i cockroach-v21.2.3.linux-amd64/cockroach /usr/local/bin/
-                su ec2-user -c 'mkdir /home/ec2-user/certs; mkdir /home/ec2-user/my-safe-directory'
-                echo '-----BEGIN RSA PRIVATE KEY-----' > /home/ec2-user/my-safe-directory/ca.key
-                echo 'MIIEowIBAAKCAQEAvQBvZGI4uUlVHD4REnyofo9D6JWQY13kSIkuOUur49paFkIf' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'mpeRSIu2u5yGf6xd7Oi3H/QnKGMlagtqt22BYqrR1IJUNMtnRSajpDBxnBlJCexy' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'BFVUEyLKlfcdP0HYx5jzazcL5u9obEeTn6c7dJU/Qrpou6DTa44YF4YpP3Rhrhs1' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'g2l6AldzJqtyfISRhL23iJz7MPScIDa4FkGcp62f1qtBt11304RNXnfrqRPEjipu' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'aHsuel04KMsOP70/psE5/QUtRQMH/MzBVbjRog1XFEtJpDd+ZIUpkqYb24aOgXLO' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'kEkbJnCQyiJBIm9jS3ilymfT0x869TXEUaPlOwIDAQABAoIBAGEttRi3TBUw+HsC' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'CsMnp3cTcMZJCKme4D7Pkh3Ro7sPTVy+eQOCxSe49qb2b018MfsbGPVsEyo3+EfT' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'QPa5blpuHF+Y93UB1MKAgIlugyvQ8HYSxfkmaolATUvYeIhK8gyGvzo0XoFKPbXX' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'A7eGRBLInnNP54P5yFs3/3kw+UpvSO/rWme06VO/itjXDMxw0q+H0CcbxQ/M9V9p' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'ptrZ4E9MzKAcCIW4vy7N7IpTGCwol6UUORJ0PeBnuj3INc1v/b015IhsTXeggb4O' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'Z6oAMZsGpo4bQLGo7Ze3Og0OyCNXHPYb2dwmgfXwedBDWZoyy72eT8Abh1FM2aBE' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'qf9ohLkCgYEAzHPeUkZRZ6rJ0v3VAXBHYYwVJJYUfGFgpMk38Uf09ha/7CWooMHU' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'tOTl+V9yCot2md2SOYmBLp/1uMyPXQbWvzhjGkv1+rYbh2VYhr2AmWx7Wq4C+PPv' >> /home/ec2-user/my-safe-directory/ca.key
-                echo '9eUXkp3Qx7LwFl+jGsoHHcAVks07gNMUSiPW9xsfVAry84u4QrORbh8CgYEA7KdO' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 's07YmPU3l2O5Q4mQXBHkbyCp2GwOPYyvEMxF5UV5H++TOjml3eHqT9TBYUbvueH8' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'Ajk2dGsaGcxVMPxSk7AzELcfhFWH9UtSfBA/XSUPTbSp01/1PzYKlAeCH6dpf+jq' >> /home/ec2-user/my-safe-directory/ca.key
-                echo '/7kJNzu3lH8PvwtxNNIC/bL5KMQPyGE64KoYLWUCgYEAmyvltHQCHLgW7bgRDkJ1' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'Kqfy9A2kBrKxct/1QX7ngE7L4yLB1SDHm3OOx7GVEEPBBA6SiHDARu7IxDUdKfGi' >> /home/ec2-user/my-safe-directory/ca.key
-                echo '0was0KyOSHYmdqCIi9sP22HmTXB8eQ5LNUlmlrSIXMiGR7TWSeLDe+Tper2hR6js' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'YUjKQkmngVW+BvIoKxe2bOkCgYAsucoT9VjWP7IL+Jrw+rS/0dncbs3qyzE9zLLh' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'd9nV5PVpZbvriy2f66x+/fS2T9PKy7z3Jpz2D6/VJFsNcQKiSvC7vgBE4G1bnKqw' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'K9nt3q0vwG9ANaiCE9KX+3tKRDeaJwkS34OwXqbpd8IgFyeEFhTeoc6ZN8TL2CRq' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'hXsgSQKBgDWNl05PYGRa9NAgzGCH0+QLgWW1AxQuD7PSgZDHLNOqvPXRbzgJIM/E' >> /home/ec2-user/my-safe-directory/ca.key
-                echo '3P/bKcKJAWG2muwb0m1JM8D+twaHE/QMxULkUzYtQ2nlCM6OhFYNEHkjmoB7UFA3' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'IaJVqjBQe91P0IKCSkZF7wFHz1YdKgjvSQOXlHD2I+MwyPF4UG6o' >> /home/ec2-user/my-safe-directory/ca.key
-                echo '-----END RSA PRIVATE KEY-----' >> /home/ec2-user/my-safe-directory/ca.key
-                echo '-----BEGIN CERTIFICATE-----' > /home/ec2-user/certs/ca.crt
-                echo 'MIIDJTCCAg2gAwIBAgIQDm0RAwm/Sn2RhyT5ojkTmjANBgkqhkiG9w0BAQsFADAr' >> /home/ec2-user/certs/ca.crt
-                echo 'MRIwEAYDVQQKEwlDb2Nrcm9hY2gxFTATBgNVBAMTDENvY2tyb2FjaCBDQTAeFw0y' >> /home/ec2-user/certs/ca.crt
-                echo 'MTEyMjIxNzE0MTBaFw0zMTEyMzExNzE0MTBaMCsxEjAQBgNVBAoTCUNvY2tyb2Fj' >> /home/ec2-user/certs/ca.crt
-                echo 'aDEVMBMGA1UEAxMMQ29ja3JvYWNoIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A' >> /home/ec2-user/certs/ca.crt
-                echo 'MIIBCgKCAQEAvQBvZGI4uUlVHD4REnyofo9D6JWQY13kSIkuOUur49paFkIfmpeR' >> /home/ec2-user/certs/ca.crt
-                echo 'SIu2u5yGf6xd7Oi3H/QnKGMlagtqt22BYqrR1IJUNMtnRSajpDBxnBlJCexyBFVU' >> /home/ec2-user/certs/ca.crt
-                echo 'EyLKlfcdP0HYx5jzazcL5u9obEeTn6c7dJU/Qrpou6DTa44YF4YpP3Rhrhs1g2l6' >> /home/ec2-user/certs/ca.crt
-                echo 'AldzJqtyfISRhL23iJz7MPScIDa4FkGcp62f1qtBt11304RNXnfrqRPEjipuaHsu' >> /home/ec2-user/certs/ca.crt
-                echo 'el04KMsOP70/psE5/QUtRQMH/MzBVbjRog1XFEtJpDd+ZIUpkqYb24aOgXLOkEkb' >> /home/ec2-user/certs/ca.crt
-                echo 'JnCQyiJBIm9jS3ilymfT0x869TXEUaPlOwIDAQABo0UwQzAOBgNVHQ8BAf8EBAMC' >> /home/ec2-user/certs/ca.crt
-                echo 'AuQwEgYDVR0TAQH/BAgwBgEB/wIBATAdBgNVHQ4EFgQUO/9ViWjopIpC8OD5tMVT' >> /home/ec2-user/certs/ca.crt
-                echo 'nxwRbMkwDQYJKoZIhvcNAQELBQADggEBALplxolVuvzzIHNfx4fPw2oCwcC4cBEW' >> /home/ec2-user/certs/ca.crt
-                echo 'x/cy4al48biFM7GnuCUJvZRcll8urCiw4J5utDuzDphWjftW2KXD8ZTctVxQ3Dli' >> /home/ec2-user/certs/ca.crt
-                echo 'mKBfAZPocMUKwTlBqWGNJBSuv7WDBLlIkZDHOP404vIs0Ddl+gEqarU3VS49zY7/' >> /home/ec2-user/certs/ca.crt
-                echo 'Ip9YN7Ch8dBGaBK1/5O2hetnsvV9ayRgQfhcvN87CRmXIqA8/SFZ8KHq7PvWVLYa' >> /home/ec2-user/certs/ca.crt
-                echo 'zsuodS2Txf3Z1n/s8h8GbYFdUFDcYk/n5Tb7/BfunsAWUPrH8/0uF3xZn+SlTRVF' >> /home/ec2-user/certs/ca.crt
-                echo 'hrg+esTLJlTzrQMAZdIE7jpN/CYyP0A/usQi03LTerr2vfv00xU+Mz8=' >> /home/ec2-user/certs/ca.crt
-                echo '-----END CERTIFICATE-----' >> /home/ec2-user/certs/ca.crt
-                chown ec2-user:ec2-user /home/ec2-user/certs/ca.crt
-                chown ec2-user:ec2-user /home/ec2-user/my-safe-directory/ca.key
-                chmod 640 /home/ec2-user/certs/ca.crt
-                chmod 600 /home/ec2-user/my-safe-directory/ca.key     
-                echo "export ip_local=\`curl http://169.254.169.254/latest/meta-data/local-ipv4\`" >> /home/ec2-user/.bashrc
-                echo "export ip_public=\`curl http://169.254.169.254/latest/meta-data/public-ipv4\`" >> /home/ec2-user/.bashrc
-                echo "export aws_region=\`curl http://169.254.169.254/latest/meta-data/placement/region\`" >> /home/ec2-user/.bashrc
-                echo "export aws_az=\`curl http://169.254.169.254/latest/meta-data/placement/availability-zone\`" >> /home/ec2-user/.bashrc
-                echo "export JOIN_STR=${CRDBIPNode01.PrimaryPrivateIpAddress},${CRDBIPNode02.PrimaryPrivateIpAddress},${CRDBIPNode03.PrimaryPrivateIpAddress}" >> /home/ec2-user/.bashrc
-                echo "export COCKROACH_CERTS_DIR=/home/ec2-user/certs" >> /home/ec2-user/.bashrc
-                echo "export COCKROACH_CERTS_DIR=/home/ec2-user/certs" >> /home/ec2-user/.bashrc
-                echo "export CRDBNODE=1" >> /home/ec2-user/.bashrc
-                echo "STARTCRDB() {" >> /home/ec2-user/.bashrc
-                echo "  cockroach start \\" >> /home/ec2-user/.bashrc
-                echo '  --locality=region="$aws_region",zone="$aws_az" \' >> /home/ec2-user/.bashrc
-                echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
-                echo '  --advertise-addr=$ip_local \' >> /home/ec2-user/.bashrc
-                echo '  --join=$JOIN_STR \' >> /home/ec2-user/.bashrc
-                echo "  --background " >> /home/ec2-user/.bashrc
-                echo " }" >> /home/ec2-user/.bashrc
-                echo "CREATENODECERT() {" >> /home/ec2-user/.bashrc
-                echo "  cockroach cert create-node \\" >> /home/ec2-user/.bashrc
-                echo '  $ip_local \' >> /home/ec2-user/.bashrc
-                echo '  $ip_public \' >> /home/ec2-user/.bashrc
-                echo "  localhost \\" >> /home/ec2-user/.bashrc
-                echo "  127.0.0.1 \\" >> /home/ec2-user/.bashrc
-                echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
-                echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
-                echo "}" >> /home/ec2-user/.bashrc
-                echo "CREATEROOTCERT() {" >> /home/ec2-user/.bashrc
-                echo "  cockroach cert create-client \\" >> /home/ec2-user/.bashrc
-                echo '  root \' >> /home/ec2-user/.bashrc
-                echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
-                echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
-                echo "}" >> /home/ec2-user/.bashrc           
-                sleep 20; su ec2-user -lc 'CREATENODECERT; CREATEROOTCERT; STARTCRDB'
-            -
-              !Sub |
-                #!/bin/bash -xe
-                curl https://binaries.cockroachdb.com/cockroach-v21.2.3.linux-amd64.tgz | tar -xz && cp -i cockroach-v21.2.3.linux-amd64/cockroach /usr/local/bin/
-                su ec2-user -c 'mkdir /home/ec2-user/certs; mkdir /home/ec2-user/my-safe-directory'
-                echo '-----BEGIN RSA PRIVATE KEY-----' > /home/ec2-user/my-safe-directory/ca.key
-                echo 'MIIEowIBAAKCAQEAvQBvZGI4uUlVHD4REnyofo9D6JWQY13kSIkuOUur49paFkIf' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'mpeRSIu2u5yGf6xd7Oi3H/QnKGMlagtqt22BYqrR1IJUNMtnRSajpDBxnBlJCexy' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'BFVUEyLKlfcdP0HYx5jzazcL5u9obEeTn6c7dJU/Qrpou6DTa44YF4YpP3Rhrhs1' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'g2l6AldzJqtyfISRhL23iJz7MPScIDa4FkGcp62f1qtBt11304RNXnfrqRPEjipu' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'aHsuel04KMsOP70/psE5/QUtRQMH/MzBVbjRog1XFEtJpDd+ZIUpkqYb24aOgXLO' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'kEkbJnCQyiJBIm9jS3ilymfT0x869TXEUaPlOwIDAQABAoIBAGEttRi3TBUw+HsC' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'CsMnp3cTcMZJCKme4D7Pkh3Ro7sPTVy+eQOCxSe49qb2b018MfsbGPVsEyo3+EfT' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'QPa5blpuHF+Y93UB1MKAgIlugyvQ8HYSxfkmaolATUvYeIhK8gyGvzo0XoFKPbXX' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'A7eGRBLInnNP54P5yFs3/3kw+UpvSO/rWme06VO/itjXDMxw0q+H0CcbxQ/M9V9p' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'ptrZ4E9MzKAcCIW4vy7N7IpTGCwol6UUORJ0PeBnuj3INc1v/b015IhsTXeggb4O' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'Z6oAMZsGpo4bQLGo7Ze3Og0OyCNXHPYb2dwmgfXwedBDWZoyy72eT8Abh1FM2aBE' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'qf9ohLkCgYEAzHPeUkZRZ6rJ0v3VAXBHYYwVJJYUfGFgpMk38Uf09ha/7CWooMHU' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'tOTl+V9yCot2md2SOYmBLp/1uMyPXQbWvzhjGkv1+rYbh2VYhr2AmWx7Wq4C+PPv' >> /home/ec2-user/my-safe-directory/ca.key
-                echo '9eUXkp3Qx7LwFl+jGsoHHcAVks07gNMUSiPW9xsfVAry84u4QrORbh8CgYEA7KdO' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 's07YmPU3l2O5Q4mQXBHkbyCp2GwOPYyvEMxF5UV5H++TOjml3eHqT9TBYUbvueH8' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'Ajk2dGsaGcxVMPxSk7AzELcfhFWH9UtSfBA/XSUPTbSp01/1PzYKlAeCH6dpf+jq' >> /home/ec2-user/my-safe-directory/ca.key
-                echo '/7kJNzu3lH8PvwtxNNIC/bL5KMQPyGE64KoYLWUCgYEAmyvltHQCHLgW7bgRDkJ1' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'Kqfy9A2kBrKxct/1QX7ngE7L4yLB1SDHm3OOx7GVEEPBBA6SiHDARu7IxDUdKfGi' >> /home/ec2-user/my-safe-directory/ca.key
-                echo '0was0KyOSHYmdqCIi9sP22HmTXB8eQ5LNUlmlrSIXMiGR7TWSeLDe+Tper2hR6js' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'YUjKQkmngVW+BvIoKxe2bOkCgYAsucoT9VjWP7IL+Jrw+rS/0dncbs3qyzE9zLLh' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'd9nV5PVpZbvriy2f66x+/fS2T9PKy7z3Jpz2D6/VJFsNcQKiSvC7vgBE4G1bnKqw' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'K9nt3q0vwG9ANaiCE9KX+3tKRDeaJwkS34OwXqbpd8IgFyeEFhTeoc6ZN8TL2CRq' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'hXsgSQKBgDWNl05PYGRa9NAgzGCH0+QLgWW1AxQuD7PSgZDHLNOqvPXRbzgJIM/E' >> /home/ec2-user/my-safe-directory/ca.key
-                echo '3P/bKcKJAWG2muwb0m1JM8D+twaHE/QMxULkUzYtQ2nlCM6OhFYNEHkjmoB7UFA3' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'IaJVqjBQe91P0IKCSkZF7wFHz1YdKgjvSQOXlHD2I+MwyPF4UG6o' >> /home/ec2-user/my-safe-directory/ca.key
-                echo '-----END RSA PRIVATE KEY-----' >> /home/ec2-user/my-safe-directory/ca.key
-                echo '-----BEGIN CERTIFICATE-----' > /home/ec2-user/certs/ca.crt
-                echo 'MIIDJTCCAg2gAwIBAgIQDm0RAwm/Sn2RhyT5ojkTmjANBgkqhkiG9w0BAQsFADAr' >> /home/ec2-user/certs/ca.crt
-                echo 'MRIwEAYDVQQKEwlDb2Nrcm9hY2gxFTATBgNVBAMTDENvY2tyb2FjaCBDQTAeFw0y' >> /home/ec2-user/certs/ca.crt
-                echo 'MTEyMjIxNzE0MTBaFw0zMTEyMzExNzE0MTBaMCsxEjAQBgNVBAoTCUNvY2tyb2Fj' >> /home/ec2-user/certs/ca.crt
-                echo 'aDEVMBMGA1UEAxMMQ29ja3JvYWNoIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A' >> /home/ec2-user/certs/ca.crt
-                echo 'MIIBCgKCAQEAvQBvZGI4uUlVHD4REnyofo9D6JWQY13kSIkuOUur49paFkIfmpeR' >> /home/ec2-user/certs/ca.crt
-                echo 'SIu2u5yGf6xd7Oi3H/QnKGMlagtqt22BYqrR1IJUNMtnRSajpDBxnBlJCexyBFVU' >> /home/ec2-user/certs/ca.crt
-                echo 'EyLKlfcdP0HYx5jzazcL5u9obEeTn6c7dJU/Qrpou6DTa44YF4YpP3Rhrhs1g2l6' >> /home/ec2-user/certs/ca.crt
-                echo 'AldzJqtyfISRhL23iJz7MPScIDa4FkGcp62f1qtBt11304RNXnfrqRPEjipuaHsu' >> /home/ec2-user/certs/ca.crt
-                echo 'el04KMsOP70/psE5/QUtRQMH/MzBVbjRog1XFEtJpDd+ZIUpkqYb24aOgXLOkEkb' >> /home/ec2-user/certs/ca.crt
-                echo 'JnCQyiJBIm9jS3ilymfT0x869TXEUaPlOwIDAQABo0UwQzAOBgNVHQ8BAf8EBAMC' >> /home/ec2-user/certs/ca.crt
-                echo 'AuQwEgYDVR0TAQH/BAgwBgEB/wIBATAdBgNVHQ4EFgQUO/9ViWjopIpC8OD5tMVT' >> /home/ec2-user/certs/ca.crt
-                echo 'nxwRbMkwDQYJKoZIhvcNAQELBQADggEBALplxolVuvzzIHNfx4fPw2oCwcC4cBEW' >> /home/ec2-user/certs/ca.crt
-                echo 'x/cy4al48biFM7GnuCUJvZRcll8urCiw4J5utDuzDphWjftW2KXD8ZTctVxQ3Dli' >> /home/ec2-user/certs/ca.crt
-                echo 'mKBfAZPocMUKwTlBqWGNJBSuv7WDBLlIkZDHOP404vIs0Ddl+gEqarU3VS49zY7/' >> /home/ec2-user/certs/ca.crt
-                echo 'Ip9YN7Ch8dBGaBK1/5O2hetnsvV9ayRgQfhcvN87CRmXIqA8/SFZ8KHq7PvWVLYa' >> /home/ec2-user/certs/ca.crt
-                echo 'zsuodS2Txf3Z1n/s8h8GbYFdUFDcYk/n5Tb7/BfunsAWUPrH8/0uF3xZn+SlTRVF' >> /home/ec2-user/certs/ca.crt
-                echo 'hrg+esTLJlTzrQMAZdIE7jpN/CYyP0A/usQi03LTerr2vfv00xU+Mz8=' >> /home/ec2-user/certs/ca.crt
-                echo '-----END CERTIFICATE-----' >> /home/ec2-user/certs/ca.crt
-                chown ec2-user:ec2-user /home/ec2-user/certs/ca.crt
-                chown ec2-user:ec2-user /home/ec2-user/my-safe-directory/ca.key
-                chmod 640 /home/ec2-user/certs/ca.crt
-                chmod 600 /home/ec2-user/my-safe-directory/ca.key     
-                echo "export ip_local=\`curl http://169.254.169.254/latest/meta-data/local-ipv4\`" >> /home/ec2-user/.bashrc
-                echo "export ip_public=\`curl http://169.254.169.254/latest/meta-data/public-ipv4\`" >> /home/ec2-user/.bashrc
-                echo "export aws_region=\`curl http://169.254.169.254/latest/meta-data/placement/region\`" >> /home/ec2-user/.bashrc
-                echo "export aws_az=\`curl http://169.254.169.254/latest/meta-data/placement/availability-zone\`" >> /home/ec2-user/.bashrc
-                echo "export JOIN_STR=${ExistingJoinString}" >> /home/ec2-user/.bashrc
-                echo "export COCKROACH_CERTS_DIR=/home/ec2-user/certs" >> /home/ec2-user/.bashrc
-                echo "export CRDBNODE=1" >> /home/ec2-user/.bashrc
-                echo "STARTCRDB() {" >> /home/ec2-user/.bashrc
-                echo "  cockroach start \\" >> /home/ec2-user/.bashrc
-                echo '  --locality=region="$aws_region",zone="$aws_az" \' >> /home/ec2-user/.bashrc
-                echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
-                echo '  --advertise-addr=$ip_local \' >> /home/ec2-user/.bashrc
-                echo '  --join=$JOIN_STR \' >> /home/ec2-user/.bashrc
-                echo "  --background " >> /home/ec2-user/.bashrc
-                echo " }" >> /home/ec2-user/.bashrc
-                echo "CREATENODECERT() {" >> /home/ec2-user/.bashrc
-                echo "  cockroach cert create-node \\" >> /home/ec2-user/.bashrc
-                echo '  $ip_local \' >> /home/ec2-user/.bashrc
-                echo '  $ip_public \' >> /home/ec2-user/.bashrc
-                echo "  localhost \\" >> /home/ec2-user/.bashrc
-                echo "  127.0.0.1 \\" >> /home/ec2-user/.bashrc
-                echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
-                echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
-                echo "}" >> /home/ec2-user/.bashrc
-                echo "CREATEROOTCERT() {" >> /home/ec2-user/.bashrc
-                echo "  cockroach cert create-client \\" >> /home/ec2-user/.bashrc
-                echo '  root \' >> /home/ec2-user/.bashrc
-                echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
-                echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
-                echo "}" >> /home/ec2-user/.bashrc                
-                sleep 20; su ec2-user -lc 'CREATENODECERT; CREATEROOTCERT; STARTCRDB'
+          !Sub |
+            #!/bin/bash -xe
+            curl https://binaries.cockroachdb.com/cockroach-v21.2.3.linux-amd64.tgz | tar -xz && cp -i cockroach-v21.2.3.linux-amd64/cockroach /usr/local/bin/
+            su ec2-user -c 'mkdir /home/ec2-user/certs; mkdir /home/ec2-user/my-safe-directory'
+            echo '-----BEGIN RSA PRIVATE KEY-----' > /home/ec2-user/my-safe-directory/ca.key
+            echo 'MIIEowIBAAKCAQEAvQBvZGI4uUlVHD4REnyofo9D6JWQY13kSIkuOUur49paFkIf' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'mpeRSIu2u5yGf6xd7Oi3H/QnKGMlagtqt22BYqrR1IJUNMtnRSajpDBxnBlJCexy' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'BFVUEyLKlfcdP0HYx5jzazcL5u9obEeTn6c7dJU/Qrpou6DTa44YF4YpP3Rhrhs1' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'g2l6AldzJqtyfISRhL23iJz7MPScIDa4FkGcp62f1qtBt11304RNXnfrqRPEjipu' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'aHsuel04KMsOP70/psE5/QUtRQMH/MzBVbjRog1XFEtJpDd+ZIUpkqYb24aOgXLO' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'kEkbJnCQyiJBIm9jS3ilymfT0x869TXEUaPlOwIDAQABAoIBAGEttRi3TBUw+HsC' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'CsMnp3cTcMZJCKme4D7Pkh3Ro7sPTVy+eQOCxSe49qb2b018MfsbGPVsEyo3+EfT' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'QPa5blpuHF+Y93UB1MKAgIlugyvQ8HYSxfkmaolATUvYeIhK8gyGvzo0XoFKPbXX' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'A7eGRBLInnNP54P5yFs3/3kw+UpvSO/rWme06VO/itjXDMxw0q+H0CcbxQ/M9V9p' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'ptrZ4E9MzKAcCIW4vy7N7IpTGCwol6UUORJ0PeBnuj3INc1v/b015IhsTXeggb4O' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'Z6oAMZsGpo4bQLGo7Ze3Og0OyCNXHPYb2dwmgfXwedBDWZoyy72eT8Abh1FM2aBE' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'qf9ohLkCgYEAzHPeUkZRZ6rJ0v3VAXBHYYwVJJYUfGFgpMk38Uf09ha/7CWooMHU' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'tOTl+V9yCot2md2SOYmBLp/1uMyPXQbWvzhjGkv1+rYbh2VYhr2AmWx7Wq4C+PPv' >> /home/ec2-user/my-safe-directory/ca.key
+            echo '9eUXkp3Qx7LwFl+jGsoHHcAVks07gNMUSiPW9xsfVAry84u4QrORbh8CgYEA7KdO' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 's07YmPU3l2O5Q4mQXBHkbyCp2GwOPYyvEMxF5UV5H++TOjml3eHqT9TBYUbvueH8' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'Ajk2dGsaGcxVMPxSk7AzELcfhFWH9UtSfBA/XSUPTbSp01/1PzYKlAeCH6dpf+jq' >> /home/ec2-user/my-safe-directory/ca.key
+            echo '/7kJNzu3lH8PvwtxNNIC/bL5KMQPyGE64KoYLWUCgYEAmyvltHQCHLgW7bgRDkJ1' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'Kqfy9A2kBrKxct/1QX7ngE7L4yLB1SDHm3OOx7GVEEPBBA6SiHDARu7IxDUdKfGi' >> /home/ec2-user/my-safe-directory/ca.key
+            echo '0was0KyOSHYmdqCIi9sP22HmTXB8eQ5LNUlmlrSIXMiGR7TWSeLDe+Tper2hR6js' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'YUjKQkmngVW+BvIoKxe2bOkCgYAsucoT9VjWP7IL+Jrw+rS/0dncbs3qyzE9zLLh' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'd9nV5PVpZbvriy2f66x+/fS2T9PKy7z3Jpz2D6/VJFsNcQKiSvC7vgBE4G1bnKqw' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'K9nt3q0vwG9ANaiCE9KX+3tKRDeaJwkS34OwXqbpd8IgFyeEFhTeoc6ZN8TL2CRq' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'hXsgSQKBgDWNl05PYGRa9NAgzGCH0+QLgWW1AxQuD7PSgZDHLNOqvPXRbzgJIM/E' >> /home/ec2-user/my-safe-directory/ca.key
+            echo '3P/bKcKJAWG2muwb0m1JM8D+twaHE/QMxULkUzYtQ2nlCM6OhFYNEHkjmoB7UFA3' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'IaJVqjBQe91P0IKCSkZF7wFHz1YdKgjvSQOXlHD2I+MwyPF4UG6o' >> /home/ec2-user/my-safe-directory/ca.key
+            echo '-----END RSA PRIVATE KEY-----' >> /home/ec2-user/my-safe-directory/ca.key
+            echo '-----BEGIN CERTIFICATE-----' > /home/ec2-user/certs/ca.crt
+            echo 'MIIDJTCCAg2gAwIBAgIQDm0RAwm/Sn2RhyT5ojkTmjANBgkqhkiG9w0BAQsFADAr' >> /home/ec2-user/certs/ca.crt
+            echo 'MRIwEAYDVQQKEwlDb2Nrcm9hY2gxFTATBgNVBAMTDENvY2tyb2FjaCBDQTAeFw0y' >> /home/ec2-user/certs/ca.crt
+            echo 'MTEyMjIxNzE0MTBaFw0zMTEyMzExNzE0MTBaMCsxEjAQBgNVBAoTCUNvY2tyb2Fj' >> /home/ec2-user/certs/ca.crt
+            echo 'aDEVMBMGA1UEAxMMQ29ja3JvYWNoIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A' >> /home/ec2-user/certs/ca.crt
+            echo 'MIIBCgKCAQEAvQBvZGI4uUlVHD4REnyofo9D6JWQY13kSIkuOUur49paFkIfmpeR' >> /home/ec2-user/certs/ca.crt
+            echo 'SIu2u5yGf6xd7Oi3H/QnKGMlagtqt22BYqrR1IJUNMtnRSajpDBxnBlJCexyBFVU' >> /home/ec2-user/certs/ca.crt
+            echo 'EyLKlfcdP0HYx5jzazcL5u9obEeTn6c7dJU/Qrpou6DTa44YF4YpP3Rhrhs1g2l6' >> /home/ec2-user/certs/ca.crt
+            echo 'AldzJqtyfISRhL23iJz7MPScIDa4FkGcp62f1qtBt11304RNXnfrqRPEjipuaHsu' >> /home/ec2-user/certs/ca.crt
+            echo 'el04KMsOP70/psE5/QUtRQMH/MzBVbjRog1XFEtJpDd+ZIUpkqYb24aOgXLOkEkb' >> /home/ec2-user/certs/ca.crt
+            echo 'JnCQyiJBIm9jS3ilymfT0x869TXEUaPlOwIDAQABo0UwQzAOBgNVHQ8BAf8EBAMC' >> /home/ec2-user/certs/ca.crt
+            echo 'AuQwEgYDVR0TAQH/BAgwBgEB/wIBATAdBgNVHQ4EFgQUO/9ViWjopIpC8OD5tMVT' >> /home/ec2-user/certs/ca.crt
+            echo 'nxwRbMkwDQYJKoZIhvcNAQELBQADggEBALplxolVuvzzIHNfx4fPw2oCwcC4cBEW' >> /home/ec2-user/certs/ca.crt
+            echo 'x/cy4al48biFM7GnuCUJvZRcll8urCiw4J5utDuzDphWjftW2KXD8ZTctVxQ3Dli' >> /home/ec2-user/certs/ca.crt
+            echo 'mKBfAZPocMUKwTlBqWGNJBSuv7WDBLlIkZDHOP404vIs0Ddl+gEqarU3VS49zY7/' >> /home/ec2-user/certs/ca.crt
+            echo 'Ip9YN7Ch8dBGaBK1/5O2hetnsvV9ayRgQfhcvN87CRmXIqA8/SFZ8KHq7PvWVLYa' >> /home/ec2-user/certs/ca.crt
+            echo 'zsuodS2Txf3Z1n/s8h8GbYFdUFDcYk/n5Tb7/BfunsAWUPrH8/0uF3xZn+SlTRVF' >> /home/ec2-user/certs/ca.crt
+            echo 'hrg+esTLJlTzrQMAZdIE7jpN/CYyP0A/usQi03LTerr2vfv00xU+Mz8=' >> /home/ec2-user/certs/ca.crt
+            echo '-----END CERTIFICATE-----' >> /home/ec2-user/certs/ca.crt
+            chown ec2-user:ec2-user /home/ec2-user/certs/ca.crt
+            chown ec2-user:ec2-user /home/ec2-user/my-safe-directory/ca.key
+            chmod 640 /home/ec2-user/certs/ca.crt
+            chmod 600 /home/ec2-user/my-safe-directory/ca.key     
+            echo "export ip_local=\`curl http://169.254.169.254/latest/meta-data/local-ipv4\`" >> /home/ec2-user/.bashrc
+            echo "export ip_public=\`curl http://169.254.169.254/latest/meta-data/public-ipv4\`" >> /home/ec2-user/.bashrc
+            echo "export aws_region=\`curl http://169.254.169.254/latest/meta-data/placement/region\`" >> /home/ec2-user/.bashrc
+            echo "export aws_az=\`curl http://169.254.169.254/latest/meta-data/placement/availability-zone\`" >> /home/ec2-user/.bashrc
+            echo "if [ '${ExistingJoinString}' = 'NONE' ]; then"  >> /home/ec2-user/.bashrc
+            echo "  export JOIN_STR=${CRDBIPNode01.PrimaryPrivateIpAddress},${CRDBIPNode02.PrimaryPrivateIpAddress},${CRDBIPNode03.PrimaryPrivateIpAddress}" >> /home/ec2-user/.bashrc
+            echo "else"  >> /home/ec2-user/.bashrc
+            echo "  export JOIN_STR=${ExistingJoinString}" >> /home/ec2-user/.bashrc
+            echo "fi"  >> /home/ec2-user/.bashrc
+            echo "export COCKROACH_CERTS_DIR=/home/ec2-user/certs" >> /home/ec2-user/.bashrc
+            echo "export CRDBNODE=1" >> /home/ec2-user/.bashrc
+            echo "STARTCRDB() {" >> /home/ec2-user/.bashrc
+            echo "  cockroach start \\" >> /home/ec2-user/.bashrc
+            echo '  --locality=region="$aws_region",zone="$aws_az" \' >> /home/ec2-user/.bashrc
+            echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
+            echo '  --advertise-addr=$ip_local \' >> /home/ec2-user/.bashrc
+            echo '  --join=$JOIN_STR \' >> /home/ec2-user/.bashrc
+            echo "  --background " >> /home/ec2-user/.bashrc
+            echo " }" >> /home/ec2-user/.bashrc
+            echo "CREATENODECERT() {" >> /home/ec2-user/.bashrc
+            echo "  cockroach cert create-node \\" >> /home/ec2-user/.bashrc
+            echo '  $ip_local \' >> /home/ec2-user/.bashrc
+            echo '  $ip_public \' >> /home/ec2-user/.bashrc
+            echo "  localhost \\" >> /home/ec2-user/.bashrc
+            echo "  127.0.0.1 \\" >> /home/ec2-user/.bashrc
+            echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
+            echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
+            echo "}" >> /home/ec2-user/.bashrc
+            echo "CREATEROOTCERT() {" >> /home/ec2-user/.bashrc
+            echo "  cockroach cert create-client \\" >> /home/ec2-user/.bashrc
+            echo '  root \' >> /home/ec2-user/.bashrc
+            echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
+            echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
+            echo "}" >> /home/ec2-user/.bashrc           
+            sleep 20; su ec2-user -lc 'CREATENODECERT; CREATEROOTCERT; STARTCRDB'
       NetworkInterfaces:
       - DeviceIndex: '0'
         NetworkInterfaceId: !Ref CRDBIPNode01
@@ -666,181 +580,95 @@ Resources:
       ImageId: !Ref CRDBAMIID
       UserData:
         Fn::Base64:
-          !If
-            - UseNewJoinString
-            -
-              !Sub |
-                #!/bin/bash -xe
-                curl https://binaries.cockroachdb.com/cockroach-v21.2.3.linux-amd64.tgz | tar -xz && cp -i cockroach-v21.2.3.linux-amd64/cockroach /usr/local/bin/
-                su ec2-user -c 'mkdir /home/ec2-user/certs; mkdir /home/ec2-user/my-safe-directory'
-                echo '-----BEGIN RSA PRIVATE KEY-----' > /home/ec2-user/my-safe-directory/ca.key
-                echo 'MIIEowIBAAKCAQEAvQBvZGI4uUlVHD4REnyofo9D6JWQY13kSIkuOUur49paFkIf' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'mpeRSIu2u5yGf6xd7Oi3H/QnKGMlagtqt22BYqrR1IJUNMtnRSajpDBxnBlJCexy' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'BFVUEyLKlfcdP0HYx5jzazcL5u9obEeTn6c7dJU/Qrpou6DTa44YF4YpP3Rhrhs1' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'g2l6AldzJqtyfISRhL23iJz7MPScIDa4FkGcp62f1qtBt11304RNXnfrqRPEjipu' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'aHsuel04KMsOP70/psE5/QUtRQMH/MzBVbjRog1XFEtJpDd+ZIUpkqYb24aOgXLO' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'kEkbJnCQyiJBIm9jS3ilymfT0x869TXEUaPlOwIDAQABAoIBAGEttRi3TBUw+HsC' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'CsMnp3cTcMZJCKme4D7Pkh3Ro7sPTVy+eQOCxSe49qb2b018MfsbGPVsEyo3+EfT' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'QPa5blpuHF+Y93UB1MKAgIlugyvQ8HYSxfkmaolATUvYeIhK8gyGvzo0XoFKPbXX' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'A7eGRBLInnNP54P5yFs3/3kw+UpvSO/rWme06VO/itjXDMxw0q+H0CcbxQ/M9V9p' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'ptrZ4E9MzKAcCIW4vy7N7IpTGCwol6UUORJ0PeBnuj3INc1v/b015IhsTXeggb4O' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'Z6oAMZsGpo4bQLGo7Ze3Og0OyCNXHPYb2dwmgfXwedBDWZoyy72eT8Abh1FM2aBE' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'qf9ohLkCgYEAzHPeUkZRZ6rJ0v3VAXBHYYwVJJYUfGFgpMk38Uf09ha/7CWooMHU' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'tOTl+V9yCot2md2SOYmBLp/1uMyPXQbWvzhjGkv1+rYbh2VYhr2AmWx7Wq4C+PPv' >> /home/ec2-user/my-safe-directory/ca.key
-                echo '9eUXkp3Qx7LwFl+jGsoHHcAVks07gNMUSiPW9xsfVAry84u4QrORbh8CgYEA7KdO' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 's07YmPU3l2O5Q4mQXBHkbyCp2GwOPYyvEMxF5UV5H++TOjml3eHqT9TBYUbvueH8' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'Ajk2dGsaGcxVMPxSk7AzELcfhFWH9UtSfBA/XSUPTbSp01/1PzYKlAeCH6dpf+jq' >> /home/ec2-user/my-safe-directory/ca.key
-                echo '/7kJNzu3lH8PvwtxNNIC/bL5KMQPyGE64KoYLWUCgYEAmyvltHQCHLgW7bgRDkJ1' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'Kqfy9A2kBrKxct/1QX7ngE7L4yLB1SDHm3OOx7GVEEPBBA6SiHDARu7IxDUdKfGi' >> /home/ec2-user/my-safe-directory/ca.key
-                echo '0was0KyOSHYmdqCIi9sP22HmTXB8eQ5LNUlmlrSIXMiGR7TWSeLDe+Tper2hR6js' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'YUjKQkmngVW+BvIoKxe2bOkCgYAsucoT9VjWP7IL+Jrw+rS/0dncbs3qyzE9zLLh' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'd9nV5PVpZbvriy2f66x+/fS2T9PKy7z3Jpz2D6/VJFsNcQKiSvC7vgBE4G1bnKqw' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'K9nt3q0vwG9ANaiCE9KX+3tKRDeaJwkS34OwXqbpd8IgFyeEFhTeoc6ZN8TL2CRq' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'hXsgSQKBgDWNl05PYGRa9NAgzGCH0+QLgWW1AxQuD7PSgZDHLNOqvPXRbzgJIM/E' >> /home/ec2-user/my-safe-directory/ca.key
-                echo '3P/bKcKJAWG2muwb0m1JM8D+twaHE/QMxULkUzYtQ2nlCM6OhFYNEHkjmoB7UFA3' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'IaJVqjBQe91P0IKCSkZF7wFHz1YdKgjvSQOXlHD2I+MwyPF4UG6o' >> /home/ec2-user/my-safe-directory/ca.key
-                echo '-----END RSA PRIVATE KEY-----' >> /home/ec2-user/my-safe-directory/ca.key
-                echo '-----BEGIN CERTIFICATE-----' > /home/ec2-user/certs/ca.crt
-                echo 'MIIDJTCCAg2gAwIBAgIQDm0RAwm/Sn2RhyT5ojkTmjANBgkqhkiG9w0BAQsFADAr' >> /home/ec2-user/certs/ca.crt
-                echo 'MRIwEAYDVQQKEwlDb2Nrcm9hY2gxFTATBgNVBAMTDENvY2tyb2FjaCBDQTAeFw0y' >> /home/ec2-user/certs/ca.crt
-                echo 'MTEyMjIxNzE0MTBaFw0zMTEyMzExNzE0MTBaMCsxEjAQBgNVBAoTCUNvY2tyb2Fj' >> /home/ec2-user/certs/ca.crt
-                echo 'aDEVMBMGA1UEAxMMQ29ja3JvYWNoIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A' >> /home/ec2-user/certs/ca.crt
-                echo 'MIIBCgKCAQEAvQBvZGI4uUlVHD4REnyofo9D6JWQY13kSIkuOUur49paFkIfmpeR' >> /home/ec2-user/certs/ca.crt
-                echo 'SIu2u5yGf6xd7Oi3H/QnKGMlagtqt22BYqrR1IJUNMtnRSajpDBxnBlJCexyBFVU' >> /home/ec2-user/certs/ca.crt
-                echo 'EyLKlfcdP0HYx5jzazcL5u9obEeTn6c7dJU/Qrpou6DTa44YF4YpP3Rhrhs1g2l6' >> /home/ec2-user/certs/ca.crt
-                echo 'AldzJqtyfISRhL23iJz7MPScIDa4FkGcp62f1qtBt11304RNXnfrqRPEjipuaHsu' >> /home/ec2-user/certs/ca.crt
-                echo 'el04KMsOP70/psE5/QUtRQMH/MzBVbjRog1XFEtJpDd+ZIUpkqYb24aOgXLOkEkb' >> /home/ec2-user/certs/ca.crt
-                echo 'JnCQyiJBIm9jS3ilymfT0x869TXEUaPlOwIDAQABo0UwQzAOBgNVHQ8BAf8EBAMC' >> /home/ec2-user/certs/ca.crt
-                echo 'AuQwEgYDVR0TAQH/BAgwBgEB/wIBATAdBgNVHQ4EFgQUO/9ViWjopIpC8OD5tMVT' >> /home/ec2-user/certs/ca.crt
-                echo 'nxwRbMkwDQYJKoZIhvcNAQELBQADggEBALplxolVuvzzIHNfx4fPw2oCwcC4cBEW' >> /home/ec2-user/certs/ca.crt
-                echo 'x/cy4al48biFM7GnuCUJvZRcll8urCiw4J5utDuzDphWjftW2KXD8ZTctVxQ3Dli' >> /home/ec2-user/certs/ca.crt
-                echo 'mKBfAZPocMUKwTlBqWGNJBSuv7WDBLlIkZDHOP404vIs0Ddl+gEqarU3VS49zY7/' >> /home/ec2-user/certs/ca.crt
-                echo 'Ip9YN7Ch8dBGaBK1/5O2hetnsvV9ayRgQfhcvN87CRmXIqA8/SFZ8KHq7PvWVLYa' >> /home/ec2-user/certs/ca.crt
-                echo 'zsuodS2Txf3Z1n/s8h8GbYFdUFDcYk/n5Tb7/BfunsAWUPrH8/0uF3xZn+SlTRVF' >> /home/ec2-user/certs/ca.crt
-                echo 'hrg+esTLJlTzrQMAZdIE7jpN/CYyP0A/usQi03LTerr2vfv00xU+Mz8=' >> /home/ec2-user/certs/ca.crt
-                echo '-----END CERTIFICATE-----' >> /home/ec2-user/certs/ca.crt
-                chown ec2-user:ec2-user /home/ec2-user/certs/ca.crt
-                chown ec2-user:ec2-user /home/ec2-user/my-safe-directory/ca.key
-                chmod 640 /home/ec2-user/certs/ca.crt
-                chmod 600 /home/ec2-user/my-safe-directory/ca.key     
-                echo "export ip_local=\`curl http://169.254.169.254/latest/meta-data/local-ipv4\`" >> /home/ec2-user/.bashrc
-                echo "export ip_public=\`curl http://169.254.169.254/latest/meta-data/public-ipv4\`" >> /home/ec2-user/.bashrc
-                echo "export aws_region=\`curl http://169.254.169.254/latest/meta-data/placement/region\`" >> /home/ec2-user/.bashrc
-                echo "export aws_az=\`curl http://169.254.169.254/latest/meta-data/placement/availability-zone\`" >> /home/ec2-user/.bashrc
-                echo "export COCKROACH_CERTS_DIR=/home/ec2-user/certs" >> /home/ec2-user/.bashrc
-                echo "export JOIN_STR=${CRDBIPNode01.PrimaryPrivateIpAddress},${CRDBIPNode02.PrimaryPrivateIpAddress},${CRDBIPNode03.PrimaryPrivateIpAddress}" >> /home/ec2-user/.bashrc
-                echo "export COCKROACH_CERTS_DIR=/home/ec2-user/certs" >> /home/ec2-user/.bashrc
-                echo "export CRDBNODE=2" >> /home/ec2-user/.bashrc
-                echo "STARTCRDB() {" >> /home/ec2-user/.bashrc
-                echo "  cockroach start \\" >> /home/ec2-user/.bashrc
-                echo '  --locality=region="$aws_region",zone="$aws_az" \' >> /home/ec2-user/.bashrc
-                echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
-                echo '  --advertise-addr=$ip_local \' >> /home/ec2-user/.bashrc
-                echo '  --join=$JOIN_STR \' >> /home/ec2-user/.bashrc
-                echo "  --background " >> /home/ec2-user/.bashrc
-                echo " }" >> /home/ec2-user/.bashrc
-                echo "CREATENODECERT() {" >> /home/ec2-user/.bashrc
-                echo "  cockroach cert create-node \\" >> /home/ec2-user/.bashrc
-                echo '  $ip_local \' >> /home/ec2-user/.bashrc
-                echo '  $ip_public \' >> /home/ec2-user/.bashrc
-                echo "  localhost \\" >> /home/ec2-user/.bashrc
-                echo "  127.0.0.1 \\" >> /home/ec2-user/.bashrc
-                echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
-                echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
-                echo "}" >> /home/ec2-user/.bashrc
-                echo "CREATEROOTCERT() {" >> /home/ec2-user/.bashrc
-                echo "  cockroach cert create-client \\" >> /home/ec2-user/.bashrc
-                echo '  root \' >> /home/ec2-user/.bashrc
-                echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
-                echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
-                echo "}" >> /home/ec2-user/.bashrc           
-                sleep 20; su ec2-user -lc 'CREATENODECERT; CREATEROOTCERT; STARTCRDB'
-            -
-              !Sub |
-                #!/bin/bash -xe
-                curl https://binaries.cockroachdb.com/cockroach-v21.2.3.linux-amd64.tgz | tar -xz && cp -i cockroach-v21.2.3.linux-amd64/cockroach /usr/local/bin/
-                su ec2-user -c 'mkdir /home/ec2-user/certs; mkdir /home/ec2-user/my-safe-directory'
-                echo '-----BEGIN RSA PRIVATE KEY-----' > /home/ec2-user/my-safe-directory/ca.key
-                echo 'MIIEowIBAAKCAQEAvQBvZGI4uUlVHD4REnyofo9D6JWQY13kSIkuOUur49paFkIf' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'mpeRSIu2u5yGf6xd7Oi3H/QnKGMlagtqt22BYqrR1IJUNMtnRSajpDBxnBlJCexy' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'BFVUEyLKlfcdP0HYx5jzazcL5u9obEeTn6c7dJU/Qrpou6DTa44YF4YpP3Rhrhs1' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'g2l6AldzJqtyfISRhL23iJz7MPScIDa4FkGcp62f1qtBt11304RNXnfrqRPEjipu' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'aHsuel04KMsOP70/psE5/QUtRQMH/MzBVbjRog1XFEtJpDd+ZIUpkqYb24aOgXLO' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'kEkbJnCQyiJBIm9jS3ilymfT0x869TXEUaPlOwIDAQABAoIBAGEttRi3TBUw+HsC' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'CsMnp3cTcMZJCKme4D7Pkh3Ro7sPTVy+eQOCxSe49qb2b018MfsbGPVsEyo3+EfT' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'QPa5blpuHF+Y93UB1MKAgIlugyvQ8HYSxfkmaolATUvYeIhK8gyGvzo0XoFKPbXX' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'A7eGRBLInnNP54P5yFs3/3kw+UpvSO/rWme06VO/itjXDMxw0q+H0CcbxQ/M9V9p' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'ptrZ4E9MzKAcCIW4vy7N7IpTGCwol6UUORJ0PeBnuj3INc1v/b015IhsTXeggb4O' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'Z6oAMZsGpo4bQLGo7Ze3Og0OyCNXHPYb2dwmgfXwedBDWZoyy72eT8Abh1FM2aBE' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'qf9ohLkCgYEAzHPeUkZRZ6rJ0v3VAXBHYYwVJJYUfGFgpMk38Uf09ha/7CWooMHU' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'tOTl+V9yCot2md2SOYmBLp/1uMyPXQbWvzhjGkv1+rYbh2VYhr2AmWx7Wq4C+PPv' >> /home/ec2-user/my-safe-directory/ca.key
-                echo '9eUXkp3Qx7LwFl+jGsoHHcAVks07gNMUSiPW9xsfVAry84u4QrORbh8CgYEA7KdO' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 's07YmPU3l2O5Q4mQXBHkbyCp2GwOPYyvEMxF5UV5H++TOjml3eHqT9TBYUbvueH8' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'Ajk2dGsaGcxVMPxSk7AzELcfhFWH9UtSfBA/XSUPTbSp01/1PzYKlAeCH6dpf+jq' >> /home/ec2-user/my-safe-directory/ca.key
-                echo '/7kJNzu3lH8PvwtxNNIC/bL5KMQPyGE64KoYLWUCgYEAmyvltHQCHLgW7bgRDkJ1' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'Kqfy9A2kBrKxct/1QX7ngE7L4yLB1SDHm3OOx7GVEEPBBA6SiHDARu7IxDUdKfGi' >> /home/ec2-user/my-safe-directory/ca.key
-                echo '0was0KyOSHYmdqCIi9sP22HmTXB8eQ5LNUlmlrSIXMiGR7TWSeLDe+Tper2hR6js' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'YUjKQkmngVW+BvIoKxe2bOkCgYAsucoT9VjWP7IL+Jrw+rS/0dncbs3qyzE9zLLh' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'd9nV5PVpZbvriy2f66x+/fS2T9PKy7z3Jpz2D6/VJFsNcQKiSvC7vgBE4G1bnKqw' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'K9nt3q0vwG9ANaiCE9KX+3tKRDeaJwkS34OwXqbpd8IgFyeEFhTeoc6ZN8TL2CRq' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'hXsgSQKBgDWNl05PYGRa9NAgzGCH0+QLgWW1AxQuD7PSgZDHLNOqvPXRbzgJIM/E' >> /home/ec2-user/my-safe-directory/ca.key
-                echo '3P/bKcKJAWG2muwb0m1JM8D+twaHE/QMxULkUzYtQ2nlCM6OhFYNEHkjmoB7UFA3' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'IaJVqjBQe91P0IKCSkZF7wFHz1YdKgjvSQOXlHD2I+MwyPF4UG6o' >> /home/ec2-user/my-safe-directory/ca.key
-                echo '-----END RSA PRIVATE KEY-----' >> /home/ec2-user/my-safe-directory/ca.key
-                echo '-----BEGIN CERTIFICATE-----' > /home/ec2-user/certs/ca.crt
-                echo 'MIIDJTCCAg2gAwIBAgIQDm0RAwm/Sn2RhyT5ojkTmjANBgkqhkiG9w0BAQsFADAr' >> /home/ec2-user/certs/ca.crt
-                echo 'MRIwEAYDVQQKEwlDb2Nrcm9hY2gxFTATBgNVBAMTDENvY2tyb2FjaCBDQTAeFw0y' >> /home/ec2-user/certs/ca.crt
-                echo 'MTEyMjIxNzE0MTBaFw0zMTEyMzExNzE0MTBaMCsxEjAQBgNVBAoTCUNvY2tyb2Fj' >> /home/ec2-user/certs/ca.crt
-                echo 'aDEVMBMGA1UEAxMMQ29ja3JvYWNoIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A' >> /home/ec2-user/certs/ca.crt
-                echo 'MIIBCgKCAQEAvQBvZGI4uUlVHD4REnyofo9D6JWQY13kSIkuOUur49paFkIfmpeR' >> /home/ec2-user/certs/ca.crt
-                echo 'SIu2u5yGf6xd7Oi3H/QnKGMlagtqt22BYqrR1IJUNMtnRSajpDBxnBlJCexyBFVU' >> /home/ec2-user/certs/ca.crt
-                echo 'EyLKlfcdP0HYx5jzazcL5u9obEeTn6c7dJU/Qrpou6DTa44YF4YpP3Rhrhs1g2l6' >> /home/ec2-user/certs/ca.crt
-                echo 'AldzJqtyfISRhL23iJz7MPScIDa4FkGcp62f1qtBt11304RNXnfrqRPEjipuaHsu' >> /home/ec2-user/certs/ca.crt
-                echo 'el04KMsOP70/psE5/QUtRQMH/MzBVbjRog1XFEtJpDd+ZIUpkqYb24aOgXLOkEkb' >> /home/ec2-user/certs/ca.crt
-                echo 'JnCQyiJBIm9jS3ilymfT0x869TXEUaPlOwIDAQABo0UwQzAOBgNVHQ8BAf8EBAMC' >> /home/ec2-user/certs/ca.crt
-                echo 'AuQwEgYDVR0TAQH/BAgwBgEB/wIBATAdBgNVHQ4EFgQUO/9ViWjopIpC8OD5tMVT' >> /home/ec2-user/certs/ca.crt
-                echo 'nxwRbMkwDQYJKoZIhvcNAQELBQADggEBALplxolVuvzzIHNfx4fPw2oCwcC4cBEW' >> /home/ec2-user/certs/ca.crt
-                echo 'x/cy4al48biFM7GnuCUJvZRcll8urCiw4J5utDuzDphWjftW2KXD8ZTctVxQ3Dli' >> /home/ec2-user/certs/ca.crt
-                echo 'mKBfAZPocMUKwTlBqWGNJBSuv7WDBLlIkZDHOP404vIs0Ddl+gEqarU3VS49zY7/' >> /home/ec2-user/certs/ca.crt
-                echo 'Ip9YN7Ch8dBGaBK1/5O2hetnsvV9ayRgQfhcvN87CRmXIqA8/SFZ8KHq7PvWVLYa' >> /home/ec2-user/certs/ca.crt
-                echo 'zsuodS2Txf3Z1n/s8h8GbYFdUFDcYk/n5Tb7/BfunsAWUPrH8/0uF3xZn+SlTRVF' >> /home/ec2-user/certs/ca.crt
-                echo 'hrg+esTLJlTzrQMAZdIE7jpN/CYyP0A/usQi03LTerr2vfv00xU+Mz8=' >> /home/ec2-user/certs/ca.crt
-                echo '-----END CERTIFICATE-----' >> /home/ec2-user/certs/ca.crt
-                chown ec2-user:ec2-user /home/ec2-user/certs/ca.crt
-                chown ec2-user:ec2-user /home/ec2-user/my-safe-directory/ca.key
-                chmod 640 /home/ec2-user/certs/ca.crt
-                chmod 600 /home/ec2-user/my-safe-directory/ca.key     
-                echo "export ip_local=\`curl http://169.254.169.254/latest/meta-data/local-ipv4\`" >> /home/ec2-user/.bashrc
-                echo "export ip_public=\`curl http://169.254.169.254/latest/meta-data/public-ipv4\`" >> /home/ec2-user/.bashrc
-                echo "export aws_region=\`curl http://169.254.169.254/latest/meta-data/placement/region\`" >> /home/ec2-user/.bashrc
-                echo "export aws_az=\`curl http://169.254.169.254/latest/meta-data/placement/availability-zone\`" >> /home/ec2-user/.bashrc
-                echo "export JOIN_STR=${ExistingJoinString}" >> /home/ec2-user/.bashrc
-                echo "export COCKROACH_CERTS_DIR=/home/ec2-user/certs" >> /home/ec2-user/.bashrc
-                echo "export CRDBNODE=2" >> /home/ec2-user/.bashrc
-                echo "STARTCRDB() {" >> /home/ec2-user/.bashrc
-                echo "  cockroach start \\" >> /home/ec2-user/.bashrc
-                echo '  --locality=region="$aws_region",zone="$aws_az" \' >> /home/ec2-user/.bashrc
-                echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
-                echo '  --advertise-addr=$ip_local \' >> /home/ec2-user/.bashrc
-                echo '  --join=$JOIN_STR \' >> /home/ec2-user/.bashrc
-                echo "  --background " >> /home/ec2-user/.bashrc
-                echo " }" >> /home/ec2-user/.bashrc
-                echo "CREATENODECERT() {" >> /home/ec2-user/.bashrc
-                echo "  cockroach cert create-node \\" >> /home/ec2-user/.bashrc
-                echo '  $ip_local \' >> /home/ec2-user/.bashrc
-                echo '  $ip_public \' >> /home/ec2-user/.bashrc
-                echo "  localhost \\" >> /home/ec2-user/.bashrc
-                echo "  127.0.0.1 \\" >> /home/ec2-user/.bashrc
-                echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
-                echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
-                echo "}" >> /home/ec2-user/.bashrc
-                echo "CREATEROOTCERT() {" >> /home/ec2-user/.bashrc
-                echo "  cockroach cert create-client \\" >> /home/ec2-user/.bashrc
-                echo '  root \' >> /home/ec2-user/.bashrc
-                echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
-                echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
-                echo "}" >> /home/ec2-user/.bashrc                
-                sleep 20; su ec2-user -lc 'CREATENODECERT; CREATEROOTCERT; STARTCRDB'
+          !Sub |
+            #!/bin/bash -xe
+            curl https://binaries.cockroachdb.com/cockroach-v21.2.3.linux-amd64.tgz | tar -xz && cp -i cockroach-v21.2.3.linux-amd64/cockroach /usr/local/bin/
+            su ec2-user -c 'mkdir /home/ec2-user/certs; mkdir /home/ec2-user/my-safe-directory'
+            echo '-----BEGIN RSA PRIVATE KEY-----' > /home/ec2-user/my-safe-directory/ca.key
+            echo 'MIIEowIBAAKCAQEAvQBvZGI4uUlVHD4REnyofo9D6JWQY13kSIkuOUur49paFkIf' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'mpeRSIu2u5yGf6xd7Oi3H/QnKGMlagtqt22BYqrR1IJUNMtnRSajpDBxnBlJCexy' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'BFVUEyLKlfcdP0HYx5jzazcL5u9obEeTn6c7dJU/Qrpou6DTa44YF4YpP3Rhrhs1' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'g2l6AldzJqtyfISRhL23iJz7MPScIDa4FkGcp62f1qtBt11304RNXnfrqRPEjipu' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'aHsuel04KMsOP70/psE5/QUtRQMH/MzBVbjRog1XFEtJpDd+ZIUpkqYb24aOgXLO' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'kEkbJnCQyiJBIm9jS3ilymfT0x869TXEUaPlOwIDAQABAoIBAGEttRi3TBUw+HsC' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'CsMnp3cTcMZJCKme4D7Pkh3Ro7sPTVy+eQOCxSe49qb2b018MfsbGPVsEyo3+EfT' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'QPa5blpuHF+Y93UB1MKAgIlugyvQ8HYSxfkmaolATUvYeIhK8gyGvzo0XoFKPbXX' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'A7eGRBLInnNP54P5yFs3/3kw+UpvSO/rWme06VO/itjXDMxw0q+H0CcbxQ/M9V9p' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'ptrZ4E9MzKAcCIW4vy7N7IpTGCwol6UUORJ0PeBnuj3INc1v/b015IhsTXeggb4O' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'Z6oAMZsGpo4bQLGo7Ze3Og0OyCNXHPYb2dwmgfXwedBDWZoyy72eT8Abh1FM2aBE' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'qf9ohLkCgYEAzHPeUkZRZ6rJ0v3VAXBHYYwVJJYUfGFgpMk38Uf09ha/7CWooMHU' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'tOTl+V9yCot2md2SOYmBLp/1uMyPXQbWvzhjGkv1+rYbh2VYhr2AmWx7Wq4C+PPv' >> /home/ec2-user/my-safe-directory/ca.key
+            echo '9eUXkp3Qx7LwFl+jGsoHHcAVks07gNMUSiPW9xsfVAry84u4QrORbh8CgYEA7KdO' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 's07YmPU3l2O5Q4mQXBHkbyCp2GwOPYyvEMxF5UV5H++TOjml3eHqT9TBYUbvueH8' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'Ajk2dGsaGcxVMPxSk7AzELcfhFWH9UtSfBA/XSUPTbSp01/1PzYKlAeCH6dpf+jq' >> /home/ec2-user/my-safe-directory/ca.key
+            echo '/7kJNzu3lH8PvwtxNNIC/bL5KMQPyGE64KoYLWUCgYEAmyvltHQCHLgW7bgRDkJ1' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'Kqfy9A2kBrKxct/1QX7ngE7L4yLB1SDHm3OOx7GVEEPBBA6SiHDARu7IxDUdKfGi' >> /home/ec2-user/my-safe-directory/ca.key
+            echo '0was0KyOSHYmdqCIi9sP22HmTXB8eQ5LNUlmlrSIXMiGR7TWSeLDe+Tper2hR6js' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'YUjKQkmngVW+BvIoKxe2bOkCgYAsucoT9VjWP7IL+Jrw+rS/0dncbs3qyzE9zLLh' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'd9nV5PVpZbvriy2f66x+/fS2T9PKy7z3Jpz2D6/VJFsNcQKiSvC7vgBE4G1bnKqw' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'K9nt3q0vwG9ANaiCE9KX+3tKRDeaJwkS34OwXqbpd8IgFyeEFhTeoc6ZN8TL2CRq' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'hXsgSQKBgDWNl05PYGRa9NAgzGCH0+QLgWW1AxQuD7PSgZDHLNOqvPXRbzgJIM/E' >> /home/ec2-user/my-safe-directory/ca.key
+            echo '3P/bKcKJAWG2muwb0m1JM8D+twaHE/QMxULkUzYtQ2nlCM6OhFYNEHkjmoB7UFA3' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'IaJVqjBQe91P0IKCSkZF7wFHz1YdKgjvSQOXlHD2I+MwyPF4UG6o' >> /home/ec2-user/my-safe-directory/ca.key
+            echo '-----END RSA PRIVATE KEY-----' >> /home/ec2-user/my-safe-directory/ca.key
+            echo '-----BEGIN CERTIFICATE-----' > /home/ec2-user/certs/ca.crt
+            echo 'MIIDJTCCAg2gAwIBAgIQDm0RAwm/Sn2RhyT5ojkTmjANBgkqhkiG9w0BAQsFADAr' >> /home/ec2-user/certs/ca.crt
+            echo 'MRIwEAYDVQQKEwlDb2Nrcm9hY2gxFTATBgNVBAMTDENvY2tyb2FjaCBDQTAeFw0y' >> /home/ec2-user/certs/ca.crt
+            echo 'MTEyMjIxNzE0MTBaFw0zMTEyMzExNzE0MTBaMCsxEjAQBgNVBAoTCUNvY2tyb2Fj' >> /home/ec2-user/certs/ca.crt
+            echo 'aDEVMBMGA1UEAxMMQ29ja3JvYWNoIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A' >> /home/ec2-user/certs/ca.crt
+            echo 'MIIBCgKCAQEAvQBvZGI4uUlVHD4REnyofo9D6JWQY13kSIkuOUur49paFkIfmpeR' >> /home/ec2-user/certs/ca.crt
+            echo 'SIu2u5yGf6xd7Oi3H/QnKGMlagtqt22BYqrR1IJUNMtnRSajpDBxnBlJCexyBFVU' >> /home/ec2-user/certs/ca.crt
+            echo 'EyLKlfcdP0HYx5jzazcL5u9obEeTn6c7dJU/Qrpou6DTa44YF4YpP3Rhrhs1g2l6' >> /home/ec2-user/certs/ca.crt
+            echo 'AldzJqtyfISRhL23iJz7MPScIDa4FkGcp62f1qtBt11304RNXnfrqRPEjipuaHsu' >> /home/ec2-user/certs/ca.crt
+            echo 'el04KMsOP70/psE5/QUtRQMH/MzBVbjRog1XFEtJpDd+ZIUpkqYb24aOgXLOkEkb' >> /home/ec2-user/certs/ca.crt
+            echo 'JnCQyiJBIm9jS3ilymfT0x869TXEUaPlOwIDAQABo0UwQzAOBgNVHQ8BAf8EBAMC' >> /home/ec2-user/certs/ca.crt
+            echo 'AuQwEgYDVR0TAQH/BAgwBgEB/wIBATAdBgNVHQ4EFgQUO/9ViWjopIpC8OD5tMVT' >> /home/ec2-user/certs/ca.crt
+            echo 'nxwRbMkwDQYJKoZIhvcNAQELBQADggEBALplxolVuvzzIHNfx4fPw2oCwcC4cBEW' >> /home/ec2-user/certs/ca.crt
+            echo 'x/cy4al48biFM7GnuCUJvZRcll8urCiw4J5utDuzDphWjftW2KXD8ZTctVxQ3Dli' >> /home/ec2-user/certs/ca.crt
+            echo 'mKBfAZPocMUKwTlBqWGNJBSuv7WDBLlIkZDHOP404vIs0Ddl+gEqarU3VS49zY7/' >> /home/ec2-user/certs/ca.crt
+            echo 'Ip9YN7Ch8dBGaBK1/5O2hetnsvV9ayRgQfhcvN87CRmXIqA8/SFZ8KHq7PvWVLYa' >> /home/ec2-user/certs/ca.crt
+            echo 'zsuodS2Txf3Z1n/s8h8GbYFdUFDcYk/n5Tb7/BfunsAWUPrH8/0uF3xZn+SlTRVF' >> /home/ec2-user/certs/ca.crt
+            echo 'hrg+esTLJlTzrQMAZdIE7jpN/CYyP0A/usQi03LTerr2vfv00xU+Mz8=' >> /home/ec2-user/certs/ca.crt
+            echo '-----END CERTIFICATE-----' >> /home/ec2-user/certs/ca.crt
+            chown ec2-user:ec2-user /home/ec2-user/certs/ca.crt
+            chown ec2-user:ec2-user /home/ec2-user/my-safe-directory/ca.key
+            chmod 640 /home/ec2-user/certs/ca.crt
+            chmod 600 /home/ec2-user/my-safe-directory/ca.key     
+            echo "export ip_local=\`curl http://169.254.169.254/latest/meta-data/local-ipv4\`" >> /home/ec2-user/.bashrc
+            echo "export ip_public=\`curl http://169.254.169.254/latest/meta-data/public-ipv4\`" >> /home/ec2-user/.bashrc
+            echo "export aws_region=\`curl http://169.254.169.254/latest/meta-data/placement/region\`" >> /home/ec2-user/.bashrc
+            echo "export aws_az=\`curl http://169.254.169.254/latest/meta-data/placement/availability-zone\`" >> /home/ec2-user/.bashrc
+            echo "if [ '${ExistingJoinString}' = 'NONE' ]; then"  >> /home/ec2-user/.bashrc
+            echo "  export JOIN_STR=${CRDBIPNode01.PrimaryPrivateIpAddress},${CRDBIPNode02.PrimaryPrivateIpAddress},${CRDBIPNode03.PrimaryPrivateIpAddress}" >> /home/ec2-user/.bashrc
+            echo "else"  >> /home/ec2-user/.bashrc
+            echo "  export JOIN_STR=${ExistingJoinString}" >> /home/ec2-user/.bashrc
+            echo "fi"  >> /home/ec2-user/.bashrc
+            echo "export COCKROACH_CERTS_DIR=/home/ec2-user/certs" >> /home/ec2-user/.bashrc
+            echo "export CRDBNODE=2" >> /home/ec2-user/.bashrc
+            echo "STARTCRDB() {" >> /home/ec2-user/.bashrc
+            echo "  cockroach start \\" >> /home/ec2-user/.bashrc
+            echo '  --locality=region="$aws_region",zone="$aws_az" \' >> /home/ec2-user/.bashrc
+            echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
+            echo '  --advertise-addr=$ip_local \' >> /home/ec2-user/.bashrc
+            echo '  --join=$JOIN_STR \' >> /home/ec2-user/.bashrc
+            echo "  --background " >> /home/ec2-user/.bashrc
+            echo " }" >> /home/ec2-user/.bashrc
+            echo "CREATENODECERT() {" >> /home/ec2-user/.bashrc
+            echo "  cockroach cert create-node \\" >> /home/ec2-user/.bashrc
+            echo '  $ip_local \' >> /home/ec2-user/.bashrc
+            echo '  $ip_public \' >> /home/ec2-user/.bashrc
+            echo "  localhost \\" >> /home/ec2-user/.bashrc
+            echo "  127.0.0.1 \\" >> /home/ec2-user/.bashrc
+            echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
+            echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
+            echo "}" >> /home/ec2-user/.bashrc
+            echo "CREATEROOTCERT() {" >> /home/ec2-user/.bashrc
+            echo "  cockroach cert create-client \\" >> /home/ec2-user/.bashrc
+            echo '  root \' >> /home/ec2-user/.bashrc
+            echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
+            echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
+            echo "}" >> /home/ec2-user/.bashrc           
+            sleep 20; su ec2-user -lc 'CREATENODECERT; CREATEROOTCERT; STARTCRDB'
       NetworkInterfaces:
       - DeviceIndex: '0'
         NetworkInterfaceId: !Ref CRDBIPNode02
@@ -859,181 +687,95 @@ Resources:
       ImageId: !Ref CRDBAMIID
       UserData:
         Fn::Base64:
-          !If
-            - UseNewJoinString
-            -
-              !Sub |
-                #!/bin/bash -xe
-                curl https://binaries.cockroachdb.com/cockroach-v21.2.3.linux-amd64.tgz | tar -xz && cp -i cockroach-v21.2.3.linux-amd64/cockroach /usr/local/bin/
-                su ec2-user -c 'mkdir /home/ec2-user/certs; mkdir /home/ec2-user/my-safe-directory'
-                echo '-----BEGIN RSA PRIVATE KEY-----' > /home/ec2-user/my-safe-directory/ca.key
-                echo 'MIIEowIBAAKCAQEAvQBvZGI4uUlVHD4REnyofo9D6JWQY13kSIkuOUur49paFkIf' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'mpeRSIu2u5yGf6xd7Oi3H/QnKGMlagtqt22BYqrR1IJUNMtnRSajpDBxnBlJCexy' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'BFVUEyLKlfcdP0HYx5jzazcL5u9obEeTn6c7dJU/Qrpou6DTa44YF4YpP3Rhrhs1' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'g2l6AldzJqtyfISRhL23iJz7MPScIDa4FkGcp62f1qtBt11304RNXnfrqRPEjipu' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'aHsuel04KMsOP70/psE5/QUtRQMH/MzBVbjRog1XFEtJpDd+ZIUpkqYb24aOgXLO' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'kEkbJnCQyiJBIm9jS3ilymfT0x869TXEUaPlOwIDAQABAoIBAGEttRi3TBUw+HsC' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'CsMnp3cTcMZJCKme4D7Pkh3Ro7sPTVy+eQOCxSe49qb2b018MfsbGPVsEyo3+EfT' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'QPa5blpuHF+Y93UB1MKAgIlugyvQ8HYSxfkmaolATUvYeIhK8gyGvzo0XoFKPbXX' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'A7eGRBLInnNP54P5yFs3/3kw+UpvSO/rWme06VO/itjXDMxw0q+H0CcbxQ/M9V9p' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'ptrZ4E9MzKAcCIW4vy7N7IpTGCwol6UUORJ0PeBnuj3INc1v/b015IhsTXeggb4O' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'Z6oAMZsGpo4bQLGo7Ze3Og0OyCNXHPYb2dwmgfXwedBDWZoyy72eT8Abh1FM2aBE' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'qf9ohLkCgYEAzHPeUkZRZ6rJ0v3VAXBHYYwVJJYUfGFgpMk38Uf09ha/7CWooMHU' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'tOTl+V9yCot2md2SOYmBLp/1uMyPXQbWvzhjGkv1+rYbh2VYhr2AmWx7Wq4C+PPv' >> /home/ec2-user/my-safe-directory/ca.key
-                echo '9eUXkp3Qx7LwFl+jGsoHHcAVks07gNMUSiPW9xsfVAry84u4QrORbh8CgYEA7KdO' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 's07YmPU3l2O5Q4mQXBHkbyCp2GwOPYyvEMxF5UV5H++TOjml3eHqT9TBYUbvueH8' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'Ajk2dGsaGcxVMPxSk7AzELcfhFWH9UtSfBA/XSUPTbSp01/1PzYKlAeCH6dpf+jq' >> /home/ec2-user/my-safe-directory/ca.key
-                echo '/7kJNzu3lH8PvwtxNNIC/bL5KMQPyGE64KoYLWUCgYEAmyvltHQCHLgW7bgRDkJ1' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'Kqfy9A2kBrKxct/1QX7ngE7L4yLB1SDHm3OOx7GVEEPBBA6SiHDARu7IxDUdKfGi' >> /home/ec2-user/my-safe-directory/ca.key
-                echo '0was0KyOSHYmdqCIi9sP22HmTXB8eQ5LNUlmlrSIXMiGR7TWSeLDe+Tper2hR6js' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'YUjKQkmngVW+BvIoKxe2bOkCgYAsucoT9VjWP7IL+Jrw+rS/0dncbs3qyzE9zLLh' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'd9nV5PVpZbvriy2f66x+/fS2T9PKy7z3Jpz2D6/VJFsNcQKiSvC7vgBE4G1bnKqw' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'K9nt3q0vwG9ANaiCE9KX+3tKRDeaJwkS34OwXqbpd8IgFyeEFhTeoc6ZN8TL2CRq' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'hXsgSQKBgDWNl05PYGRa9NAgzGCH0+QLgWW1AxQuD7PSgZDHLNOqvPXRbzgJIM/E' >> /home/ec2-user/my-safe-directory/ca.key
-                echo '3P/bKcKJAWG2muwb0m1JM8D+twaHE/QMxULkUzYtQ2nlCM6OhFYNEHkjmoB7UFA3' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'IaJVqjBQe91P0IKCSkZF7wFHz1YdKgjvSQOXlHD2I+MwyPF4UG6o' >> /home/ec2-user/my-safe-directory/ca.key
-                echo '-----END RSA PRIVATE KEY-----' >> /home/ec2-user/my-safe-directory/ca.key
-                echo '-----BEGIN CERTIFICATE-----' > /home/ec2-user/certs/ca.crt
-                echo 'MIIDJTCCAg2gAwIBAgIQDm0RAwm/Sn2RhyT5ojkTmjANBgkqhkiG9w0BAQsFADAr' >> /home/ec2-user/certs/ca.crt
-                echo 'MRIwEAYDVQQKEwlDb2Nrcm9hY2gxFTATBgNVBAMTDENvY2tyb2FjaCBDQTAeFw0y' >> /home/ec2-user/certs/ca.crt
-                echo 'MTEyMjIxNzE0MTBaFw0zMTEyMzExNzE0MTBaMCsxEjAQBgNVBAoTCUNvY2tyb2Fj' >> /home/ec2-user/certs/ca.crt
-                echo 'aDEVMBMGA1UEAxMMQ29ja3JvYWNoIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A' >> /home/ec2-user/certs/ca.crt
-                echo 'MIIBCgKCAQEAvQBvZGI4uUlVHD4REnyofo9D6JWQY13kSIkuOUur49paFkIfmpeR' >> /home/ec2-user/certs/ca.crt
-                echo 'SIu2u5yGf6xd7Oi3H/QnKGMlagtqt22BYqrR1IJUNMtnRSajpDBxnBlJCexyBFVU' >> /home/ec2-user/certs/ca.crt
-                echo 'EyLKlfcdP0HYx5jzazcL5u9obEeTn6c7dJU/Qrpou6DTa44YF4YpP3Rhrhs1g2l6' >> /home/ec2-user/certs/ca.crt
-                echo 'AldzJqtyfISRhL23iJz7MPScIDa4FkGcp62f1qtBt11304RNXnfrqRPEjipuaHsu' >> /home/ec2-user/certs/ca.crt
-                echo 'el04KMsOP70/psE5/QUtRQMH/MzBVbjRog1XFEtJpDd+ZIUpkqYb24aOgXLOkEkb' >> /home/ec2-user/certs/ca.crt
-                echo 'JnCQyiJBIm9jS3ilymfT0x869TXEUaPlOwIDAQABo0UwQzAOBgNVHQ8BAf8EBAMC' >> /home/ec2-user/certs/ca.crt
-                echo 'AuQwEgYDVR0TAQH/BAgwBgEB/wIBATAdBgNVHQ4EFgQUO/9ViWjopIpC8OD5tMVT' >> /home/ec2-user/certs/ca.crt
-                echo 'nxwRbMkwDQYJKoZIhvcNAQELBQADggEBALplxolVuvzzIHNfx4fPw2oCwcC4cBEW' >> /home/ec2-user/certs/ca.crt
-                echo 'x/cy4al48biFM7GnuCUJvZRcll8urCiw4J5utDuzDphWjftW2KXD8ZTctVxQ3Dli' >> /home/ec2-user/certs/ca.crt
-                echo 'mKBfAZPocMUKwTlBqWGNJBSuv7WDBLlIkZDHOP404vIs0Ddl+gEqarU3VS49zY7/' >> /home/ec2-user/certs/ca.crt
-                echo 'Ip9YN7Ch8dBGaBK1/5O2hetnsvV9ayRgQfhcvN87CRmXIqA8/SFZ8KHq7PvWVLYa' >> /home/ec2-user/certs/ca.crt
-                echo 'zsuodS2Txf3Z1n/s8h8GbYFdUFDcYk/n5Tb7/BfunsAWUPrH8/0uF3xZn+SlTRVF' >> /home/ec2-user/certs/ca.crt
-                echo 'hrg+esTLJlTzrQMAZdIE7jpN/CYyP0A/usQi03LTerr2vfv00xU+Mz8=' >> /home/ec2-user/certs/ca.crt
-                echo '-----END CERTIFICATE-----' >> /home/ec2-user/certs/ca.crt
-                chown ec2-user:ec2-user /home/ec2-user/certs/ca.crt
-                chown ec2-user:ec2-user /home/ec2-user/my-safe-directory/ca.key
-                chmod 640 /home/ec2-user/certs/ca.crt
-                chmod 600 /home/ec2-user/my-safe-directory/ca.key     
-                echo "export ip_local=\`curl http://169.254.169.254/latest/meta-data/local-ipv4\`" >> /home/ec2-user/.bashrc
-                echo "export ip_public=\`curl http://169.254.169.254/latest/meta-data/public-ipv4\`" >> /home/ec2-user/.bashrc
-                echo "export aws_region=\`curl http://169.254.169.254/latest/meta-data/placement/region\`" >> /home/ec2-user/.bashrc
-                echo "export aws_az=\`curl http://169.254.169.254/latest/meta-data/placement/availability-zone\`" >> /home/ec2-user/.bashrc
-                echo "export COCKROACH_CERTS_DIR=/home/ec2-user/certs" >> /home/ec2-user/.bashrc
-                echo "export JOIN_STR=${CRDBIPNode01.PrimaryPrivateIpAddress},${CRDBIPNode02.PrimaryPrivateIpAddress},${CRDBIPNode03.PrimaryPrivateIpAddress}" >> /home/ec2-user/.bashrc
-                echo "export COCKROACH_CERTS_DIR=/home/ec2-user/certs" >> /home/ec2-user/.bashrc
-                echo "export CRDBNODE=3" >> /home/ec2-user/.bashrc
-                echo "STARTCRDB() {" >> /home/ec2-user/.bashrc
-                echo "  cockroach start \\" >> /home/ec2-user/.bashrc
-                echo '  --locality=region="$aws_region",zone="$aws_az" \' >> /home/ec2-user/.bashrc
-                echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
-                echo '  --advertise-addr=$ip_local \' >> /home/ec2-user/.bashrc
-                echo '  --join=$JOIN_STR \' >> /home/ec2-user/.bashrc
-                echo "  --background " >> /home/ec2-user/.bashrc
-                echo " }" >> /home/ec2-user/.bashrc
-                echo "CREATENODECERT() {" >> /home/ec2-user/.bashrc
-                echo "  cockroach cert create-node \\" >> /home/ec2-user/.bashrc
-                echo '  $ip_local \' >> /home/ec2-user/.bashrc
-                echo '  $ip_public \' >> /home/ec2-user/.bashrc
-                echo "  localhost \\" >> /home/ec2-user/.bashrc
-                echo "  127.0.0.1 \\" >> /home/ec2-user/.bashrc
-                echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
-                echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
-                echo "}" >> /home/ec2-user/.bashrc
-                echo "CREATEROOTCERT() {" >> /home/ec2-user/.bashrc
-                echo "  cockroach cert create-client \\" >> /home/ec2-user/.bashrc
-                echo '  root \' >> /home/ec2-user/.bashrc
-                echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
-                echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
-                echo "}" >> /home/ec2-user/.bashrc           
-                sleep 20; su ec2-user -lc 'CREATENODECERT; CREATEROOTCERT; STARTCRDB'
-            -
-              !Sub |
-                #!/bin/bash -xe
-                curl https://binaries.cockroachdb.com/cockroach-v21.2.3.linux-amd64.tgz | tar -xz && cp -i cockroach-v21.2.3.linux-amd64/cockroach /usr/local/bin/
-                su ec2-user -c 'mkdir /home/ec2-user/certs; mkdir /home/ec2-user/my-safe-directory'
-                echo '-----BEGIN RSA PRIVATE KEY-----' > /home/ec2-user/my-safe-directory/ca.key
-                echo 'MIIEowIBAAKCAQEAvQBvZGI4uUlVHD4REnyofo9D6JWQY13kSIkuOUur49paFkIf' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'mpeRSIu2u5yGf6xd7Oi3H/QnKGMlagtqt22BYqrR1IJUNMtnRSajpDBxnBlJCexy' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'BFVUEyLKlfcdP0HYx5jzazcL5u9obEeTn6c7dJU/Qrpou6DTa44YF4YpP3Rhrhs1' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'g2l6AldzJqtyfISRhL23iJz7MPScIDa4FkGcp62f1qtBt11304RNXnfrqRPEjipu' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'aHsuel04KMsOP70/psE5/QUtRQMH/MzBVbjRog1XFEtJpDd+ZIUpkqYb24aOgXLO' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'kEkbJnCQyiJBIm9jS3ilymfT0x869TXEUaPlOwIDAQABAoIBAGEttRi3TBUw+HsC' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'CsMnp3cTcMZJCKme4D7Pkh3Ro7sPTVy+eQOCxSe49qb2b018MfsbGPVsEyo3+EfT' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'QPa5blpuHF+Y93UB1MKAgIlugyvQ8HYSxfkmaolATUvYeIhK8gyGvzo0XoFKPbXX' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'A7eGRBLInnNP54P5yFs3/3kw+UpvSO/rWme06VO/itjXDMxw0q+H0CcbxQ/M9V9p' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'ptrZ4E9MzKAcCIW4vy7N7IpTGCwol6UUORJ0PeBnuj3INc1v/b015IhsTXeggb4O' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'Z6oAMZsGpo4bQLGo7Ze3Og0OyCNXHPYb2dwmgfXwedBDWZoyy72eT8Abh1FM2aBE' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'qf9ohLkCgYEAzHPeUkZRZ6rJ0v3VAXBHYYwVJJYUfGFgpMk38Uf09ha/7CWooMHU' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'tOTl+V9yCot2md2SOYmBLp/1uMyPXQbWvzhjGkv1+rYbh2VYhr2AmWx7Wq4C+PPv' >> /home/ec2-user/my-safe-directory/ca.key
-                echo '9eUXkp3Qx7LwFl+jGsoHHcAVks07gNMUSiPW9xsfVAry84u4QrORbh8CgYEA7KdO' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 's07YmPU3l2O5Q4mQXBHkbyCp2GwOPYyvEMxF5UV5H++TOjml3eHqT9TBYUbvueH8' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'Ajk2dGsaGcxVMPxSk7AzELcfhFWH9UtSfBA/XSUPTbSp01/1PzYKlAeCH6dpf+jq' >> /home/ec2-user/my-safe-directory/ca.key
-                echo '/7kJNzu3lH8PvwtxNNIC/bL5KMQPyGE64KoYLWUCgYEAmyvltHQCHLgW7bgRDkJ1' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'Kqfy9A2kBrKxct/1QX7ngE7L4yLB1SDHm3OOx7GVEEPBBA6SiHDARu7IxDUdKfGi' >> /home/ec2-user/my-safe-directory/ca.key
-                echo '0was0KyOSHYmdqCIi9sP22HmTXB8eQ5LNUlmlrSIXMiGR7TWSeLDe+Tper2hR6js' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'YUjKQkmngVW+BvIoKxe2bOkCgYAsucoT9VjWP7IL+Jrw+rS/0dncbs3qyzE9zLLh' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'd9nV5PVpZbvriy2f66x+/fS2T9PKy7z3Jpz2D6/VJFsNcQKiSvC7vgBE4G1bnKqw' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'K9nt3q0vwG9ANaiCE9KX+3tKRDeaJwkS34OwXqbpd8IgFyeEFhTeoc6ZN8TL2CRq' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'hXsgSQKBgDWNl05PYGRa9NAgzGCH0+QLgWW1AxQuD7PSgZDHLNOqvPXRbzgJIM/E' >> /home/ec2-user/my-safe-directory/ca.key
-                echo '3P/bKcKJAWG2muwb0m1JM8D+twaHE/QMxULkUzYtQ2nlCM6OhFYNEHkjmoB7UFA3' >> /home/ec2-user/my-safe-directory/ca.key
-                echo 'IaJVqjBQe91P0IKCSkZF7wFHz1YdKgjvSQOXlHD2I+MwyPF4UG6o' >> /home/ec2-user/my-safe-directory/ca.key
-                echo '-----END RSA PRIVATE KEY-----' >> /home/ec2-user/my-safe-directory/ca.key
-                echo '-----BEGIN CERTIFICATE-----' > /home/ec2-user/certs/ca.crt
-                echo 'MIIDJTCCAg2gAwIBAgIQDm0RAwm/Sn2RhyT5ojkTmjANBgkqhkiG9w0BAQsFADAr' >> /home/ec2-user/certs/ca.crt
-                echo 'MRIwEAYDVQQKEwlDb2Nrcm9hY2gxFTATBgNVBAMTDENvY2tyb2FjaCBDQTAeFw0y' >> /home/ec2-user/certs/ca.crt
-                echo 'MTEyMjIxNzE0MTBaFw0zMTEyMzExNzE0MTBaMCsxEjAQBgNVBAoTCUNvY2tyb2Fj' >> /home/ec2-user/certs/ca.crt
-                echo 'aDEVMBMGA1UEAxMMQ29ja3JvYWNoIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A' >> /home/ec2-user/certs/ca.crt
-                echo 'MIIBCgKCAQEAvQBvZGI4uUlVHD4REnyofo9D6JWQY13kSIkuOUur49paFkIfmpeR' >> /home/ec2-user/certs/ca.crt
-                echo 'SIu2u5yGf6xd7Oi3H/QnKGMlagtqt22BYqrR1IJUNMtnRSajpDBxnBlJCexyBFVU' >> /home/ec2-user/certs/ca.crt
-                echo 'EyLKlfcdP0HYx5jzazcL5u9obEeTn6c7dJU/Qrpou6DTa44YF4YpP3Rhrhs1g2l6' >> /home/ec2-user/certs/ca.crt
-                echo 'AldzJqtyfISRhL23iJz7MPScIDa4FkGcp62f1qtBt11304RNXnfrqRPEjipuaHsu' >> /home/ec2-user/certs/ca.crt
-                echo 'el04KMsOP70/psE5/QUtRQMH/MzBVbjRog1XFEtJpDd+ZIUpkqYb24aOgXLOkEkb' >> /home/ec2-user/certs/ca.crt
-                echo 'JnCQyiJBIm9jS3ilymfT0x869TXEUaPlOwIDAQABo0UwQzAOBgNVHQ8BAf8EBAMC' >> /home/ec2-user/certs/ca.crt
-                echo 'AuQwEgYDVR0TAQH/BAgwBgEB/wIBATAdBgNVHQ4EFgQUO/9ViWjopIpC8OD5tMVT' >> /home/ec2-user/certs/ca.crt
-                echo 'nxwRbMkwDQYJKoZIhvcNAQELBQADggEBALplxolVuvzzIHNfx4fPw2oCwcC4cBEW' >> /home/ec2-user/certs/ca.crt
-                echo 'x/cy4al48biFM7GnuCUJvZRcll8urCiw4J5utDuzDphWjftW2KXD8ZTctVxQ3Dli' >> /home/ec2-user/certs/ca.crt
-                echo 'mKBfAZPocMUKwTlBqWGNJBSuv7WDBLlIkZDHOP404vIs0Ddl+gEqarU3VS49zY7/' >> /home/ec2-user/certs/ca.crt
-                echo 'Ip9YN7Ch8dBGaBK1/5O2hetnsvV9ayRgQfhcvN87CRmXIqA8/SFZ8KHq7PvWVLYa' >> /home/ec2-user/certs/ca.crt
-                echo 'zsuodS2Txf3Z1n/s8h8GbYFdUFDcYk/n5Tb7/BfunsAWUPrH8/0uF3xZn+SlTRVF' >> /home/ec2-user/certs/ca.crt
-                echo 'hrg+esTLJlTzrQMAZdIE7jpN/CYyP0A/usQi03LTerr2vfv00xU+Mz8=' >> /home/ec2-user/certs/ca.crt
-                echo '-----END CERTIFICATE-----' >> /home/ec2-user/certs/ca.crt
-                chown ec2-user:ec2-user /home/ec2-user/certs/ca.crt
-                chown ec2-user:ec2-user /home/ec2-user/my-safe-directory/ca.key
-                chmod 640 /home/ec2-user/certs/ca.crt
-                chmod 600 /home/ec2-user/my-safe-directory/ca.key     
-                echo "export ip_local=\`curl http://169.254.169.254/latest/meta-data/local-ipv4\`" >> /home/ec2-user/.bashrc
-                echo "export ip_public=\`curl http://169.254.169.254/latest/meta-data/public-ipv4\`" >> /home/ec2-user/.bashrc
-                echo "export aws_region=\`curl http://169.254.169.254/latest/meta-data/placement/region\`" >> /home/ec2-user/.bashrc
-                echo "export aws_az=\`curl http://169.254.169.254/latest/meta-data/placement/availability-zone\`" >> /home/ec2-user/.bashrc
-                echo "export JOIN_STR=${ExistingJoinString}" >> /home/ec2-user/.bashrc
-                echo "export COCKROACH_CERTS_DIR=/home/ec2-user/certs" >> /home/ec2-user/.bashrc
-                echo "export CRDBNODE=3" >> /home/ec2-user/.bashrc
-                echo "STARTCRDB() {" >> /home/ec2-user/.bashrc
-                echo "  cockroach start \\" >> /home/ec2-user/.bashrc
-                echo '  --locality=region="$aws_region",zone="$aws_az" \' >> /home/ec2-user/.bashrc
-                echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
-                echo '  --advertise-addr=$ip_local \' >> /home/ec2-user/.bashrc
-                echo '  --join=$JOIN_STR \' >> /home/ec2-user/.bashrc
-                echo "  --background " >> /home/ec2-user/.bashrc
-                echo " }" >> /home/ec2-user/.bashrc
-                echo "CREATENODECERT() {" >> /home/ec2-user/.bashrc
-                echo "  cockroach cert create-node \\" >> /home/ec2-user/.bashrc
-                echo '  $ip_local \' >> /home/ec2-user/.bashrc
-                echo '  $ip_public \' >> /home/ec2-user/.bashrc
-                echo "  localhost \\" >> /home/ec2-user/.bashrc
-                echo "  127.0.0.1 \\" >> /home/ec2-user/.bashrc
-                echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
-                echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
-                echo "}" >> /home/ec2-user/.bashrc
-                echo "CREATEROOTCERT() {" >> /home/ec2-user/.bashrc
-                echo "  cockroach cert create-client \\" >> /home/ec2-user/.bashrc
-                echo '  root \' >> /home/ec2-user/.bashrc
-                echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
-                echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
-                echo "}" >> /home/ec2-user/.bashrc                
-                sleep 20; su ec2-user -lc 'CREATENODECERT; CREATEROOTCERT; STARTCRDB'
+          !Sub |
+            #!/bin/bash -xe
+            curl https://binaries.cockroachdb.com/cockroach-v21.2.3.linux-amd64.tgz | tar -xz && cp -i cockroach-v21.2.3.linux-amd64/cockroach /usr/local/bin/
+            su ec2-user -c 'mkdir /home/ec2-user/certs; mkdir /home/ec2-user/my-safe-directory'
+            echo '-----BEGIN RSA PRIVATE KEY-----' > /home/ec2-user/my-safe-directory/ca.key
+            echo 'MIIEowIBAAKCAQEAvQBvZGI4uUlVHD4REnyofo9D6JWQY13kSIkuOUur49paFkIf' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'mpeRSIu2u5yGf6xd7Oi3H/QnKGMlagtqt22BYqrR1IJUNMtnRSajpDBxnBlJCexy' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'BFVUEyLKlfcdP0HYx5jzazcL5u9obEeTn6c7dJU/Qrpou6DTa44YF4YpP3Rhrhs1' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'g2l6AldzJqtyfISRhL23iJz7MPScIDa4FkGcp62f1qtBt11304RNXnfrqRPEjipu' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'aHsuel04KMsOP70/psE5/QUtRQMH/MzBVbjRog1XFEtJpDd+ZIUpkqYb24aOgXLO' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'kEkbJnCQyiJBIm9jS3ilymfT0x869TXEUaPlOwIDAQABAoIBAGEttRi3TBUw+HsC' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'CsMnp3cTcMZJCKme4D7Pkh3Ro7sPTVy+eQOCxSe49qb2b018MfsbGPVsEyo3+EfT' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'QPa5blpuHF+Y93UB1MKAgIlugyvQ8HYSxfkmaolATUvYeIhK8gyGvzo0XoFKPbXX' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'A7eGRBLInnNP54P5yFs3/3kw+UpvSO/rWme06VO/itjXDMxw0q+H0CcbxQ/M9V9p' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'ptrZ4E9MzKAcCIW4vy7N7IpTGCwol6UUORJ0PeBnuj3INc1v/b015IhsTXeggb4O' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'Z6oAMZsGpo4bQLGo7Ze3Og0OyCNXHPYb2dwmgfXwedBDWZoyy72eT8Abh1FM2aBE' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'qf9ohLkCgYEAzHPeUkZRZ6rJ0v3VAXBHYYwVJJYUfGFgpMk38Uf09ha/7CWooMHU' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'tOTl+V9yCot2md2SOYmBLp/1uMyPXQbWvzhjGkv1+rYbh2VYhr2AmWx7Wq4C+PPv' >> /home/ec2-user/my-safe-directory/ca.key
+            echo '9eUXkp3Qx7LwFl+jGsoHHcAVks07gNMUSiPW9xsfVAry84u4QrORbh8CgYEA7KdO' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 's07YmPU3l2O5Q4mQXBHkbyCp2GwOPYyvEMxF5UV5H++TOjml3eHqT9TBYUbvueH8' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'Ajk2dGsaGcxVMPxSk7AzELcfhFWH9UtSfBA/XSUPTbSp01/1PzYKlAeCH6dpf+jq' >> /home/ec2-user/my-safe-directory/ca.key
+            echo '/7kJNzu3lH8PvwtxNNIC/bL5KMQPyGE64KoYLWUCgYEAmyvltHQCHLgW7bgRDkJ1' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'Kqfy9A2kBrKxct/1QX7ngE7L4yLB1SDHm3OOx7GVEEPBBA6SiHDARu7IxDUdKfGi' >> /home/ec2-user/my-safe-directory/ca.key
+            echo '0was0KyOSHYmdqCIi9sP22HmTXB8eQ5LNUlmlrSIXMiGR7TWSeLDe+Tper2hR6js' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'YUjKQkmngVW+BvIoKxe2bOkCgYAsucoT9VjWP7IL+Jrw+rS/0dncbs3qyzE9zLLh' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'd9nV5PVpZbvriy2f66x+/fS2T9PKy7z3Jpz2D6/VJFsNcQKiSvC7vgBE4G1bnKqw' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'K9nt3q0vwG9ANaiCE9KX+3tKRDeaJwkS34OwXqbpd8IgFyeEFhTeoc6ZN8TL2CRq' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'hXsgSQKBgDWNl05PYGRa9NAgzGCH0+QLgWW1AxQuD7PSgZDHLNOqvPXRbzgJIM/E' >> /home/ec2-user/my-safe-directory/ca.key
+            echo '3P/bKcKJAWG2muwb0m1JM8D+twaHE/QMxULkUzYtQ2nlCM6OhFYNEHkjmoB7UFA3' >> /home/ec2-user/my-safe-directory/ca.key
+            echo 'IaJVqjBQe91P0IKCSkZF7wFHz1YdKgjvSQOXlHD2I+MwyPF4UG6o' >> /home/ec2-user/my-safe-directory/ca.key
+            echo '-----END RSA PRIVATE KEY-----' >> /home/ec2-user/my-safe-directory/ca.key
+            echo '-----BEGIN CERTIFICATE-----' > /home/ec2-user/certs/ca.crt
+            echo 'MIIDJTCCAg2gAwIBAgIQDm0RAwm/Sn2RhyT5ojkTmjANBgkqhkiG9w0BAQsFADAr' >> /home/ec2-user/certs/ca.crt
+            echo 'MRIwEAYDVQQKEwlDb2Nrcm9hY2gxFTATBgNVBAMTDENvY2tyb2FjaCBDQTAeFw0y' >> /home/ec2-user/certs/ca.crt
+            echo 'MTEyMjIxNzE0MTBaFw0zMTEyMzExNzE0MTBaMCsxEjAQBgNVBAoTCUNvY2tyb2Fj' >> /home/ec2-user/certs/ca.crt
+            echo 'aDEVMBMGA1UEAxMMQ29ja3JvYWNoIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A' >> /home/ec2-user/certs/ca.crt
+            echo 'MIIBCgKCAQEAvQBvZGI4uUlVHD4REnyofo9D6JWQY13kSIkuOUur49paFkIfmpeR' >> /home/ec2-user/certs/ca.crt
+            echo 'SIu2u5yGf6xd7Oi3H/QnKGMlagtqt22BYqrR1IJUNMtnRSajpDBxnBlJCexyBFVU' >> /home/ec2-user/certs/ca.crt
+            echo 'EyLKlfcdP0HYx5jzazcL5u9obEeTn6c7dJU/Qrpou6DTa44YF4YpP3Rhrhs1g2l6' >> /home/ec2-user/certs/ca.crt
+            echo 'AldzJqtyfISRhL23iJz7MPScIDa4FkGcp62f1qtBt11304RNXnfrqRPEjipuaHsu' >> /home/ec2-user/certs/ca.crt
+            echo 'el04KMsOP70/psE5/QUtRQMH/MzBVbjRog1XFEtJpDd+ZIUpkqYb24aOgXLOkEkb' >> /home/ec2-user/certs/ca.crt
+            echo 'JnCQyiJBIm9jS3ilymfT0x869TXEUaPlOwIDAQABo0UwQzAOBgNVHQ8BAf8EBAMC' >> /home/ec2-user/certs/ca.crt
+            echo 'AuQwEgYDVR0TAQH/BAgwBgEB/wIBATAdBgNVHQ4EFgQUO/9ViWjopIpC8OD5tMVT' >> /home/ec2-user/certs/ca.crt
+            echo 'nxwRbMkwDQYJKoZIhvcNAQELBQADggEBALplxolVuvzzIHNfx4fPw2oCwcC4cBEW' >> /home/ec2-user/certs/ca.crt
+            echo 'x/cy4al48biFM7GnuCUJvZRcll8urCiw4J5utDuzDphWjftW2KXD8ZTctVxQ3Dli' >> /home/ec2-user/certs/ca.crt
+            echo 'mKBfAZPocMUKwTlBqWGNJBSuv7WDBLlIkZDHOP404vIs0Ddl+gEqarU3VS49zY7/' >> /home/ec2-user/certs/ca.crt
+            echo 'Ip9YN7Ch8dBGaBK1/5O2hetnsvV9ayRgQfhcvN87CRmXIqA8/SFZ8KHq7PvWVLYa' >> /home/ec2-user/certs/ca.crt
+            echo 'zsuodS2Txf3Z1n/s8h8GbYFdUFDcYk/n5Tb7/BfunsAWUPrH8/0uF3xZn+SlTRVF' >> /home/ec2-user/certs/ca.crt
+            echo 'hrg+esTLJlTzrQMAZdIE7jpN/CYyP0A/usQi03LTerr2vfv00xU+Mz8=' >> /home/ec2-user/certs/ca.crt
+            echo '-----END CERTIFICATE-----' >> /home/ec2-user/certs/ca.crt
+            chown ec2-user:ec2-user /home/ec2-user/certs/ca.crt
+            chown ec2-user:ec2-user /home/ec2-user/my-safe-directory/ca.key
+            chmod 640 /home/ec2-user/certs/ca.crt
+            chmod 600 /home/ec2-user/my-safe-directory/ca.key     
+            echo "export ip_local=\`curl http://169.254.169.254/latest/meta-data/local-ipv4\`" >> /home/ec2-user/.bashrc
+            echo "export ip_public=\`curl http://169.254.169.254/latest/meta-data/public-ipv4\`" >> /home/ec2-user/.bashrc
+            echo "export aws_region=\`curl http://169.254.169.254/latest/meta-data/placement/region\`" >> /home/ec2-user/.bashrc
+            echo "export aws_az=\`curl http://169.254.169.254/latest/meta-data/placement/availability-zone\`" >> /home/ec2-user/.bashrc
+            echo "if [ '${ExistingJoinString}' = 'NONE' ]; then"  >> /home/ec2-user/.bashrc
+            echo "  export JOIN_STR=${CRDBIPNode01.PrimaryPrivateIpAddress},${CRDBIPNode02.PrimaryPrivateIpAddress},${CRDBIPNode03.PrimaryPrivateIpAddress}" >> /home/ec2-user/.bashrc
+            echo "else"  >> /home/ec2-user/.bashrc
+            echo "  export JOIN_STR=${ExistingJoinString}" >> /home/ec2-user/.bashrc
+            echo "fi"  >> /home/ec2-user/.bashrc
+            echo "export COCKROACH_CERTS_DIR=/home/ec2-user/certs" >> /home/ec2-user/.bashrc
+            echo "export CRDBNODE=3" >> /home/ec2-user/.bashrc
+            echo "STARTCRDB() {" >> /home/ec2-user/.bashrc
+            echo "  cockroach start \\" >> /home/ec2-user/.bashrc
+            echo '  --locality=region="$aws_region",zone="$aws_az" \' >> /home/ec2-user/.bashrc
+            echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
+            echo '  --advertise-addr=$ip_local \' >> /home/ec2-user/.bashrc
+            echo '  --join=$JOIN_STR \' >> /home/ec2-user/.bashrc
+            echo "  --background " >> /home/ec2-user/.bashrc
+            echo " }" >> /home/ec2-user/.bashrc
+            echo "CREATENODECERT() {" >> /home/ec2-user/.bashrc
+            echo "  cockroach cert create-node \\" >> /home/ec2-user/.bashrc
+            echo '  $ip_local \' >> /home/ec2-user/.bashrc
+            echo '  $ip_public \' >> /home/ec2-user/.bashrc
+            echo "  localhost \\" >> /home/ec2-user/.bashrc
+            echo "  127.0.0.1 \\" >> /home/ec2-user/.bashrc
+            echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
+            echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
+            echo "}" >> /home/ec2-user/.bashrc
+            echo "CREATEROOTCERT() {" >> /home/ec2-user/.bashrc
+            echo "  cockroach cert create-client \\" >> /home/ec2-user/.bashrc
+            echo '  root \' >> /home/ec2-user/.bashrc
+            echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
+            echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
+            echo "}" >> /home/ec2-user/.bashrc           
+            sleep 20; su ec2-user -lc 'CREATENODECERT; CREATEROOTCERT; STARTCRDB'
       NetworkInterfaces:
       - DeviceIndex: '0'
         NetworkInterfaceId: !Ref CRDBIPNode03
