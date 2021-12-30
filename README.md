@@ -13,7 +13,7 @@ Prior to running this CloudFormation template, you must have
 - key pair [Create One Here](https://us-west-2.console.aws.amazon.com/ec2/v2/home?region=us-west-2#KeyPairs:).  The key pair information is used to allow you access the CRDB nodes.
 
 The "Stack Details" page in AWS might look like this:
-![Stack Formation Parameters](./StackDetails.JPG)
+![Stack Formation Parameters](./README-resources/StackDetails.JPG)
 [Click here to see the parameter descriptions](#the-following-parameters-are-required-during-the-create-stack-process)
 
 To initialize the cluster, you must issue the 'cockroach init' command from any one of the nodes in the cluster.
@@ -41,7 +41,7 @@ You can also change the key by editing the CloudFormation template prior to exec
 |.bashrc|The ec2-user .bashrc is modified by adding exports of several variables as well as functions to create the node cert, root cert and start the database.||
 
 
-![AWS Objects Diagram](./AWS_objects.jpg)
+![AWS Objects Diagram](./README-resources/AWS_objects.jpg)
 
 
 ## The following parameters are required during the create stack process
@@ -102,3 +102,56 @@ To create a multi-region CockroachDB Cluster:
 
 
 When deleting stacks in a multi-region cluster, be sure to delete the VPC Peering Connections first.
+<br><br><br><br>
+
+# Running This CloudFormation Template in AWS
+
+## Verify your VPC CIDR
+Navigate to the VPC Services section of AWS and select "Your VPCs" from the side menu.  Verify that the IPv4 CIDR you want to use for this Stack is not in use.  For example, I may want to use 192.168.4.0/24, so I need to be sure that address space is not already in use in this region.
+![VPC CIDRs](./README-resources/CloudFormation00.JPG)
+
+
+
+## Ensure you have a key-pair for the region
+Without a key-pair, you won't be able to access the EC2 instances created as part of this CloudForamtion Template.
+
+To list your existing key-pairs, navigate to the EC2 Section of the AWS Console and select "Key Pairs" from the side-bar menu which is under "Network & Security".    If you need to create a new key-pair, choose the "Create key pair" button and download your new key-pair to a safe location.
+![Key-Pair Screen](./README-resources/keyPairs.JPG)
+
+## Find your IP address
+To find your IP address you can use Google and search for "my ip address".
+![Ip Address](./README-resources/myIP.JPG)
+
+## Run the CloudFormation Template to Create the Infrastructure
+Navigate to the AWS CloudFormation Service and choose "Create stack".
+![Cloud Formation - Create Stack](./README-resources/CloudFormation01.JPG)
+
+### Load the Template
+In the "Prerequisite - Prepare template" section, choose "Template is ready"
+<br>
+In the "Specify template" section, choose "Upload a template file"
+<br>
+Click the "Choose file" button and select the CloudFormation yaml file.
+![Cloud Formation Template](./README-resources/CloudFormation02.JPG)
+
+### Supply The Necessary Parameters
+[Click here to see the parameter descriptions](#the-following-parameters-are-required-during-the-create-stack-process)
+
+![Enter Stack Parameters](./README-resources/CloudFormation03.JPG)
+
+### Configure stack options
+On the "Configure stack options" page, you can accept everything as-is and select the "Next" button.
+
+![Configure Stack Options](./README-resources/CloudFormation04.JPG)
+
+### Review 
+The final page is the "Review" page.  Select the "Next" button to create the stack.
+
+![Review](./README-resources/CloudFormation05.JPG)
+
+### Create Complete
+When your CloudFormation Template has completed, you will get a "CREATE_COMPLETE" Status message.   
+![Create Complete](./README-resources/CloudFormation06.JPG)
+
+To see the resources that were created, the outputs, or to review the parameters you selected, you can choose to see the Stack Details and select one of the Tabs from the screen.
+![resources, outputs and parameters](./README-resources/CloudFormation07.JPG)
