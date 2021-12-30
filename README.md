@@ -155,3 +155,7 @@ When your CloudFormation Template has completed, you will get a "CREATE_COMPLETE
 
 To see the resources that were created, the outputs, or to review the parameters you selected, you can choose to see the Stack Details and select one of the Tabs from the screen.
 ![resources, outputs and parameters](./README-resources/CloudFormation07.JPG)
+
+# Delete the Stack
+To delete the stack and all of the resources created as part of the stack, select the stack and hit the "Delete" button.  Once the process is complete, the EC2 instances will be terminated, and all resources will be gone.
+![Delete Stack](./README-resources/CloudFormation08.JPG)
