@@ -12,6 +12,8 @@ Prior to running this CloudFormation template, you must have
 - your public IP address (this is used to create the security group which allows only your IP to access the nodes)  You can find your IP by googling "my ip address"
 - key pair [Create One Here](https://us-west-2.console.aws.amazon.com/ec2/v2/home?region=us-west-2#KeyPairs:).  The key pair information is used to allow you access the CRDB nodes.
 
+The "Stack Details" page in AWS might look like this:
+![Stack Formation Parameters](./StackDetails.JPG)
 
 To initialize the cluster, you must issue the 'cockroach init' command from any one of the nodes in the cluster.
 
@@ -44,7 +46,7 @@ You can also change the key by editing the CloudFormation template prior to exec
 ## The following parameters are required during the create stack process
 |Parameter|Description|Example|
 |---------|-------------------|----------------|
-|VpcCidrParameter| The CIDR for the VPC|192.168.4.0|
+|VpcCidrParameter| The CIDR for the VPC|192.168.4.0  You'll need to be sure that the VPC CIDR is not in use.  You can check by visiting the VPC page in your region.|
 |VpcNamePrefix|Used to construct the VPC name tag.  |If the parameter entered is "vpc01", the VPC name tag will be "vpc01-us-west-2"|
 |VpcAzs|3 availability zones chosen from the list of AZs.  Be careful choosing the AZs.  Not all EC2 types are available in all AZs.  2 subnets will be created in each AZ: one public and one private.|"us-west-2a, us-west-2b, us-west-2c"|
 |MyIP|An IP address which will be used to create the security group sg01.  When assigned to an EC2 instance the security group will allow SSH, RDP, 26257 and 8080 port access to this IP address.  The IP address will be appended with the CIDR range /32.  |36.250.22.1|
