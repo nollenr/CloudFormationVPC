@@ -1,30 +1,24 @@
 # Cockroach Database CloudFormation Template
 AWS CloudFormation Template for generating: VPC, Internet Gateway, Subnets, RouteTables and Security Groups, EC2 Instances, installing CorkroachDB and certificates.  The cloudformation template usually takes less than 2 minutes to execute.
-
-Once the infrastructre has been created, node and root certs will be generated and cockroachDB will be started (no init)
-
-
+<br><br>
+Once the infrastructure has been created, node and root certs will be generated and cockroachDB will be started (no init).  To initialize the cluster, you must issue the 'cockroach init' command from any one of the nodes in the cluster.
+<br><br>
 Running this Cloudformation Template in multiple Regions will allow you to create a Mulit-Region Cockroach Cluster, but there are a few extra steps to follow such as peering the VPCs, modifying route tables and security groups ([see instructions below](#multi-region)).
+<br><br>
+When the CloudFormation stack is deleted, all resources created by the template in a region are deleted as well including the VPC, Internet Gateway, Subnets, RouteTables, Security Groups and EC2 Instances.  No data is maintained or saved.
+<br><br>
+For instructions on creating a stack using this CloudFormation Template use the instructions [below](running-this-cloudFormation-template-in-aws).  
+<br><br>
 
-Note that when the CloudFormation stack is deleted, all resources created by the template in a region are deleted as well.
-
-Prior to running this CloudFormation template, you must have 
-- your public IP address (this is used to create the security group which allows only your IP to access the nodes)  You can find your IP by googling "my ip address"
-- key pair [Create One Here](https://us-west-2.console.aws.amazon.com/ec2/v2/home?region=us-west-2#KeyPairs:).  The key pair information is used to allow you access the CRDB nodes.
-
-The "Stack Details" page in AWS might look like this:
-![Stack Formation Parameters](./README-resources/StackDetails.JPG)
-[Click here to see the parameter descriptions](#the-following-parameters-are-required-during-the-create-stack-process)
-
-To initialize the cluster, you must issue the 'cockroach init' command from any one of the nodes in the cluster.
-
-# Secuirty Warnings
-The ca.crt and ca.key created by this template are the same for all executions!  Anyone with access to this CloudFormation template has the CA key for the cluster.
+# Security Warnings
+**The ca.crt and ca.key created by this template are the same for all executions.**  Anyone with access to this CloudFormation template has the CA key for the cluster.
 
 The keys can be roated using the instructions [here](https://www.cockroachlabs.com/docs/v21.2/rotate-certificates).  
 
 You can also change the key by editing the CloudFormation template prior to execution.
 
+The security groups only allow your IP to access the EC2 instances, so although the CA key is not private until changed, access to the cluster is very limited.
+<br><br>
 
 # The following objects are created by this CloudFormation Template
 
