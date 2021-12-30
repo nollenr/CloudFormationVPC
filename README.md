@@ -1,10 +1,10 @@
 # Cockroach Database CloudFormation Template
-AWS CloudFormation Template for generating: VPC, Internet Gateway, Subnets, RouteTables and Security Groups, EC2 Instances, installing CorkroachDB and certificate.
+AWS CloudFormation Template for generating: VPC, Internet Gateway, Subnets, RouteTables and Security Groups, EC2 Instances, installing CorkroachDB and certificates.  The cloudformation template usually takes less than 2 minutes to execute.
 
 Once the infrastructre has been created, node and root certs will be generated and cockroachDB will be started (no init)
 
 
-Running this Cloudformation Template in multiple Regions will allow you to create a Mulit-Region Cockroach Cluster, but there are a few extra steps to follow such as peering the VPCs, modifying route tables and security groups (see instructions below).
+Running this Cloudformation Template in multiple Regions will allow you to create a Mulit-Region Cockroach Cluster, but there are a few extra steps to follow such as peering the VPCs, modifying route tables and security groups ([see instructions below](#multi-region)).
 
 Note that when the CloudFormation stack is deleted, all resources created by the template in a region are deleted as well.
 
@@ -75,6 +75,8 @@ The following values are exported by the CloudFormation Template
 |Security Group 1 ID|"${AWS::StackName}-SecurityGroup1"|The ID of the security group which allows access to public resources from a single IP|
 |Security Group 2 ID|"${AWS::StackName}-SecurityGroup1"|The ID of the security group which allows intra-node communication|
 |JoinValue |Use this output as the "ExistingJoinString" parameter when creating additional regions.  | The CloudFormation Template creates this value when the 1st region is created.  |
+<br><br>
+You can stop reading here unless you are building a multi-region cluster.
 <br><br>
  # Multi-Region
 To create a multi-region CockroachDB Cluster:
