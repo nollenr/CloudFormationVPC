@@ -14,6 +14,7 @@ Prior to running this CloudFormation template, you must have
 
 The "Stack Details" page in AWS might look like this:
 ![Stack Formation Parameters](./StackDetails.JPG)
+[Click here to see the parameter descriptions](#the-following-parameters-are-required-during-the-create-stack-process)
 
 To initialize the cluster, you must issue the 'cockroach init' command from any one of the nodes in the cluster.
 
