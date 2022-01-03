@@ -49,6 +49,8 @@ The security groups only allow your IP to access the EC2 instances, so although 
 |CRDBAMIID|Amazon Linux AMI ID.  This will be different for each region	|ami-00f7e5c52c0f43726|
 |ClusterName|CockroachDB Cluster Name.  Appended to the "cockroach start" command.|My-CRDB-Cluster-01 |
 |ExistingJoinString|If this is a multiple region cluster, the join string is avialable in the "OUTPUTS" section of the first CloudFormation Region.  Leave this as NONE if this is the 1st region|192.168.4.4,192.168.4.68,192.168.4.132 |
+|Installpsql|Choosing 'YES' will install postgresql 13 so that you can run 'psql'.|YES|
+|RunInit|Choosing 'YES' will cause 'cockroach init' be run on the 3rd node.  Choosing 'YES' will force the 3rd node to wait to be created until the first 2 nodes have completed, so the cloudformation process will take longer.  Choosing 'NO' will leave the init command to the operator.|YES|
 
 If you're going to execute this template in multiple regions, be sure to choose non-overlaping CIDR blocks for each region.  For example:
 

@@ -120,10 +120,25 @@ Parameters:
     Description: "If you are joining the nodes being created here to another region, use the join string created previously (see the Output section of a previously executed stack in another region).  Otherwise, leave this as NONE."
     Type: String
     Default: NONE
-
+  RunInit:
+    Description:  "Choosing 'YES' to this option will cuase the 'cockroach init' command to be executed when all nodes are ready.  This may cause the CloudFormation process to run a little longer."
+    Type: String
+    Default: "YES"
+    AllowedValues:
+    - "YES"
+    - "NO"
+  Installpsql:
+    Description:  "Choosing 'YES' to this option will install psql (postgresql11) on all nodes allowing you to run psql, or connect to cockroach via a URL."
+    Type: String
+    Default: "YES"
+    AllowedValues:
+    - "YES"
+    - "NO"
 
 Conditions: 
   UseNewJoinString: !Equals [!Ref ExistingJoinString, NONE]
+  InstallPostgres: !Equals [!Ref Installpsql, YES]
+  RunInitCommand: !Equals [!Ref RunInit, YES]
 
 Resources:
   CreateVPC:
@@ -538,6 +553,7 @@ Resources:
             echo "fi"  >> /home/ec2-user/.bashrc
             echo "export COCKROACH_CERTS_DIR=/home/ec2-user/certs" >> /home/ec2-user/.bashrc
             echo "export CRDBNODE=1" >> /home/ec2-user/.bashrc
+            export CRDBNODE=1
             echo "STARTCRDB() {" >> /home/ec2-user/.bashrc
             echo "  cockroach start \\" >> /home/ec2-user/.bashrc
             echo '  --locality=region="$aws_region",zone="$aws_az" \' >> /home/ec2-user/.bashrc
@@ -562,6 +578,8 @@ Resources:
             echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
             echo "}" >> /home/ec2-user/.bashrc           
             sleep 20; su ec2-user -lc 'CREATENODECERT; CREATEROOTCERT; STARTCRDB'
+            if [[ '${RunInit}' = 'YES' && "$CRDBNODE" = 3 ]]; then echo "Initializing Cockroach Database" && su ec2-user -lc 'cockroach init'; fi
+            if [[ '${Installpsql}' = 'YES' ]]; then echo "Installing postgresql13"; amazon-linux-extras install postgresql13; fi
       NetworkInterfaces:
       - DeviceIndex: '0'
         NetworkInterfaceId: !Ref CRDBIPNode01
@@ -645,6 +663,7 @@ Resources:
             echo "fi"  >> /home/ec2-user/.bashrc
             echo "export COCKROACH_CERTS_DIR=/home/ec2-user/certs" >> /home/ec2-user/.bashrc
             echo "export CRDBNODE=2" >> /home/ec2-user/.bashrc
+            export CRDBNODE=2
             echo "STARTCRDB() {" >> /home/ec2-user/.bashrc
             echo "  cockroach start \\" >> /home/ec2-user/.bashrc
             echo '  --locality=region="$aws_region",zone="$aws_az" \' >> /home/ec2-user/.bashrc
@@ -669,9 +688,22 @@ Resources:
             echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
             echo "}" >> /home/ec2-user/.bashrc           
             sleep 20; su ec2-user -lc 'CREATENODECERT; CREATEROOTCERT; STARTCRDB'
+            if [[ '${RunInit}' = 'YES' && "$CRDBNODE" = 3 ]]; then echo "Initializing Cockroach Database" && su ec2-user -lc 'cockroach init'; fi
+            if [[ '${Installpsql}' = 'YES' ]]; then echo "Installing postgresql13"; amazon-linux-extras install postgresql13; fi
       NetworkInterfaces:
       - DeviceIndex: '0'
         NetworkInterfaceId: !Ref CRDBIPNode02
+  # What's the following two resources?  If I want to run the init command (which I will do as part of my 3rd node creation) then I need
+  # to wait for the previous 2 nodes to complete.  Since you cannot put a conditional in a "Depends On", the following will cause the
+  # process to wait for the 1st 2 nodes to complete, but only if we want to run the init command.
+  CRDBNode01Ready:
+    Type: AWS::CloudFormation::WaitConditionHandle
+    Metadata: 
+      FirstNodeReady: !If [RunInitCommand, !Ref CRDBNode01, ""]
+  CRDBNode02Ready:
+    Type: AWS::CloudFormation::WaitConditionHandle
+    Metadata: 
+      FirstNodeReady: !If [RunInitCommand, !Ref CRDBNode02, ""]
   CRDBNode03:
     DependsOn:
     - CRDBIPNode01
@@ -752,6 +784,7 @@ Resources:
             echo "fi"  >> /home/ec2-user/.bashrc
             echo "export COCKROACH_CERTS_DIR=/home/ec2-user/certs" >> /home/ec2-user/.bashrc
             echo "export CRDBNODE=3" >> /home/ec2-user/.bashrc
+            export CRDBNODE=3
             echo "STARTCRDB() {" >> /home/ec2-user/.bashrc
             echo "  cockroach start \\" >> /home/ec2-user/.bashrc
             echo '  --locality=region="$aws_region",zone="$aws_az" \' >> /home/ec2-user/.bashrc
@@ -776,6 +809,8 @@ Resources:
             echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
             echo "}" >> /home/ec2-user/.bashrc           
             sleep 20; su ec2-user -lc 'CREATENODECERT; CREATEROOTCERT; STARTCRDB'
+            if [[ '${RunInit}' = 'YES' && "$CRDBNODE" = 3 ]]; then echo "Initializing Cockroach Database" && su ec2-user -lc 'cockroach init'; fi
+            if [[ '${Installpsql}' = 'YES' ]]; then echo "Installing postgresql13"; amazon-linux-extras install postgresql13; fi
       NetworkInterfaces:
       - DeviceIndex: '0'
         NetworkInterfaceId: !Ref CRDBIPNode03
