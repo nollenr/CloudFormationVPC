@@ -137,8 +137,8 @@ Parameters:
 
 Conditions: 
   UseNewJoinString: !Equals [!Ref ExistingJoinString, NONE]
-  InstallPostgres: !Equals [!Ref Installpsql, YES]
-  RunInitCommand: !Equals [!Ref RunInit, YES]
+  InstallPostgres: !Equals [!Ref Installpsql, "YES"]
+  RunInitCommand: !Equals [!Ref RunInit, "YES"]
 
 Resources:
   CreateVPC:
@@ -703,12 +703,14 @@ Resources:
   CRDBNode02Ready:
     Type: AWS::CloudFormation::WaitConditionHandle
     Metadata: 
-      FirstNodeReady: !If [RunInitCommand, !Ref CRDBNode02, ""]
+      SecondNodeReady: !If [RunInitCommand, !Ref CRDBNode02, ""]
   CRDBNode03:
     DependsOn:
     - CRDBIPNode01
     - CRDBIPNode02
     - CRDBIPNode03
+    - CRDBNode01Ready
+    - CRDBNode02Ready
     Type: 'AWS::EC2::Instance'
     Properties:
       KeyName: !Ref KeyPairName
