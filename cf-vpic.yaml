@@ -476,7 +476,7 @@ Resources:
   CRDBNode01:
     DependsOn: 
     - CRDBIPNode01
-    - CRDBIPNode01
+    - CRDBIPNode02
     - CRDBIPNode03
     Type: 'AWS::EC2::Instance'
     Properties:
@@ -853,6 +853,21 @@ Outputs:
     Value: !If [ UseNewJoinString, !Join [",", [ !GetAtt CRDBIPNode01.PrimaryPrivateIpAddress, !GetAtt CRDBIPNode02.PrimaryPrivateIpAddress, !GetAtt CRDBIPNode03.PrimaryPrivateIpAddress ] ], "Use Value From Primary (1st) Region" ]
     Export:
       Name: !Sub "${AWS::StackName}-JoinValue"
+  PubSubnet01:
+    Description: The ID of the 1st Public Subnet created by this CF Template
+    Value: !Ref subnet2Public
+    Export:
+      Name: !Sub "${AWS::StackName}-PubSubnet01"
+  PubSubnet02:
+    Description: The ID of the 2nd Public Subnet created by this CF Template
+    Value: !Ref subnet4Public
+    Export:
+      Name: !Sub "${AWS::StackName}-PubSubnet02"
+  PubSubnet03:
+    Description: The ID of the 3rd Public Subnet created by this CF Template
+    Value: !Ref subnet6Public
+    Export:
+      Name: !Sub "${AWS::StackName}-PubSubnet03"
   # PublicSubnet01WouldBe:
   #   Description:  This is what the Private IP Would be
   #   # Get the CIDR range of the 1st public subnet, then generate 16 CIDRs (for the whole range) with a /32 and select the 4th IP address
