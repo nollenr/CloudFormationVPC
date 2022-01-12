@@ -87,6 +87,7 @@ To create a multi-region CockroachDB Cluster:
 6.  Log on to any one of the nodes and run `cockroach init`.  Once that is complete, the cluster should be up and running
 <br><br><br>
 
+## Mulit-Region Example (cockroach node status)
 |  id |       address       |     sql_address     |  build  |         started_at         |         updated_at         |             locality             | is_available | is_live|
 |-----|---------------------|---------------------|---------|----------------------------|----------------------------|----------------------------------|--------------|----------|
    1 | 192.168.4.4:26257   | 192.168.4.4:26257   | v21.1.9 | 2021-12-23 20:00:41.289793 | 2021-12-23 20:03:54.843964 | region=us-west-2,zone=us-west-2a | true         | true
