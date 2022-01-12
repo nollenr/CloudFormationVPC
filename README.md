@@ -1,3 +1,5 @@
+# CockroachDB v21.2.4
+
 # Cockroach Database CloudFormation Template
 AWS CloudFormation Template for generating: VPC, Internet Gateway, Subnets, RouteTables and Security Groups, EC2 Instances, installing CorkroachDB and certificates.  The cloudformation template usually takes less than 2 minutes to execute.
 <br><br>
