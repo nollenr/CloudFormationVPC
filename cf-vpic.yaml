@@ -47,6 +47,17 @@ Parameters:
     Type: List<AWS::EC2::AvailabilityZone::Name>
     Description: "Comma-delimited list of three AZs"
     Default: "us-west-2a,us-west-2b,us-west-2c"
+  CockroachVersion:
+    Type: String
+    Default: "21.2.4"
+    Description: Cockroach Version to install
+    AllowedValues:
+    - "21.2.4"
+    - "21.2.3"
+    - "21.1.13"
+    - "20.2.18"
+    - "20.1.17"
+    - "19.2.12"
   InstanceType:
     Type: String
     Default: m4.large
@@ -490,7 +501,7 @@ Resources:
         Fn::Base64:
           !Sub |
             #!/bin/bash -xe
-            curl https://binaries.cockroachdb.com/cockroach-v21.2.4.linux-amd64.tgz | tar -xz && cp -i cockroach-v21.2.4.linux-amd64/cockroach /usr/local/bin/
+            curl https://binaries.cockroachdb.com/cockroach-v${CockroachVersion}.linux-amd64.tgz | tar -xz && cp -i cockroach-v${CockroachVersion}.linux-amd64/cockroach /usr/local/bin/
             su ec2-user -c 'mkdir /home/ec2-user/certs; mkdir /home/ec2-user/my-safe-directory'
             echo '-----BEGIN RSA PRIVATE KEY-----' > /home/ec2-user/my-safe-directory/ca.key
             echo 'MIIEowIBAAKCAQEAvQBvZGI4uUlVHD4REnyofo9D6JWQY13kSIkuOUur49paFkIf' >> /home/ec2-user/my-safe-directory/ca.key
@@ -600,7 +611,7 @@ Resources:
         Fn::Base64:
           !Sub |
             #!/bin/bash -xe
-            curl https://binaries.cockroachdb.com/cockroach-v21.2.4.linux-amd64.tgz | tar -xz && cp -i cockroach-v21.2.4.linux-amd64/cockroach /usr/local/bin/
+            curl https://binaries.cockroachdb.com/cockroach-v${CockroachVersion}.linux-amd64.tgz | tar -xz && cp -i cockroach-v${CockroachVersion}.linux-amd64/cockroach /usr/local/bin/
             su ec2-user -c 'mkdir /home/ec2-user/certs; mkdir /home/ec2-user/my-safe-directory'
             echo '-----BEGIN RSA PRIVATE KEY-----' > /home/ec2-user/my-safe-directory/ca.key
             echo 'MIIEowIBAAKCAQEAvQBvZGI4uUlVHD4REnyofo9D6JWQY13kSIkuOUur49paFkIf' >> /home/ec2-user/my-safe-directory/ca.key
@@ -723,7 +734,7 @@ Resources:
         Fn::Base64:
           !Sub |
             #!/bin/bash -xe
-            curl https://binaries.cockroachdb.com/cockroach-v21.2.4.linux-amd64.tgz | tar -xz && cp -i cockroach-v21.2.4.linux-amd64/cockroach /usr/local/bin/
+            curl https://binaries.cockroachdb.com/cockroach-v${CockroachVersion}.linux-amd64.tgz | tar -xz && cp -i cockroach-v${CockroachVersion}.linux-amd64/cockroach /usr/local/bin/
             su ec2-user -c 'mkdir /home/ec2-user/certs; mkdir /home/ec2-user/my-safe-directory'
             echo '-----BEGIN RSA PRIVATE KEY-----' > /home/ec2-user/my-safe-directory/ca.key
             echo 'MIIEowIBAAKCAQEAvQBvZGI4uUlVHD4REnyofo9D6JWQY13kSIkuOUur49paFkIf' >> /home/ec2-user/my-safe-directory/ca.key
