@@ -9,6 +9,9 @@ When the CloudFormation stack is deleted, all resources created by the template 
 <br><br>
 For instructions on creating a stack using this CloudFormation Template use the instructions [below](running-this-cloudFormation-template-in-aws).  
 <br><br>
+For instructions on creating a stack using this CloudFormation Template via the CLI, us the instructions [below](Creating-the-stack-with-the-AWS-CLI)
+<br><br>
+
 
 # Security Warnings
 **The ca.crt and ca.key created by this template are the same for all executions.**  Anyone with access to this CloudFormation template has the CA key for the cluster.
@@ -24,12 +27,12 @@ The security groups only allow your IP to access the EC2 instances, so although 
 
 | Object | Description |Example|
 |-------------|------------------------|-------------------|
-|VPC| The CIDR range is entered as a parameter.  This template was designed to use a /24 CIDR (256 addresses)|192.168.4.0/24|
+|VPC| The CIDR range is entered as a parameter.  This template was designed to use a /24 CIDR (256 addresses)|10.173.12.0/24|
 |Internet Gateway|The internet gateway is attached to the VPC|
-|Subnets|The template creates 6 subnets. There are a pair of subnets created in each AZ of the 3 AZs input as a parameter: one public, one private.  | ` 192.168.4.0/27 az1-private ` <br> `192.168.4.32/27 az1-public ` <br> ` 192.168.4.64/27 az2-private ` <br> ` 192.168.4.96/27 az2-public ` <br> etc|
+|Subnets|The template creates 6 subnets. There are a pair of subnets created in each AZ of the 3 AZs input as a parameter: one public, one private.  | ` 10.173.12.0/27 az1-private ` <br> `10.173.12.32/27 az1-public ` <br> ` 10.173.12.64/27 az2-private ` <br> ` 10.173.12.96/27 az2-public ` <br> etc|
 |Route Tables|A Public route table and a private route table are created.  The public route table routes all traffic through the internet gateway.  The private subnets are associated with the priate route table and the public subnets are associated with the public route table. ||
 | Security Groups|Two security groups are created. sg01 allows ssh, rdp, 26257 and 8080 access from the IP entered as a parameter.    sg02 allows **all** communication between the instances assigned to the sg02 security group.||
-|EC2 Instances|3 EC2 instances, one in each public subnet group.  The IP address of the EC2 instances will be ".4", ".68" and ".132", which are the 1st usable address in each public subnet.|If the public subnets are: <br>`192.168.4.0/27` <br>`192.168.4.64/27` <br>`192.168.4.128/27`<br> then the EC2 instances will have the following IP addresses:<br>`192.168.4.4`<br>`192.168.4.68`<br>`192.168.4.132`|
+|EC2 Instances|3 EC2 instances, one in each public subnet group.  The IP address of the EC2 instances will be ".4", ".68" and ".132", which are the 1st usable address in each public subnet.|If the public subnets are: <br>`10.173.12.0/27` <br>`10.173.12.64/27` <br>`10.173.12.128/27`<br> then the EC2 instances will have the following IP addresses:<br>`10.173.12.4`<br>`10.173.12.68`<br>`10.173.12.132`|
 |CockroachDB|The cockroach database binary is downloaded and installed on all EC2 instances||
 |Cockroach Certs|A ca.crt and ca.key are created by the CloudFormation template.  All executions of the template will generate the same ca.crt and ca.key.  Based on these certs, node certs and root cert will be generated on each EC2 instance.|`/home/ec2-user/certs/ca.crt`<br>`/home/ec2-user/my-safe-directory/ca.key`|
 |.bashrc|The ec2-user .bashrc is modified by adding exports of several variables as well as functions to create the node cert, root cert and start the database.||
@@ -41,14 +44,14 @@ The security groups only allow your IP to access the EC2 instances, so although 
 ## The following parameters are required during the create stack process
 |Parameter|Description|Example|
 |---------|-------------------|----------------|
-|VpcCidrParameter| The CIDR for the VPC|192.168.4.0  You'll need to be sure that the VPC CIDR is not in use.  You can check by visiting the VPC page in your region.|
+|VpcCidrParameter| The CIDR for the VPC|10.173.12.0  You'll need to be sure that the VPC CIDR is not in use.  You can check by visiting the VPC page in your region.|
 |VpcNamePrefix|Used to construct the VPC name tag.  |If the parameter entered is "vpc01", the VPC name tag will be "vpc01-us-west-2"|
 |VpcAzs|3 availability zones chosen from the list of AZs.  Be careful choosing the AZs.  Not all EC2 types are available in all AZs.  2 subnets will be created in each AZ: one public and one private.|"us-west-2a, us-west-2b, us-west-2c"|
 |MyIP|An IP address which will be used to create the security group sg01.  When assigned to an EC2 instance the security group will allow SSH, RDP, 26257 and 8080 port access to this IP address.  The IP address will be appended with the CIDR range /32.  |36.250.22.1|
 |KeyPairName|Applied to the EC2 instances when they are created.  This is a drop-down-list-box|My-us-west-2-kp|
 |CRDBAMIID|Amazon Linux AMI ID.  This will be different for each region	|ami-00f7e5c52c0f43726|
 |ClusterName|CockroachDB Cluster Name.  Appended to the "cockroach start" command.|My-CRDB-Cluster-01 |
-|ExistingJoinString|If this is a multiple region cluster, the join string is avialable in the "OUTPUTS" section of the first CloudFormation Region.  Leave this as NONE if this is the 1st region|192.168.4.4,192.168.4.68,192.168.4.132 |
+|ExistingJoinString|If this is a multiple region cluster, the join string is avialable in the "OUTPUTS" section of the first CloudFormation Region.  Leave this as NONE if this is the 1st region|10.173.12.4,10.173.12.68,10.173.12.132 |
 |Installpsql|Choosing 'YES' will install postgresql 13 so that you can run 'psql'.|YES|
 |RunInit|Choosing 'YES' will cause 'cockroach init' be run on the 3rd node.  Choosing 'YES' will force the 3rd node to wait to be created until the first 2 nodes have completed, so the cloudformation process will take longer.  Choosing 'NO' will leave the init command to the operator.|YES|
 |CockroachVersion|The version of CockroachDB you want to install and run.  The parameter is limited to a drop down list box of choices.|21.2.4|
@@ -57,9 +60,9 @@ If you're going to execute this template in multiple regions, be sure to choose 
 
 |Region|CIDR|
 |--------|-----------|
-|us-west-2|192.168.3.0|
-|us-east-1|192.168.4.0|
-|us-east-2|192.168.5.0|
+|us-west-2|10.173.12.0|
+|us-east-1|10.173.13.0|
+|us-east-2|10.173.15.0|
 
 This will allow you to easily peer the 3 VPCs.  
 
@@ -89,15 +92,15 @@ To create a multi-region CockroachDB Cluster:
 ## Mulit-Region Example (cockroach node status)
 |  id |       address       |     sql_address     |  build  |         started_at         |         updated_at         |             locality             | is_available | is_live|
 |-----|---------------------|---------------------|---------|----------------------------|----------------------------|----------------------------------|--------------|----------|
-   1 | 192.168.4.4:26257   | 192.168.4.4:26257   | v21.1.9 | 2021-12-23 20:00:41.289793 | 2021-12-23 20:03:54.843964 | region=us-west-2,zone=us-west-2a | true         | true
-   2 | 192.168.5.132:26257 | 192.168.5.132:26257 | v21.1.9 | 2021-12-23 20:00:42.407873 | 2021-12-23 20:03:55.921262 | region=us-east-1,zone=us-east-1c | true         | true
-   3 | 192.168.5.68:26257  | 192.168.5.68:26257  | v21.1.9 | 2021-12-23 20:00:42.778194 | 2021-12-23 20:03:56.324225 | region=us-east-1,zone=us-east-1b | true         | true
-   4 | 192.168.4.132:26257 | 192.168.4.132:26257 | v21.1.9 | 2021-12-23 20:00:42.928144 | 2021-12-23 20:03:56.477613 | region=us-west-2,zone=us-west-2c | true         | true
-   5 | 192.168.4.68:26257  | 192.168.4.68:26257  | v21.1.9 | 2021-12-23 20:00:43.165414 | 2021-12-23 20:03:56.710054 | region=us-west-2,zone=us-west-2b | true         | true
-   6 | 192.168.5.4:26257   | 192.168.5.4:26257   | v21.1.9 | 2021-12-23 20:00:43.607428 | 2021-12-23 20:03:57.129251 | region=us-east-1,zone=us-east-1a | true         | true
-   7 | 192.168.6.68:26257  | 192.168.6.68:26257  | v21.1.9 | 2021-12-23 20:03:47.825816 | 2021-12-23 20:03:56.842498 | region=us-east-2,zone=us-east-2b | true         | true
-   8 | 192.168.6.4:26257   | 192.168.6.4:26257   | v21.1.9 | 2021-12-23 20:03:48.597583 | 2021-12-23 20:03:57.61296  | region=us-east-2,zone=us-east-2a | true         | true
-   9 | 192.168.6.132:26257 | 192.168.6.132:26257 | v21.1.9 | 2021-12-23 20:03:49.241007 | 2021-12-23 20:03:53.755784 | region=us-east-2,zone=us-east-2c | true         | true
+   1 | 10.173.12.4:26257   | 10.173.12.4:26257   | v21.1.9 | 2021-12-23 20:00:41.289793 | 2021-12-23 20:03:54.843964 | region=us-west-2,zone=us-west-2a | true         | true
+   2 | 10.173.13.132:26257 | 10.173.13.132:26257 | v21.1.9 | 2021-12-23 20:00:42.407873 | 2021-12-23 20:03:55.921262 | region=us-east-1,zone=us-east-1c | true         | true
+   3 | 10.173.13.68:26257  | 10.173.13.68:26257  | v21.1.9 | 2021-12-23 20:00:42.778194 | 2021-12-23 20:03:56.324225 | region=us-east-1,zone=us-east-1b | true         | true
+   4 | 10.173.12.132:26257 | 10.173.12.132:26257 | v21.1.9 | 2021-12-23 20:00:42.928144 | 2021-12-23 20:03:56.477613 | region=us-west-2,zone=us-west-2c | true         | true
+   5 | 10.173.12.68:26257  | 10.173.12.68:26257  | v21.1.9 | 2021-12-23 20:00:43.165414 | 2021-12-23 20:03:56.710054 | region=us-west-2,zone=us-west-2b | true         | true
+   6 | 10.173.13.4:26257   | 10.173.13.4:26257   | v21.1.9 | 2021-12-23 20:00:43.607428 | 2021-12-23 20:03:57.129251 | region=us-east-1,zone=us-east-1a | true         | true
+   7 | 10.173.14.68:26257  | 10.173.14.68:26257  | v21.1.9 | 2021-12-23 20:03:47.825816 | 2021-12-23 20:03:56.842498 | region=us-east-2,zone=us-east-2b | true         | true
+   8 | 10.173.14.4:26257   | 10.173.14.4:26257   | v21.1.9 | 2021-12-23 20:03:48.597583 | 2021-12-23 20:03:57.61296  | region=us-east-2,zone=us-east-2a | true         | true
+   9 | 10.173.14.132:26257 | 10.173.14.132:26257 | v21.1.9 | 2021-12-23 20:03:49.241007 | 2021-12-23 20:03:53.755784 | region=us-east-2,zone=us-east-2c | true         | true
 
 
 When deleting stacks in a multi-region cluster, be sure to delete the VPC Peering Connections first.
