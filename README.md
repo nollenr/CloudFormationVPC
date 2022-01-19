@@ -130,7 +130,7 @@ In the "Prerequisite - Prepare template" section, choose "Template is ready"
 <br>
 In the "Specify template" section, choose "Upload a template file"
 <br>
-Click the "Choose file" button and select the CloudFormation yaml file.
+Click the "Choose file" button and select the CloudFormation yaml file (crdb_cloudformation_template.yaml).
 ![Cloud Formation Template](./README-resources/CloudFormation02.JPG)
 
 ### Supply The Necessary Parameters
@@ -158,3 +158,14 @@ To see the resources that were created, the outputs, or to review the parameters
 # Delete the Stack
 To delete the stack and all of the resources created as part of the stack, select the stack and hit the "Delete" button.  Once the process is complete, the EC2 instances will be terminated, and all resources will be gone.
 ![Delete Stack](./README-resources/CloudFormation08.JPG)
+
+# Creating the stack with the AWS CLI
+```
+aws cloudformation create-stack --stack-name myteststack --template-body file://crdb_cloudformation_template.yaml --cli-input-yaml file://crdb_cloudformation_cli_parameters.yaml
+```
+
+In order to create the stack in the AWS CLI, you'll need to have the following two files in your directory:
+- crdb_cloudformation_template.yaml
+- crdb_cloudformation_cli_parameters.yaml
+
+The `crdb_cloudformation_template.yaml` is the cloudformation template and the `crdb_cloudformation_cli_parameters.yaml` file is the parameters needed to run the cloudformation template.

@@ -36,7 +36,7 @@ Parameters:
   VpcCidrParameter: 
     Description: "CIDR Block For the VPC"
     Type: String
-    Default: "192.168.4.0/24"
+    Default: "10.173.12.0/24"
   VpcNamePrefix:
     Description: "VPC Name Prefix.  The name will be the prefix plus the region name.  Ex: vpc01-us-west-2"
     Type: String
