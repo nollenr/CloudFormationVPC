@@ -1,4 +1,4 @@
-TemplateBody: file://cf-vpic.yaml # Structure containing the template body with a minimum length of 1 byte and a maximum length of 51,200 bytes.
+TemplateBody: file://crdb_cloudformation_template.yaml # Structure containing the template body with a minimum length of 1 byte and a maximum length of 51,200 bytes.
 Parameters: # A list of Parameter structures that specify input parameters for the stack.
 - ParameterKey: CRDBAMIID  # The key associated with the parameter.
   ParameterValue: ami-00f7e5c52c0f43726 # The input value associated with the parameter.
