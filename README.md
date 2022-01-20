@@ -11,7 +11,8 @@ For instructions on creating a stack using this CloudFormation Template use the 
 <br><br>
 For instructions on creating a stack using this CloudFormation Template via the CLI, us the instructions [below](Creating-the-stack-with-the-AWS-CLI)
 <br><br>
-
+For instructions on adding a Network Load Balancer to the infrastructure created by this CloudFormation Template, follow the instructions [below](add-a-network-load-balancer-to-the-infrastructure)
+ 
 
 # Security Warnings
 **The ca.crt and ca.key created by this template are the same for all executions.**  Anyone with access to this CloudFormation template has the CA key for the cluster.
@@ -172,3 +173,94 @@ In order to create the stack in the AWS CLI, you'll need to have the following t
 - crdb_cloudformation_cli_parameters.yaml
 
 The `crdb_cloudformation_template.yaml` is the cloudformation template and the `crdb_cloudformation_cli_parameters.yaml` file is the parameters needed to run the cloudformation template.
+
+<br><br>
+
+# Add a Network Load Balancer to the Infrastructure
+To add a network load balancer to the infrastructure involves 2 steps
+- creating the target group:  This is the list of instances to which the load balancer will send traffic
+- create the load balancer and attach it to the target group
+- modify the security group
+
+(Note that in a multi-region setup you would probably want an NLB in each region so that users get directed to most appropriate, possibly closest node.)
+
+Assume that we have created a Cockroach Cluster in 1 region with 3 nodes:
+
+```
+[ec2-user@ip-192-168-3-4 ~]$ cockroach node status
+  id |       address       |     sql_address     |  build  |         started_at         |         updated_at         |             locality             | is_available | is_live
+-----+---------------------+---------------------+---------+----------------------------+----------------------------+----------------------------------+--------------+----------
+   1 | 192.168.3.4:26257   | 192.168.3.4:26257   | v21.2.3 | 2022-01-10 20:05:52.653956 | 2022-01-20 21:17:48.212539 | region=us-west-2,zone=us-west-2a | true         | true
+   2 | 192.168.3.132:26257 | 192.168.3.132:26257 | v21.2.3 | 2022-01-10 20:05:54.215074 | 2022-01-20 21:17:49.768001 | region=us-west-2,zone=us-west-2c | true         | true
+   3 | 192.168.3.68:26257  | 192.168.3.68:26257  | v21.2.3 | 2022-01-10 20:05:54.519396 | 2022-01-20 21:17:50.069444 | region=us-west-2,zone=us-west-2b | true         | true
+```
+
+## Create a target group for these instances:
+Navigate to the EC2 console and from the menu on the left, choose "Target Groups" and "Create target group".
+![Create Target Group](./README-resources/TargetGroup01.JPG)
+
+On the "Specify group details" page:
+- select the most appropriate target type, I chose "instances"
+- Give the group a name (MyTargetGroup in the example below)
+- select "TCP" as the protocol and 26257 as the port (26257 is the CockroachDB Port)
+- and select the VPC that was created as part of the CloudFormation (you can search by name)
+- enter any appropriate tags
+- click "Next"
+![Specify group details](./README-resources/TargetGroup02.JPG)
+
+On the "Register targets" page:
+- select all of the instances in the "Available instances" section
+- be sure the "Ports for the selected instances" is 26257
+- select the "Include as pending below" button
+- select the "Create target group" button.
+![Register Targets](./README-resources/TargetGroup03.JPG)
+
+## Create the load balancer
+Navigate to the EC2 console and from the menu on the left, choose "Load Balancers".
+![Create Load Balancer](./README-resources/LoadBalancer01.JPG)
+
+Select "Create" Network Load Balancer from the "Select load balancer type" page.
+![Select load balancer type](./README-resources/LoadBalancer02.JPG)
+
+On the "Create Network Load Balancer Page"
+- Basic Configuration Section
+   - Enter a load balancer name (MyLoadBalancer in the example)
+   - select Internal from the Scheme radio buttons
+   - select IPv4 from the IP Address type radio buttons
+- Network Mapping Section
+   - Enter the VPC created in the CloudFormation
+   - select the private subnet for each availability zone (we're select the private subnets because we choose to create an internal load balancer.  If you choose to create an internet-facing load balancer, you would need to select public subnets here.)
+- Listener, Tags and Summary Sections
+   - Protocol should be "TCP"
+   - Port is 26257
+   - Forward To is the target group created above "MyTargetGroup"
+   - Add any tags that are important for you
+- Select "Create load balancer"
+
+![Load Balancer Basic Configuration](./README-resources/LoadBalancer03.JPG)
+![Load Balancer Network Mapping](./README-resources/LoadBalancer04.JPG)
+![Load Balancer Listeners](./README-resources/LoadBalancer05.JPG)
+
+## Modify the Security Group
+You'll need to modify the security group (sg02) created by the CloudFormation template to allow the load balancer to reach the Cockroach Nodes.
+
+Navigate to the EC2 console  and from the menu on the left, choose "Security Groups" and find the sg02 security group.
+![Security Group](./README-resources/SecurityGroup01.JPG)
+
+Select the "Inbound Rules" rules tab in the bottom section of the screen and select "Edit inbound rules".
+
+Enter a new security group rule with the following properties:
+- Type is "Custom TCP"
+- Port range is: 26257
+- The source is the VPC CIDR range you selected during CloudFormation
+![Security Group Rule](./README-resources/SecurityGroup02.JPG)
+
+## Health Check Status
+Navigate back to the Target Groups Section and be sure Health Status of all the instances is "healthy" (it will take several minutes based on the health check default settings).
+
+If you're having problems with the Health Check be sure to check your security group settings.
+
+![Target Group Health Checks](./README-resources/LoadBalancer06.JPG)
+
+
+
