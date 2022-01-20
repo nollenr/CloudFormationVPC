@@ -11,7 +11,7 @@ For instructions on creating a stack using this CloudFormation Template use the 
 <br><br>
 For instructions on creating a stack using this CloudFormation Template via the CLI, us the instructions [below](Creating-the-stack-with-the-AWS-CLI)
 <br><br>
-For instructions on adding a Network Load Balancer to the infrastructure created by this CloudFormation Template, follow the instructions [below](add-a-network-load-balancer-to-the-infrastructure)
+For instructions on adding a Network Load Balancer to the infrastructure created by this CloudFormation Template, follow the instructions [below](add-a-network-load-balancer)
  
 
 # Security Warnings
@@ -176,7 +176,7 @@ The `crdb_cloudformation_template.yaml` is the cloudformation template and the `
 
 <br><br>
 
-# Add a Network Load Balancer to the Infrastructure
+# Add a Network Load Balancer
 To add a network load balancer to the infrastructure involves 2 steps
 - creating the target group:  This is the list of instances to which the load balancer will send traffic
 - create the load balancer and attach it to the target group
