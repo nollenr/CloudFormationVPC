@@ -9,7 +9,7 @@ When the CloudFormation stack is deleted, all resources created by the template 
 <br><br>
 For instructions on creating a stack using this CloudFormation Template use the instructions [below](#running-this-cloudFormation-template-in-aws).  
 <br><br>
-For instructions on creating a stack using this CloudFormation Template via the CLI, us the instructions [below](#Creating-the-stack-with-the-AWS-CLI)
+For instructions on creating a stack using this CloudFormation Template via the CLI, use the instructions [located here](#Creating-the-stack-with-the-AWS-CLI)
 <br><br>
 For instructions on adding a Network Load Balancer to the infrastructure created by this CloudFormation Template, follow the instructions [below](#add-a-network-load-balancer)
  
