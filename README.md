@@ -177,10 +177,10 @@ The `crdb_cloudformation_template.yaml` is the cloudformation template and the `
 <br><br>
 
 # Add a Network Load Balancer
-To add a network load balancer to the infrastructure involves 2 steps
+To add a network load balancer to the infrastructure involves 3 steps
 - creating the target group:  This is the list of instances to which the load balancer will send traffic
 - create the load balancer and attach it to the target group
-- modify the security group
+- modify the security group to allow the load balancer to reach the target group instances
 
 (Note that in a multi-region setup you would probably want an NLB in each region so that users get directed to most appropriate, possibly closest node.)
 
