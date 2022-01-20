@@ -7,11 +7,11 @@ Running this Cloudformation Template in multiple Regions will allow you to creat
 <br><br>
 When the CloudFormation stack is deleted, all resources created by the template in a region are deleted as well including the VPC, Internet Gateway, Subnets, RouteTables, Security Groups and EC2 Instances.  No data is maintained or saved.
 <br><br>
-For instructions on creating a stack using this CloudFormation Template use the instructions [below](running-this-cloudFormation-template-in-aws).  
+For instructions on creating a stack using this CloudFormation Template use the instructions [below](#running-this-cloudFormation-template-in-aws).  
 <br><br>
-For instructions on creating a stack using this CloudFormation Template via the CLI, us the instructions [below](Creating-the-stack-with-the-AWS-CLI)
+For instructions on creating a stack using this CloudFormation Template via the CLI, us the instructions [below](#Creating-the-stack-with-the-AWS-CLI)
 <br><br>
-For instructions on adding a Network Load Balancer to the infrastructure created by this CloudFormation Template, follow the instructions [below](add-a-network-load-balancer)
+For instructions on adding a Network Load Balancer to the infrastructure created by this CloudFormation Template, follow the instructions [below](#add-a-network-load-balancer)
  
 
 # Security Warnings
