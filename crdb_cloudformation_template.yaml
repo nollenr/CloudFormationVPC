@@ -557,6 +557,7 @@ Resources:
             echo "export ip_public=\`curl http://169.254.169.254/latest/meta-data/public-ipv4\`" >> /home/ec2-user/.bashrc
             echo "export aws_region=\`curl http://169.254.169.254/latest/meta-data/placement/region\`" >> /home/ec2-user/.bashrc
             echo "export aws_az=\`curl http://169.254.169.254/latest/meta-data/placement/availability-zone\`" >> /home/ec2-user/.bashrc
+            echo "export cockroach_data_dir=/home/ec2-user/cockroach-data" >> /home/ec2-user/.bashrc
             echo "if [ '${ExistingJoinString}' = 'NONE' ]; then"  >> /home/ec2-user/.bashrc
             echo "  export JOIN_STR=${CRDBIPNode01.PrimaryPrivateIpAddress},${CRDBIPNode02.PrimaryPrivateIpAddress},${CRDBIPNode03.PrimaryPrivateIpAddress}" >> /home/ec2-user/.bashrc
             echo "else"  >> /home/ec2-user/.bashrc
@@ -588,6 +589,17 @@ Resources:
             echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
             echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
             echo "}" >> /home/ec2-user/.bashrc           
+            echo "REFRESHCRDB() {" >> /home/ec2-user/.bashrc
+            echo "  ps -ef | grep "cockroach" | grep -v grep | awk '{print \$2}' | xargs kill -9" >> /home/ec2-user/.bashrc
+            echo "  rm -rf \$cockroach_data_dir" >> /home/ec2-user/.bashrc
+            echo "  mkdir -p \$cockroach_data_dir" >> /home/ec2-user/.bashrc
+            echo "  chmod 750 \$cockroach_data_dir" >> /home/ec2-user/.bashrc
+            echo "  if [[ "$CRDBNODE" = 1 ]]; then echo "Sleeping for 30 seconds.  Refresh other nodes in the cluster before the 30 second timer expires."; fi" >> /home/ec2-user/.bashrc
+            echo "  if [[ "$CRDBNODE" != 3 ]]; then sleep 30; fi" >> /home/ec2-user/.bashrc
+            echo "  STARTCRDB" >> /home/ec2-user/.bashrc
+            echo "  if [[ "$CRDBNODE" = 3 ]]; then echo "Sleeping while other cluster nodes start" && sleep 30 && echo "Initializing Cockroach Database" && cockroach init; fi" >> /home/ec2-user/.bashrc
+            echo "  if [[ "$CRDBNODE" = 3 ]]; then sleep 15; cockroach node status; fi" >> /home/ec2-user/.bashrc
+            echo "}" >> /home/ec2-user/.bashrc
             sleep 20; su ec2-user -lc 'CREATENODECERT; CREATEROOTCERT; STARTCRDB'
             if [[ '${RunInit}' = 'YES' && "$CRDBNODE" = 3 ]]; then echo "Initializing Cockroach Database" && su ec2-user -lc 'cockroach init'; fi
             if [[ '${Installpsql}' = 'YES' ]]; then echo "Installing postgresql13"; amazon-linux-extras install postgresql13; fi
@@ -667,6 +679,7 @@ Resources:
             echo "export ip_public=\`curl http://169.254.169.254/latest/meta-data/public-ipv4\`" >> /home/ec2-user/.bashrc
             echo "export aws_region=\`curl http://169.254.169.254/latest/meta-data/placement/region\`" >> /home/ec2-user/.bashrc
             echo "export aws_az=\`curl http://169.254.169.254/latest/meta-data/placement/availability-zone\`" >> /home/ec2-user/.bashrc
+            echo "export cockroach_data_dir=/home/ec2-user/cockroach-data" >> /home/ec2-user/.bashrc
             echo "if [ '${ExistingJoinString}' = 'NONE' ]; then"  >> /home/ec2-user/.bashrc
             echo "  export JOIN_STR=${CRDBIPNode01.PrimaryPrivateIpAddress},${CRDBIPNode02.PrimaryPrivateIpAddress},${CRDBIPNode03.PrimaryPrivateIpAddress}" >> /home/ec2-user/.bashrc
             echo "else"  >> /home/ec2-user/.bashrc
@@ -698,6 +711,17 @@ Resources:
             echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
             echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
             echo "}" >> /home/ec2-user/.bashrc           
+            echo "REFRESHCRDB() {" >> /home/ec2-user/.bashrc
+            echo "  ps -ef | grep "cockroach" | grep -v grep | awk '{print \$2}' | xargs kill -9" >> /home/ec2-user/.bashrc
+            echo "  rm -rf \$cockroach_data_dir" >> /home/ec2-user/.bashrc
+            echo "  mkdir -p \$cockroach_data_dir" >> /home/ec2-user/.bashrc
+            echo "  chmod 750 \$cockroach_data_dir" >> /home/ec2-user/.bashrc
+            echo "  if [[ "$CRDBNODE" = 1 ]]; then echo "Sleeping for 30 seconds.  Refresh other nodes in the cluster before the 30 second timer expires."; fi" >> /home/ec2-user/.bashrc
+            echo "  if [[ "$CRDBNODE" != 3 ]]; then sleep 30; fi" >> /home/ec2-user/.bashrc
+            echo "  STARTCRDB" >> /home/ec2-user/.bashrc
+            echo "  if [[ "$CRDBNODE" = 3 ]]; then echo "Sleeping while other cluster nodes start" && sleep 30 && echo "Initializing Cockroach Database" && cockroach init; fi" >> /home/ec2-user/.bashrc
+            echo "  if [[ "$CRDBNODE" = 3 ]]; then sleep 15; cockroach node status; fi" >> /home/ec2-user/.bashrc
+            echo "}" >> /home/ec2-user/.bashrc
             sleep 20; su ec2-user -lc 'CREATENODECERT; CREATEROOTCERT; STARTCRDB'
             if [[ '${RunInit}' = 'YES' && "$CRDBNODE" = 3 ]]; then echo "Initializing Cockroach Database" && su ec2-user -lc 'cockroach init'; fi
             if [[ '${Installpsql}' = 'YES' ]]; then echo "Installing postgresql13"; amazon-linux-extras install postgresql13; fi
@@ -790,6 +814,7 @@ Resources:
             echo "export ip_public=\`curl http://169.254.169.254/latest/meta-data/public-ipv4\`" >> /home/ec2-user/.bashrc
             echo "export aws_region=\`curl http://169.254.169.254/latest/meta-data/placement/region\`" >> /home/ec2-user/.bashrc
             echo "export aws_az=\`curl http://169.254.169.254/latest/meta-data/placement/availability-zone\`" >> /home/ec2-user/.bashrc
+            echo "export cockroach_data_dir=/home/ec2-user/cockroach-data" >> /home/ec2-user/.bashrc
             echo "if [ '${ExistingJoinString}' = 'NONE' ]; then"  >> /home/ec2-user/.bashrc
             echo "  export JOIN_STR=${CRDBIPNode01.PrimaryPrivateIpAddress},${CRDBIPNode02.PrimaryPrivateIpAddress},${CRDBIPNode03.PrimaryPrivateIpAddress}" >> /home/ec2-user/.bashrc
             echo "else"  >> /home/ec2-user/.bashrc
@@ -821,6 +846,17 @@ Resources:
             echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
             echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
             echo "}" >> /home/ec2-user/.bashrc           
+            echo "REFRESHCRDB() {" >> /home/ec2-user/.bashrc
+            echo "  ps -ef | grep "cockroach" | grep -v grep | awk '{print \$2}' | xargs kill -9" >> /home/ec2-user/.bashrc
+            echo "  rm -rf \$cockroach_data_dir" >> /home/ec2-user/.bashrc
+            echo "  mkdir -p \$cockroach_data_dir" >> /home/ec2-user/.bashrc
+            echo "  chmod 750 \$cockroach_data_dir" >> /home/ec2-user/.bashrc
+            echo "  if [[ "$CRDBNODE" = 1 ]]; then echo "Sleeping for 30 seconds.  Refresh other nodes in the cluster before the 30 second timer expires."; fi" >> /home/ec2-user/.bashrc
+            echo "  if [[ "$CRDBNODE" != 3 ]]; then sleep 30; fi" >> /home/ec2-user/.bashrc
+            echo "  STARTCRDB" >> /home/ec2-user/.bashrc
+            echo "  if [[ "$CRDBNODE" = 3 ]]; then echo "Sleeping while other cluster nodes start" && sleep 30 && echo "Initializing Cockroach Database" && cockroach init; fi" >> /home/ec2-user/.bashrc
+            echo "  if [[ "$CRDBNODE" = 3 ]]; then sleep 15; cockroach node status; fi" >> /home/ec2-user/.bashrc
+            echo "}" >> /home/ec2-user/.bashrc
             sleep 20; su ec2-user -lc 'CREATENODECERT; CREATEROOTCERT; STARTCRDB'
             if [[ '${RunInit}' = 'YES' && "$CRDBNODE" = 3 ]]; then echo "Initializing Cockroach Database" && su ec2-user -lc 'cockroach init'; fi
             if [[ '${Installpsql}' = 'YES' ]]; then echo "Installing postgresql13"; amazon-linux-extras install postgresql13; fi

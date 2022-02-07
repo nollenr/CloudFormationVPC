@@ -12,7 +12,8 @@ For instructions on creating a stack using this CloudFormation Template use the 
 For instructions on creating a stack using this CloudFormation Template via the CLI, use the instructions [located here](#Creating-the-stack-with-the-AWS-CLI)
 <br><br>
 For instructions on adding a Network Load Balancer to the infrastructure created by this CloudFormation Template, follow the instructions [below](#add-a-network-load-balancer)
- 
+<br><br>
+Additional functions available in bash [located here](#additional_bash_functions) 
 
 # Security Warnings
 **The ca.crt and ca.key created by this template are the same for all executions.**  Anyone with access to this CloudFormation template has the CA key for the cluster.
@@ -262,5 +263,18 @@ If you're having problems with the Health Check be sure to check your security g
 
 ![Target Group Health Checks](./README-resources/LoadBalancer06.JPG)
 
+# Additional Bash Functions
+## STARTCRDB
+If you shutdown the nodes running the CockroachDB cluster, you can easily restart the database by issuing the ```STARTCRDB``` command on all nodes in the cluster.
 
+## REFRESHCRDB
+This is a destructive command and will delete ALL data in the cockroach-data directory.  Only use this command if you actually want a "fresh" CockroachDB with no data.
+
+This function will kill any running cockroach process(es), purge the data directories, recreate them and restart CockroachDB.  The way to use the function (assuming a 3 node cluster):
+
+1. In the shell running node 1, issue the ```REFRESHCRDB``` command.
+2. In the shell running node 2, issue the ```REFRESHCRDB``` command.
+3. In the shell running node 3, issue the ```REFRESHCRDB``` command.
+
+You should issue the commands in succession within 30 seconds.
 
