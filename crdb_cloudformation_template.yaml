@@ -112,6 +112,10 @@ Parameters:
     - c5d.2xlarge
     - c5d.4xlarge
     - c5d.9xlarge
+    - m5.xlarge
+    - m5.2xlarge
+    - m5.4xlarge
+    - m5.8xlarge
   MyIP:
     Type: String
     Description: "Your IP address.  This will be used in the security group configuration to provide SSH/RDP access to EC2 instances. A CIDR range of /32 will be appended."
