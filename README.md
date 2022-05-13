@@ -57,6 +57,7 @@ The security groups only allow your IP to access the EC2 instances, so although 
 |Installpsql|Choosing 'YES' will install postgresql 13 so that you can run 'psql'.|YES|
 |RunInit|Choosing 'YES' will cause 'cockroach init' be run on the 3rd node.  Choosing 'YES' will force the 3rd node to wait to be created until the first 2 nodes have completed, so the cloudformation process will take longer.  Choosing 'NO' will leave the init command to the operator.|YES|
 |CockroachVersion|The version of CockroachDB you want to install and run.  The parameter is limited to a drop down list box of choices.|21.2.4|
+|NumberOfNodes|The number of nodes (3, 6, or 9) to create in the VPC.  The nodes will be evenly distributed between the VpcAzs.|3|
 
 If you're going to execute this template in multiple regions, be sure to choose non-overlaping CIDR blocks for each region.  For example:
 
