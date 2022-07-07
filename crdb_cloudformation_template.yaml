@@ -25,13 +25,16 @@ AWSTemplateFormatVersion: '2010-09-09'
 Mappings:
   amazonLinuxAmi:
     us-east-1:
-      AMI: ami-0ed9277fb7eb570c9
+      AMI: ami-0cff7528ff583bf9a
+#     AMI: ami-0ed9277fb7eb570c9
     us-east-2:
-      AMI: ami-002068ed284fb165b
+      AMI: ami-02d1e544b84bf7502
+#     AMI: ami-002068ed284fb165b
     us-west-1:
       AMI: ami-03af6a70ccd8cb578
     us-west-2:
-      AMI: ami-00f7e5c52c0f43726
+      AMI: ami-098e42ae54c764c35
+#     AMI: ami-00f7e5c52c0f43726
 Parameters: 
   VpcCidrParameter: 
     Description: "CIDR Block For the VPC"
@@ -49,10 +52,13 @@ Parameters:
     Default: "us-west-2a,us-west-2b,us-west-2c"
   CockroachVersion:
     Type: String
-    Default: "21.2.10"
+    Default: "22.1.2"
     Description: Cockroach Version to install
     AllowedValues:
+    - "22.1.2"
+    - "22.1.0"
     - "21.2.10"
+    - "21.2.13"
     - "21.2.9"
     - "21.2.5"
     - "21.2.4"
@@ -141,7 +147,7 @@ Parameters:
   ClusterName:
     Description: "The name for the Cockroach Cluster"
     Type: String
-    Default: "My-CRDB-Cluster-01"
+    Default: "CRDB01"
   ExistingJoinString:
     Description: "If you are joining the nodes being created here to another region, use the join string created previously (see the Output section of a previously executed stack in another region).  Otherwise, leave this as NONE."
     Type: String
