@@ -1,4 +1,34 @@
 # Cockroach Database CloudFormation Template
+
+- [Cockroach Database CloudFormation Template](#cockroach-database-cloudformation-template)
+- [Security Warnings](#security-warnings)
+- [The following objects are created by this CloudFormation Template](#the-following-objects-are-created-by-this-cloudformation-template)
+  - [The following parameters are required during the create stack process](#the-following-parameters-are-required-during-the-create-stack-process)
+- [Template Exports](#template-exports)
+- [Multi-Region](#multi-region)
+  - [Mulit-Region Example (cockroach node status)](#mulit-region-example-cockroach-node-status)
+- [Running This CloudFormation Template in AWS](#running-this-cloudformation-template-in-aws)
+  - [Verify your VPC CIDR](#verify-your-vpc-cidr)
+  - [Ensure you have a key-pair for the region](#ensure-you-have-a-key-pair-for-the-region)
+  - [Find your IP address](#find-your-ip-address)
+  - [Run the CloudFormation Template to Create the Infrastructure](#run-the-cloudformation-template-to-create-the-infrastructure)
+    - [Load the Template](#load-the-template)
+    - [Supply The Necessary Parameters](#supply-the-necessary-parameters)
+    - [Configure stack options](#configure-stack-options)
+    - [Review](#review)
+    - [Create Complete](#create-complete)
+- [Delete the Stack](#delete-the-stack)
+- [Creating the stack with the AWS CLI](#creating-the-stack-with-the-aws-cli)
+- [Connecting to your cluster](#connecting-to-your-cluster)
+- [Add a Network Load Balancer](#add-a-network-load-balancer)
+  - [Create a target group for these instances:](#create-a-target-group-for-these-instances)
+  - [Create the load balancer](#create-the-load-balancer)
+  - [Modify the Security Group](#modify-the-security-group)
+  - [Health Check Status](#health-check-status)
+- [Additional Bash Functions](#additional-bash-functions)
+  - [STARTCRDB](#startcrdb)
+  - [REFRESHCRDB](#refreshcrdb)
+
 AWS CloudFormation Template for generating: VPC, Internet Gateway, Subnets, RouteTables and Security Groups, EC2 Instances, installing CorkroachDB and certificates.  The cloudformation template usually takes less than 2 minutes to execute.
 <br><br>
 Once the infrastructure has been created, node and root certs will be generated and cockroachDB will be started.  You can choose to have the CloudFormation Template issue the "init" command, or you can do that manually (helpful when creating a multi-region cluster).
@@ -177,6 +207,40 @@ In order to create the stack in the AWS CLI, you'll need to have the following t
 The `crdb_cloudformation_template.yaml` is the cloudformation template and the `crdb_cloudformation_cli_parameters.yaml` file is the parameters needed to run the cloudformation template.
 
 <br><br>
+
+# Connecting to your cluster
+
+## Connect from a Cluster Node
+You can connect to the cluster from any cluster node by using:
+
+```
+cockroach sql
+```
+
+To connect from an non-cluster node, you may need to do the following:
+
+## Connect from a non-Cluster Node
+```
+curl https://binaries.cockroachdb.com/cockroach-v22.1.5.linux-amd64.tgz | tar -xz && sudo cp -i cockroach-v22.1.5.linux-amd64/cockroach /usr/local/bin/
+```
+
+```
+cockroach sql --url 'postgresql://<user>@<host>:26257/<database>?sslmode=verify-full&sslrootcert='$HOME'/Library/CockroachCloud/certs/<cluster-name>-ca.crt'
+```
+
+For example:
+```
+cockroach sql --url "postgresql://ron@192.168.2.4:26257/defaultdb?sslmode=verify-full&sslrootcert=$HOME/certs/ca.crt"
+```
+
+### Connect via psql
+You can also connect using psql
+```
+ psql -p 26257 -h 192.168.2.4 -U ron
+```
+
+<br><br>
+
 
 # Add a Network Load Balancer
 To add a network load balancer to the infrastructure involves 3 steps
