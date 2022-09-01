@@ -20,11 +20,16 @@
 - [Delete the Stack](#delete-the-stack)
 - [Creating the stack with the AWS CLI](#creating-the-stack-with-the-aws-cli)
 - [Connecting to your cluster](#connecting-to-your-cluster)
+  - [Connect from a Cluster Node](#connect-from-a-cluster-node)
+  - [Connect from a non-Cluster Node](#connect-from-a-non-cluster-node)
+    - [Connect via psql](#connect-via-psql)
 - [Add a Network Load Balancer](#add-a-network-load-balancer)
   - [Create a target group for these instances:](#create-a-target-group-for-these-instances)
   - [Create the load balancer](#create-the-load-balancer)
   - [Modify the Security Group](#modify-the-security-group)
   - [Health Check Status](#health-check-status)
+- [Additional Bash Goodies](#additional-bash-goodies)
+  - [Paswordless SSH](#paswordless-ssh)
 - [Additional Bash Functions](#additional-bash-functions)
   - [STARTCRDB](#startcrdb)
   - [REFRESHCRDB](#refreshcrdb)
@@ -88,6 +93,8 @@ The security groups only allow your IP to access the EC2 instances, so although 
 |RunInit|Choosing 'YES' will cause 'cockroach init' be run on the 3rd node.  Choosing 'YES' will force the 3rd node to wait to be created until the first 2 nodes have completed, so the cloudformation process will take longer.  Choosing 'NO' will leave the init command to the operator.|YES|
 |CockroachVersion|The version of CockroachDB you want to install and run.  The parameter is limited to a drop down list box of choices.|21.2.4|
 |NumberOfNodes|The number of nodes (3, 6, or 9) to create in the VPC.  The nodes will be evenly distributed between the VpcAzs.|3|
+|VolumeType|The type of volume (gp2 or gp3) that you would like attached to the instances|gp2|
+|VolumeSize|The size of the volume, in GB, that should be attached to the instance.  Minimum size is 8GB.|600|
 
 If you're going to execute this template in multiple regions, be sure to choose non-overlaping CIDR blocks for each region.  For example:
 
@@ -328,6 +335,23 @@ If you're having problems with the Health Check be sure to check your security g
 
 ![Target Group Health Checks](./README-resources/LoadBalancer06.JPG)
 
+# Additional Bash Goodies
+The local IP address of each instance is in the .bashrc in variables NODE1, NODE2, etc.  
+
+## Paswordless SSH
+Passwordless ssh has been setup between all of the nodes.  To ssh between the nodes
+
+```
+ssh $NODE3
+```
+
+Please note:
+Nodes 1, 2 and 3 only have the IP addresses for nodes 1, 2 and 3. (i.e bash environment variables NODE1, NODE2 and NODE3).
+</br>
+Nodes 4, 5, and 6 have the IP Addresses for nodes 1-6.
+</br>
+Nodes 7, 8, and 9 have the IP Addresses for nodes 1-9.
+
 # Additional Bash Functions
 ## STARTCRDB
 If you shutdown the nodes running the CockroachDB cluster, you can easily restart the database by issuing the ```STARTCRDB``` command on all nodes in the cluster.
@@ -342,4 +366,5 @@ This function will kill any running cockroach process(es), purge the data direct
 3. In the shell running node 3, issue the ```REFRESHCRDB``` command.
 
 You should issue the commands in succession within 30 seconds.
+
 
