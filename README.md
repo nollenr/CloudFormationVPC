@@ -352,6 +352,26 @@ Nodes 4, 5, and 6 have the IP Addresses for nodes 1-6.
 </br>
 Nodes 7, 8, and 9 have the IP Addresses for nodes 1-9.
 
+This node number corresponds to the LINUX node number you would find in the EC2 console.  This is not the node number of the Cockroach Cluster Node (see below).
+
+## SSH To a CRDB Node Number
+A `cockroach node status` lists all of the nodes participating in the cluster and produces output that looks like the following:
+
+|  id |       address       |     sql_address     |  build  |         started_at         |         updated_at         |             locality             | is_available | is_live|
+|-----|---------------------|---------------------|---------|----------------------------|----------------------------|----------------------------------|--------------|----------|
+|   1 | 192.168.2.132:26257 | 192.168.2.132:26257 | v22.1.6 | 2022-09-09 16:46:43.361479 | 2022-09-12 16:39:26.894466 | region=us-west-2,zone=us-west-2c | true         | true|
+|   2 | 192.168.2.4:26257   | 192.168.2.4:26257   | v22.1.6 | 2022-09-09 16:46:45.226062 | 2022-09-12 16:39:24.260465 | region=us-west-2,zone=us-west-2a | true         | true|
+|   3 | 192.168.2.68:26257  | 192.168.2.68:26257  | v22.1.6 | 2022-09-09 16:46:45.360192 | 2022-09-12 16:39:24.372785 | region=us-west-2,zone=us-west-2b | true         | true|
+
+You can ssh to any of the nodes by using `CRDBNODE` and the node number.   For example, to ssh to node id '3', you can do the following:
+
+```
+ssh $CRDBNODE3
+```
+
+Note that the LINUX node number and the CRDB node number are different.  The LINUX node number is the node in the order it was created.  The CRDB Node number is the number assigned by CRDB when the node joins the cluster.
+
+
 # Additional Bash Functions
 ## STARTCRDB
 If you shutdown the nodes running the CockroachDB cluster, you can easily restart the database by issuing the ```STARTCRDB``` command on all nodes in the cluster.

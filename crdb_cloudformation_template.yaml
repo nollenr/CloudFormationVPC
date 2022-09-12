@@ -57,6 +57,7 @@ Parameters:
     Default: "22.1.6"
     Description: Cockroach Version to install
     AllowedValues:
+    - "22.2.0-alpha.2"
     - "22.1.6"
     - "22.1.5"
     - "22.1.4"
@@ -797,6 +798,16 @@ Resources:
               echo "  if [[ "$CRDBNODE" = 3 ]]; then echo "Sleeping while other cluster nodes start" && sleep 30 && echo "Initializing Cockroach Database" && cockroach init; fi" >> /home/ec2-user/.bashrc
               echo "  if [[ "$CRDBNODE" = 3 ]]; then sleep 15; cockroach node status; fi" >> /home/ec2-user/.bashrc
               echo "}" >> /home/ec2-user/.bashrc
+              echo "SETCRDBVARS() {" >> /home/ec2-user/.bashrc
+              echo "  cockroach node status | awk -F ':' 'FNR > 1 { print \$1 }' | awk '{ print \$1, \$2 }' |  while read line; do" >> /home/ec2-user/.bashrc
+              echo "    node_number=\`echo \$line | awk '{ print \$1 }'\`" >> /home/ec2-user/.bashrc
+              echo "    variable_name=CRDBNODE\$node_number" >> /home/ec2-user/.bashrc
+              echo "    ip=\`echo \$line | awk '{ print \$2 }'\`" >> /home/ec2-user/.bashrc
+              echo "    echo export \$variable_name=\$ip >> crdb_node_list" >> /home/ec2-user/.bashrc
+              echo "  done" >> /home/ec2-user/.bashrc
+              echo "  source ./crdb_node_list" >> /home/ec2-user/.bashrc
+              echo "}" >> /home/ec2-user/.bashrc
+              echo "SETCRDBVARS" >> /home/ec2-user/.bashrc
               sleep 20; su ec2-user -lc 'CREATENODECERT; CREATEROOTCERT; STARTCRDB'
               if [[ '${RunInit}' = 'YES' && "$CRDBNODE" = 3 ]]; then echo "Initializing Cockroach Database" && su ec2-user -lc 'cockroach init'; fi
               if [[ '${Installpsql}' = 'YES' ]]; then echo "Installing postgresql13"; amazon-linux-extras install postgresql13; fi
@@ -936,6 +947,16 @@ Resources:
               echo "  if [[ "$CRDBNODE" = 3 ]]; then echo "Sleeping while other cluster nodes start" && sleep 30 && echo "Initializing Cockroach Database" && cockroach init; fi" >> /home/ec2-user/.bashrc
               echo "  if [[ "$CRDBNODE" = 3 ]]; then sleep 15; cockroach node status; fi" >> /home/ec2-user/.bashrc
               echo "}" >> /home/ec2-user/.bashrc
+              echo "SETCRDBVARS() {" >> /home/ec2-user/.bashrc
+              echo "  cockroach node status | awk -F ':' 'FNR > 1 { print \$1 }' | awk '{ print \$1, \$2 }' |  while read line; do" >> /home/ec2-user/.bashrc
+              echo "    node_number=\`echo \$line | awk '{ print \$1 }'\`" >> /home/ec2-user/.bashrc
+              echo "    variable_name=CRDBNODE\$node_number" >> /home/ec2-user/.bashrc
+              echo "    ip=\`echo \$line | awk '{ print \$2 }'\`" >> /home/ec2-user/.bashrc
+              echo "    echo export \$variable_name=\$ip >> crdb_node_list" >> /home/ec2-user/.bashrc
+              echo "  done" >> /home/ec2-user/.bashrc
+              echo "  source ./crdb_node_list" >> /home/ec2-user/.bashrc
+              echo "}" >> /home/ec2-user/.bashrc
+              echo "SETCRDBVARS" >> /home/ec2-user/.bashrc
               sleep 20; su ec2-user -lc 'CREATENODECERT; CREATEROOTCERT; STARTCRDB'
               if [[ '${RunInit}' = 'YES' && "$CRDBNODE" = 3 ]]; then echo "Initializing Cockroach Database" && su ec2-user -lc 'cockroach init'; fi
               if [[ '${Installpsql}' = 'YES' ]]; then echo "Installing postgresql13"; amazon-linux-extras install postgresql13; fi
@@ -1092,6 +1113,16 @@ Resources:
               echo "  if [[ "$CRDBNODE" = 3 ]]; then echo "Sleeping while other cluster nodes start" && sleep 30 && echo "Initializing Cockroach Database" && cockroach init; fi" >> /home/ec2-user/.bashrc
               echo "  if [[ "$CRDBNODE" = 3 ]]; then sleep 15; cockroach node status; fi" >> /home/ec2-user/.bashrc
               echo "}" >> /home/ec2-user/.bashrc
+              echo "SETCRDBVARS() {" >> /home/ec2-user/.bashrc
+              echo "  cockroach node status | awk -F ':' 'FNR > 1 { print \$1 }' | awk '{ print \$1, \$2 }' |  while read line; do" >> /home/ec2-user/.bashrc
+              echo "    node_number=\`echo \$line | awk '{ print \$1 }'\`" >> /home/ec2-user/.bashrc
+              echo "    variable_name=CRDBNODE\$node_number" >> /home/ec2-user/.bashrc
+              echo "    ip=\`echo \$line | awk '{ print \$2 }'\`" >> /home/ec2-user/.bashrc
+              echo "    echo export \$variable_name=\$ip >> crdb_node_list" >> /home/ec2-user/.bashrc
+              echo "  done" >> /home/ec2-user/.bashrc
+              echo "  source ./crdb_node_list" >> /home/ec2-user/.bashrc
+              echo "}" >> /home/ec2-user/.bashrc
+              echo "SETCRDBVARS" >> /home/ec2-user/.bashrc
               sleep 20; su ec2-user -lc 'CREATENODECERT; CREATEROOTCERT; STARTCRDB'
               if [[ '${RunInit}' = 'YES' && "$CRDBNODE" = 3 ]]; then echo "Initializing Cockroach Database" && su ec2-user -lc 'cockroach init'; fi
               if [[ '${Installpsql}' = 'YES' ]]; then echo "Installing postgresql13"; amazon-linux-extras install postgresql13; fi
@@ -1235,6 +1266,16 @@ Resources:
               echo "  if [[ "$CRDBNODE" = 3 ]]; then echo "Sleeping while other cluster nodes start" && sleep 30 && echo "Initializing Cockroach Database" && cockroach init; fi" >> /home/ec2-user/.bashrc
               echo "  if [[ "$CRDBNODE" = 3 ]]; then sleep 15; cockroach node status; fi" >> /home/ec2-user/.bashrc
               echo "}" >> /home/ec2-user/.bashrc
+              echo "SETCRDBVARS() {" >> /home/ec2-user/.bashrc
+              echo "  cockroach node status | awk -F ':' 'FNR > 1 { print \$1 }' | awk '{ print \$1, \$2 }' |  while read line; do" >> /home/ec2-user/.bashrc
+              echo "    node_number=\`echo \$line | awk '{ print \$1 }'\`" >> /home/ec2-user/.bashrc
+              echo "    variable_name=CRDBNODE\$node_number" >> /home/ec2-user/.bashrc
+              echo "    ip=\`echo \$line | awk '{ print \$2 }'\`" >> /home/ec2-user/.bashrc
+              echo "    echo export \$variable_name=\$ip >> crdb_node_list" >> /home/ec2-user/.bashrc
+              echo "  done" >> /home/ec2-user/.bashrc
+              echo "  source ./crdb_node_list" >> /home/ec2-user/.bashrc
+              echo "}" >> /home/ec2-user/.bashrc
+              echo "SETCRDBVARS" >> /home/ec2-user/.bashrc
               sleep 20; su ec2-user -lc 'CREATENODECERT; CREATEROOTCERT; STARTCRDB'
               if [[ '${RunInit}' = 'YES' && "$CRDBNODE" = 3 ]]; then echo "Initializing Cockroach Database" && su ec2-user -lc 'cockroach init'; fi
               if [[ '${Installpsql}' = 'YES' ]]; then echo "Installing postgresql13"; amazon-linux-extras install postgresql13; fi
@@ -1381,6 +1422,16 @@ Resources:
               echo "  if [[ "$CRDBNODE" = 3 ]]; then echo "Sleeping while other cluster nodes start" && sleep 30 && echo "Initializing Cockroach Database" && cockroach init; fi" >> /home/ec2-user/.bashrc
               echo "  if [[ "$CRDBNODE" = 3 ]]; then sleep 15; cockroach node status; fi" >> /home/ec2-user/.bashrc
               echo "}" >> /home/ec2-user/.bashrc
+              echo "SETCRDBVARS() {" >> /home/ec2-user/.bashrc
+              echo "  cockroach node status | awk -F ':' 'FNR > 1 { print \$1 }' | awk '{ print \$1, \$2 }' |  while read line; do" >> /home/ec2-user/.bashrc
+              echo "    node_number=\`echo \$line | awk '{ print \$1 }'\`" >> /home/ec2-user/.bashrc
+              echo "    variable_name=CRDBNODE\$node_number" >> /home/ec2-user/.bashrc
+              echo "    ip=\`echo \$line | awk '{ print \$2 }'\`" >> /home/ec2-user/.bashrc
+              echo "    echo export \$variable_name=\$ip >> crdb_node_list" >> /home/ec2-user/.bashrc
+              echo "  done" >> /home/ec2-user/.bashrc
+              echo "  source ./crdb_node_list" >> /home/ec2-user/.bashrc
+              echo "}" >> /home/ec2-user/.bashrc
+              echo "SETCRDBVARS" >> /home/ec2-user/.bashrc
               sleep 20; su ec2-user -lc 'CREATENODECERT; CREATEROOTCERT; STARTCRDB'
               if [[ '${RunInit}' = 'YES' && "$CRDBNODE" = 3 ]]; then echo "Initializing Cockroach Database" && su ec2-user -lc 'cockroach init'; fi
               if [[ '${Installpsql}' = 'YES' ]]; then echo "Installing postgresql13"; amazon-linux-extras install postgresql13; fi
@@ -1527,6 +1578,16 @@ Resources:
               echo "  if [[ "$CRDBNODE" = 3 ]]; then echo "Sleeping while other cluster nodes start" && sleep 30 && echo "Initializing Cockroach Database" && cockroach init; fi" >> /home/ec2-user/.bashrc
               echo "  if [[ "$CRDBNODE" = 3 ]]; then sleep 15; cockroach node status; fi" >> /home/ec2-user/.bashrc
               echo "}" >> /home/ec2-user/.bashrc
+              echo "SETCRDBVARS() {" >> /home/ec2-user/.bashrc
+              echo "  cockroach node status | awk -F ':' 'FNR > 1 { print \$1 }' | awk '{ print \$1, \$2 }' |  while read line; do" >> /home/ec2-user/.bashrc
+              echo "    node_number=\`echo \$line | awk '{ print \$1 }'\`" >> /home/ec2-user/.bashrc
+              echo "    variable_name=CRDBNODE\$node_number" >> /home/ec2-user/.bashrc
+              echo "    ip=\`echo \$line | awk '{ print \$2 }'\`" >> /home/ec2-user/.bashrc
+              echo "    echo export \$variable_name=\$ip >> crdb_node_list" >> /home/ec2-user/.bashrc
+              echo "  done" >> /home/ec2-user/.bashrc
+              echo "  source ./crdb_node_list" >> /home/ec2-user/.bashrc
+              echo "}" >> /home/ec2-user/.bashrc
+              echo "SETCRDBVARS" >> /home/ec2-user/.bashrc
               sleep 20; su ec2-user -lc 'CREATENODECERT; CREATEROOTCERT; STARTCRDB'
               if [[ '${RunInit}' = 'YES' && "$CRDBNODE" = 3 ]]; then echo "Initializing Cockroach Database" && su ec2-user -lc 'cockroach init'; fi
               if [[ '${Installpsql}' = 'YES' ]]; then echo "Installing postgresql13"; amazon-linux-extras install postgresql13; fi
@@ -1676,6 +1737,16 @@ Resources:
               echo "  if [[ "$CRDBNODE" = 3 ]]; then echo "Sleeping while other cluster nodes start" && sleep 30 && echo "Initializing Cockroach Database" && cockroach init; fi" >> /home/ec2-user/.bashrc
               echo "  if [[ "$CRDBNODE" = 3 ]]; then sleep 15; cockroach node status; fi" >> /home/ec2-user/.bashrc
               echo "}" >> /home/ec2-user/.bashrc
+              echo "SETCRDBVARS() {" >> /home/ec2-user/.bashrc
+              echo "  cockroach node status | awk -F ':' 'FNR > 1 { print \$1 }' | awk '{ print \$1, \$2 }' |  while read line; do" >> /home/ec2-user/.bashrc
+              echo "    node_number=\`echo \$line | awk '{ print \$1 }'\`" >> /home/ec2-user/.bashrc
+              echo "    variable_name=CRDBNODE\$node_number" >> /home/ec2-user/.bashrc
+              echo "    ip=\`echo \$line | awk '{ print \$2 }'\`" >> /home/ec2-user/.bashrc
+              echo "    echo export \$variable_name=\$ip >> crdb_node_list" >> /home/ec2-user/.bashrc
+              echo "  done" >> /home/ec2-user/.bashrc
+              echo "  source ./crdb_node_list" >> /home/ec2-user/.bashrc
+              echo "}" >> /home/ec2-user/.bashrc
+              echo "SETCRDBVARS" >> /home/ec2-user/.bashrc
               sleep 20; su ec2-user -lc 'CREATENODECERT; CREATEROOTCERT; STARTCRDB'
               if [[ '${RunInit}' = 'YES' && "$CRDBNODE" = 3 ]]; then echo "Initializing Cockroach Database" && su ec2-user -lc 'cockroach init'; fi
               if [[ '${Installpsql}' = 'YES' ]]; then echo "Installing postgresql13"; amazon-linux-extras install postgresql13; fi
@@ -1827,6 +1898,16 @@ Resources:
               echo "  if [[ "$CRDBNODE" = 3 ]]; then echo "Sleeping while other cluster nodes start" && sleep 30 && echo "Initializing Cockroach Database" && cockroach init; fi" >> /home/ec2-user/.bashrc
               echo "  if [[ "$CRDBNODE" = 3 ]]; then sleep 15; cockroach node status; fi" >> /home/ec2-user/.bashrc
               echo "}" >> /home/ec2-user/.bashrc
+              echo "SETCRDBVARS() {" >> /home/ec2-user/.bashrc
+              echo "  cockroach node status | awk -F ':' 'FNR > 1 { print \$1 }' | awk '{ print \$1, \$2 }' |  while read line; do" >> /home/ec2-user/.bashrc
+              echo "    node_number=\`echo \$line | awk '{ print \$1 }'\`" >> /home/ec2-user/.bashrc
+              echo "    variable_name=CRDBNODE\$node_number" >> /home/ec2-user/.bashrc
+              echo "    ip=\`echo \$line | awk '{ print \$2 }'\`" >> /home/ec2-user/.bashrc
+              echo "    echo export \$variable_name=\$ip >> crdb_node_list" >> /home/ec2-user/.bashrc
+              echo "  done" >> /home/ec2-user/.bashrc
+              echo "  source ./crdb_node_list" >> /home/ec2-user/.bashrc
+              echo "}" >> /home/ec2-user/.bashrc
+              echo "SETCRDBVARS" >> /home/ec2-user/.bashrc
               sleep 20; su ec2-user -lc 'CREATENODECERT; CREATEROOTCERT; STARTCRDB'
               if [[ '${RunInit}' = 'YES' && "$CRDBNODE" = 3 ]]; then echo "Initializing Cockroach Database" && su ec2-user -lc 'cockroach init'; fi
               if [[ '${Installpsql}' = 'YES' ]]; then echo "Installing postgresql13"; amazon-linux-extras install postgresql13; fi
@@ -1979,6 +2060,16 @@ Resources:
               echo "  if [[ "$CRDBNODE" = 3 ]]; then echo "Sleeping while other cluster nodes start" && sleep 30 && echo "Initializing Cockroach Database" && cockroach init; fi" >> /home/ec2-user/.bashrc
               echo "  if [[ "$CRDBNODE" = 3 ]]; then sleep 15; cockroach node status; fi" >> /home/ec2-user/.bashrc
               echo "}" >> /home/ec2-user/.bashrc
+              echo "SETCRDBVARS() {" >> /home/ec2-user/.bashrc
+              echo "  cockroach node status | awk -F ':' 'FNR > 1 { print \$1 }' | awk '{ print \$1, \$2 }' |  while read line; do" >> /home/ec2-user/.bashrc
+              echo "    node_number=\`echo \$line | awk '{ print \$1 }'\`" >> /home/ec2-user/.bashrc
+              echo "    variable_name=CRDBNODE\$node_number" >> /home/ec2-user/.bashrc
+              echo "    ip=\`echo \$line | awk '{ print \$2 }'\`" >> /home/ec2-user/.bashrc
+              echo "    echo export \$variable_name=\$ip >> crdb_node_list" >> /home/ec2-user/.bashrc
+              echo "  done" >> /home/ec2-user/.bashrc
+              echo "  source ./crdb_node_list" >> /home/ec2-user/.bashrc
+              echo "}" >> /home/ec2-user/.bashrc
+              echo "SETCRDBVARS" >> /home/ec2-user/.bashrc
               sleep 20; su ec2-user -lc 'CREATENODECERT; CREATEROOTCERT; STARTCRDB'
               if [[ '${RunInit}' = 'YES' && "$CRDBNODE" = 3 ]]; then echo "Initializing Cockroach Database" && su ec2-user -lc 'cockroach init'; fi
               if [[ '${Installpsql}' = 'YES' ]]; then echo "Installing postgresql13"; amazon-linux-extras install postgresql13; fi
