@@ -1,0 +1,39 @@
+# TemplateBody: file://crdb_cloudformation_template.yaml # Structure containing the template body with a minimum length of 1 byte and a maximum length of 51,200 bytes.
+Parameters: # A list of Parameter structures that specify input parameters for the stack.
+- ParameterKey: CRDBAMIID  # The key associated with the parameter.
+  ParameterValue: 'ami-0568773882d492fc8' # The input value associated with the parameter.
+- ParameterKey: ClusterName  # The key associated with the parameter.
+  ParameterValue: 'CRDB03' # The input value associated with the parameter.
+- ParameterKey: CockroachVersion  # The key associated with the parameter.
+  ParameterValue: '22.2.0-alpha.3' # The input value associated with the parameter.
+- ParameterKey: ExistingJoinString  # The key associated with the parameter.
+  ParameterValue: NONE # The input value associated with the parameter.
+- ParameterKey: Installpsql  # The key associated with the parameter.
+  ParameterValue: 'NO'  # The input value associated with the parameter.
+- ParameterKey: InstanceType  # The key associated with the parameter.
+  ParameterValue: 'm5a.large' # The input value associated with the parameter.
+- ParameterKey: KeyPairName  # The key associated with the parameter.
+  ParameterValue: 'nollen-cockroach-us-east-2-kp01' # The input value associated with the parameter.
+- ParameterKey: MyIP  # The key associated with the parameter.  
+  ParameterValue: '98.148.51.154' # The input value associated with the parameter.
+- ParameterKey: NumberOfNodes
+  ParameterValue: '9'
+- ParameterKey: RunInit  # The key associated with the parameter.
+  ParameterValue: 'YES'  # The input value associated with the parameter.
+- ParameterKey: VolumeSize
+  ParameterValue: '8'
+- ParameterKey: VolumeType
+  ParameterValue: 'gp2'
+- ParameterKey: VpcAzs  # The key associated with the parameter.
+  ParameterValue: "us-east-2a,us-east-2b,us-east-2c"
+- ParameterKey: VpcCidrParameter  # The key associated with the parameter.
+  ParameterValue: '192.168.3.0/24' # The input value associated with the parameter.
+- ParameterKey: VpcNamePrefix  # The key associated with the parameter.
+  ParameterValue: 'nollen-vpc03' # The input value associated with the parameter.
+OnFailure: ROLLBACK # Determines what action will be taken if stack creation fails. Valid values are: DO_NOTHING, ROLLBACK, DELETE.
+Tags: # Key-value pairs to associate with this stack.
+- Key: owner  # [REQUIRED]  Required.
+  Value: 'nollen' # [REQUIRED]  Required.
+- Key: project  # [REQUIRED]  Required.
+  Value: 'LDS Data-Domiciling Demo' # [REQUIRED]  Required.
+EnableTerminationProtection: false # Whether to enable termination protection on the specified stack.

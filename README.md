@@ -203,15 +203,26 @@ To delete the stack and all of the resources created as part of the stack, selec
 ![Delete Stack](./README-resources/CloudFormation08.JPG)
 
 # Creating the stack with the AWS CLI
+## You must be at AWS CLI version 2 or higher.
 ```
-aws cloudformation create-stack --stack-name myteststack --template-body file://crdb_cloudformation_template.yaml --cli-input-yaml file://crdb_cloudformation_cli_parameters.yaml
+aws --version
+aws-cli/2.7.34 Python/3.9.11 Linux/5.10.135-122.509.amzn2.x86_64 exe/x86_64.amzn.2 prompt/off
 ```
 
-In order to create the stack in the AWS CLI, you'll need to have the following two files in your directory:
-- crdb_cloudformation_template.yaml
-- crdb_cloudformation_cli_parameters.yaml
+## You must run aws configure
+`aws configure` sets up the credentials that will be used to create the stack.  
 
-The `crdb_cloudformation_template.yaml` is the cloudformation template and the `crdb_cloudformation_cli_parameters.yaml` file is the parameters needed to run the cloudformation template.
+## You must upload the cloud formation template to an s3 bucket
+Due to the size of the template file it cannot be passed on the command line as a template file; it must be passed as a template url.
+
+```
+aws cloudformation create-stack --stack-name nollen-lds-demo-3 --template-url https://nollen-crdb-cloud-formation-template.s3.us-east-2.amazonaws.com/crdb_cloudformation_template.yaml --cli-input-yaml file://cloud_formation_parameters.yaml 
+```
+
+# To delete the stack via the CLI
+```
+aws cloudformation delete-stack --stack-name arn:aws:cloudformation:us-east-2:541263489771:stack/nollen-lds-demo-3/fa807c90-3acb-11ed-acd1-0a821901be9a
+```
 
 <br><br>
 
