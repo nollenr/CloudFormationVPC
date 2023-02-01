@@ -54,7 +54,7 @@ Parameters:
     Default: "us-west-2a,us-west-2b,us-west-2c"
   CockroachVersion:
     Type: String
-    Default: "22.2.2"
+    Default: "22.2.3"
     Description: Cockroach Version to install
     AllowedValues:
     - "22.2.3"

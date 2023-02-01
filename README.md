@@ -81,7 +81,7 @@ The security groups only allow your IP to access the EC2 instances, so although 
 ## The following parameters are required during the create stack process
 |Parameter|Description|Example|
 |---------|-------------------|----------------|
-|VpcCidrParameter| The CIDR for the VPC|10.173.12.0  You'll need to be sure that the VPC CIDR is not in use.  You can check by visiting the VPC page in your region.|
+|VpcCidrParameter| The CIDR for the VPC|10.173.12.0/24  You'll need to be sure that the VPC CIDR is not in use.  You can check by visiting the VPC page in your region.  I typically use 192.168.x.0/24 so that if I'm creating a multi-region cluster, I can substitute 1, 2, 3 ect. for each region I create.  That makes VPC peering and route tables easier to manage.|
 |VpcNamePrefix|Used to construct the VPC name tag.  |If the parameter entered is "vpc01", the VPC name tag will be "vpc01-us-west-2"|
 |VpcAzs|3 availability zones chosen from the list of AZs.  Be careful choosing the AZs.  Not all EC2 types are available in all AZs.  2 subnets will be created in each AZ: one public and one private.|"us-west-2a, us-west-2b, us-west-2c"|
 |MyIP|An IP address which will be used to create the security group sg01.  When assigned to an EC2 instance the security group will allow SSH, RDP, 26257 and 8080 port access to this IP address.  The IP address will be appended with the CIDR range /32.  |36.250.22.1|
