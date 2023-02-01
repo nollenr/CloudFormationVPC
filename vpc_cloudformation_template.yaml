@@ -22,6 +22,9 @@ AWSTemplateFormatVersion: '2010-09-09'
 #
 # AWS Routes Configuration
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ec2-route.html
+#
+# AWS Referencing resource attributes in cloud formation to build a user data script
+# https://stackoverflow.com/questions/48625737/userdata-script-with-resource-attribute-cloudformation
 Mappings:
   amazonLinuxAmi:
     us-east-1:

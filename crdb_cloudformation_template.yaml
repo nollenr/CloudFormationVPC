@@ -54,11 +54,17 @@ Parameters:
     Default: "us-west-2a,us-west-2b,us-west-2c"
   CockroachVersion:
     Type: String
-    Default: "22.1.7"
+    Default: "22.2.2"
     Description: Cockroach Version to install
     AllowedValues:
-    - "22.2.0-beta.1"
-    - "22.2.0-alpha.3"
+    - "22.2.3"
+    - "22.2.2"
+    - "22.2.1"
+    - "22.1.13"
+    - "22.1.12"
+    - "22.1.11"
+    - "22.1.10"
+    - "22.1.9"
     - "22.1.8"
     - "22.1.7"
     - "22.1.6"
@@ -698,6 +704,9 @@ Resources:
             - |
               #!/bin/bash -xe
               curl https://binaries.cockroachdb.com/cockroach-v${CockroachVersion}.linux-amd64.tgz | tar -xz && cp -i cockroach-v${CockroachVersion}.linux-amd64/cockroach /usr/local/bin/
+              mkdir -p /usr/local/lib/cockroach
+              cp -i cockroach-v${CockroachVersion}.linux-amd64/lib/libgeos.so /usr/local/lib/cockroach/
+              cp -i cockroach-v${CockroachVersion}.linux-amd64/lib/libgeos_c.so /usr/local/lib/cockroach/
               su ec2-user -c 'mkdir /home/ec2-user/certs; mkdir /home/ec2-user/my-safe-directory'
               echo '-----BEGIN RSA PRIVATE KEY-----' > /home/ec2-user/my-safe-directory/ca.key
               echo 'MIIEowIBAAKCAQEAvQBvZGI4uUlVHD4REnyofo9D6JWQY13kSIkuOUur49paFkIf' >> /home/ec2-user/my-safe-directory/ca.key
@@ -774,6 +783,7 @@ Resources:
               echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
               echo '  --advertise-addr=$ip_local \' >> /home/ec2-user/.bashrc
               echo '  --join=$JOIN_STR \' >> /home/ec2-user/.bashrc
+              echo '  --max-offset=250ms \' >> /home/ec2-user/.bashrc
               echo "  --background " >> /home/ec2-user/.bashrc
               echo " }" >> /home/ec2-user/.bashrc
               echo "CREATENODECERT() {" >> /home/ec2-user/.bashrc
@@ -847,6 +857,9 @@ Resources:
             - |
               #!/bin/bash -xe
               curl https://binaries.cockroachdb.com/cockroach-v${CockroachVersion}.linux-amd64.tgz | tar -xz && cp -i cockroach-v${CockroachVersion}.linux-amd64/cockroach /usr/local/bin/
+              mkdir -p /usr/local/lib/cockroach
+              cp -i cockroach-v${CockroachVersion}.linux-amd64/lib/libgeos.so /usr/local/lib/cockroach/
+              cp -i cockroach-v${CockroachVersion}.linux-amd64/lib/libgeos_c.so /usr/local/lib/cockroach/
               su ec2-user -c 'mkdir /home/ec2-user/certs; mkdir /home/ec2-user/my-safe-directory'
               echo '-----BEGIN RSA PRIVATE KEY-----' > /home/ec2-user/my-safe-directory/ca.key
               echo 'MIIEowIBAAKCAQEAvQBvZGI4uUlVHD4REnyofo9D6JWQY13kSIkuOUur49paFkIf' >> /home/ec2-user/my-safe-directory/ca.key
@@ -923,6 +936,7 @@ Resources:
               echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
               echo '  --advertise-addr=$ip_local \' >> /home/ec2-user/.bashrc
               echo '  --join=$JOIN_STR \' >> /home/ec2-user/.bashrc
+              echo '  --max-offset=250ms \' >> /home/ec2-user/.bashrc
               echo "  --background " >> /home/ec2-user/.bashrc
               echo " }" >> /home/ec2-user/.bashrc
               echo "CREATENODECERT() {" >> /home/ec2-user/.bashrc
@@ -1013,6 +1027,9 @@ Resources:
             - |
               #!/bin/bash -xe
               curl https://binaries.cockroachdb.com/cockroach-v${CockroachVersion}.linux-amd64.tgz | tar -xz && cp -i cockroach-v${CockroachVersion}.linux-amd64/cockroach /usr/local/bin/
+              mkdir -p /usr/local/lib/cockroach
+              cp -i cockroach-v${CockroachVersion}.linux-amd64/lib/libgeos.so /usr/local/lib/cockroach/
+              cp -i cockroach-v${CockroachVersion}.linux-amd64/lib/libgeos_c.so /usr/local/lib/cockroach/
               su ec2-user -c 'mkdir /home/ec2-user/certs; mkdir /home/ec2-user/my-safe-directory'
               echo '-----BEGIN RSA PRIVATE KEY-----' > /home/ec2-user/my-safe-directory/ca.key
               echo 'MIIEowIBAAKCAQEAvQBvZGI4uUlVHD4REnyofo9D6JWQY13kSIkuOUur49paFkIf' >> /home/ec2-user/my-safe-directory/ca.key
@@ -1089,6 +1106,7 @@ Resources:
               echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
               echo '  --advertise-addr=$ip_local \' >> /home/ec2-user/.bashrc
               echo '  --join=$JOIN_STR \' >> /home/ec2-user/.bashrc
+              echo '  --max-offset=250ms \' >> /home/ec2-user/.bashrc
               echo "  --background " >> /home/ec2-user/.bashrc
               echo " }" >> /home/ec2-user/.bashrc
               echo "CREATENODECERT() {" >> /home/ec2-user/.bashrc
@@ -1163,6 +1181,9 @@ Resources:
             - |
               #!/bin/bash -xe
               curl https://binaries.cockroachdb.com/cockroach-v${CockroachVersion}.linux-amd64.tgz | tar -xz && cp -i cockroach-v${CockroachVersion}.linux-amd64/cockroach /usr/local/bin/
+              mkdir -p /usr/local/lib/cockroach
+              cp -i cockroach-v${CockroachVersion}.linux-amd64/lib/libgeos.so /usr/local/lib/cockroach/
+              cp -i cockroach-v${CockroachVersion}.linux-amd64/lib/libgeos_c.so /usr/local/lib/cockroach/
               su ec2-user -c 'mkdir /home/ec2-user/certs; mkdir /home/ec2-user/my-safe-directory'
               echo '-----BEGIN RSA PRIVATE KEY-----' > /home/ec2-user/my-safe-directory/ca.key
               echo 'MIIEowIBAAKCAQEAvQBvZGI4uUlVHD4REnyofo9D6JWQY13kSIkuOUur49paFkIf' >> /home/ec2-user/my-safe-directory/ca.key
@@ -1242,6 +1263,7 @@ Resources:
               echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
               echo '  --advertise-addr=$ip_local \' >> /home/ec2-user/.bashrc
               echo '  --join=$JOIN_STR \' >> /home/ec2-user/.bashrc
+              echo '  --max-offset=250ms \' >> /home/ec2-user/.bashrc
               echo "  --background " >> /home/ec2-user/.bashrc
               echo " }" >> /home/ec2-user/.bashrc
               echo "CREATENODECERT() {" >> /home/ec2-user/.bashrc
@@ -1319,6 +1341,9 @@ Resources:
             - |
               #!/bin/bash -xe
               curl https://binaries.cockroachdb.com/cockroach-v${CockroachVersion}.linux-amd64.tgz | tar -xz && cp -i cockroach-v${CockroachVersion}.linux-amd64/cockroach /usr/local/bin/
+              mkdir -p /usr/local/lib/cockroach
+              cp -i cockroach-v${CockroachVersion}.linux-amd64/lib/libgeos.so /usr/local/lib/cockroach/
+              cp -i cockroach-v${CockroachVersion}.linux-amd64/lib/libgeos_c.so /usr/local/lib/cockroach/
               su ec2-user -c 'mkdir /home/ec2-user/certs; mkdir /home/ec2-user/my-safe-directory'
               echo '-----BEGIN RSA PRIVATE KEY-----' > /home/ec2-user/my-safe-directory/ca.key
               echo 'MIIEowIBAAKCAQEAvQBvZGI4uUlVHD4REnyofo9D6JWQY13kSIkuOUur49paFkIf' >> /home/ec2-user/my-safe-directory/ca.key
@@ -1398,6 +1423,7 @@ Resources:
               echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
               echo '  --advertise-addr=$ip_local \' >> /home/ec2-user/.bashrc
               echo '  --join=$JOIN_STR \' >> /home/ec2-user/.bashrc
+              echo '  --max-offset=250ms \' >> /home/ec2-user/.bashrc
               echo "  --background " >> /home/ec2-user/.bashrc
               echo " }" >> /home/ec2-user/.bashrc
               echo "CREATENODECERT() {" >> /home/ec2-user/.bashrc
@@ -1475,6 +1501,9 @@ Resources:
             - |
               #!/bin/bash -xe
               curl https://binaries.cockroachdb.com/cockroach-v${CockroachVersion}.linux-amd64.tgz | tar -xz && cp -i cockroach-v${CockroachVersion}.linux-amd64/cockroach /usr/local/bin/
+              mkdir -p /usr/local/lib/cockroach
+              cp -i cockroach-v${CockroachVersion}.linux-amd64/lib/libgeos.so /usr/local/lib/cockroach/
+              cp -i cockroach-v${CockroachVersion}.linux-amd64/lib/libgeos_c.so /usr/local/lib/cockroach/
               su ec2-user -c 'mkdir /home/ec2-user/certs; mkdir /home/ec2-user/my-safe-directory'
               echo '-----BEGIN RSA PRIVATE KEY-----' > /home/ec2-user/my-safe-directory/ca.key
               echo 'MIIEowIBAAKCAQEAvQBvZGI4uUlVHD4REnyofo9D6JWQY13kSIkuOUur49paFkIf' >> /home/ec2-user/my-safe-directory/ca.key
@@ -1554,6 +1583,7 @@ Resources:
               echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
               echo '  --advertise-addr=$ip_local \' >> /home/ec2-user/.bashrc
               echo '  --join=$JOIN_STR \' >> /home/ec2-user/.bashrc
+              echo '  --max-offset=250ms \' >> /home/ec2-user/.bashrc
               echo "  --background " >> /home/ec2-user/.bashrc
               echo " }" >> /home/ec2-user/.bashrc
               echo "CREATENODECERT() {" >> /home/ec2-user/.bashrc
@@ -1631,6 +1661,9 @@ Resources:
             - |
               #!/bin/bash -xe
               curl https://binaries.cockroachdb.com/cockroach-v${CockroachVersion}.linux-amd64.tgz | tar -xz && cp -i cockroach-v${CockroachVersion}.linux-amd64/cockroach /usr/local/bin/
+              mkdir -p /usr/local/lib/cockroach
+              cp -i cockroach-v${CockroachVersion}.linux-amd64/lib/libgeos.so /usr/local/lib/cockroach/
+              cp -i cockroach-v${CockroachVersion}.linux-amd64/lib/libgeos_c.so /usr/local/lib/cockroach/
               su ec2-user -c 'mkdir /home/ec2-user/certs; mkdir /home/ec2-user/my-safe-directory'
               echo '-----BEGIN RSA PRIVATE KEY-----' > /home/ec2-user/my-safe-directory/ca.key
               echo 'MIIEowIBAAKCAQEAvQBvZGI4uUlVHD4REnyofo9D6JWQY13kSIkuOUur49paFkIf' >> /home/ec2-user/my-safe-directory/ca.key
@@ -1713,6 +1746,7 @@ Resources:
               echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
               echo '  --advertise-addr=$ip_local \' >> /home/ec2-user/.bashrc
               echo '  --join=$JOIN_STR \' >> /home/ec2-user/.bashrc
+              echo '  --max-offset=250ms \' >> /home/ec2-user/.bashrc
               echo "  --background " >> /home/ec2-user/.bashrc
               echo " }" >> /home/ec2-user/.bashrc
               echo "CREATENODECERT() {" >> /home/ec2-user/.bashrc
@@ -1792,6 +1826,9 @@ Resources:
             - |
               #!/bin/bash -xe
               curl https://binaries.cockroachdb.com/cockroach-v${CockroachVersion}.linux-amd64.tgz | tar -xz && cp -i cockroach-v${CockroachVersion}.linux-amd64/cockroach /usr/local/bin/
+              mkdir -p /usr/local/lib/cockroach
+              cp -i cockroach-v${CockroachVersion}.linux-amd64/lib/libgeos.so /usr/local/lib/cockroach/
+              cp -i cockroach-v${CockroachVersion}.linux-amd64/lib/libgeos_c.so /usr/local/lib/cockroach/
               su ec2-user -c 'mkdir /home/ec2-user/certs; mkdir /home/ec2-user/my-safe-directory'
               echo '-----BEGIN RSA PRIVATE KEY-----' > /home/ec2-user/my-safe-directory/ca.key
               echo 'MIIEowIBAAKCAQEAvQBvZGI4uUlVHD4REnyofo9D6JWQY13kSIkuOUur49paFkIf' >> /home/ec2-user/my-safe-directory/ca.key
@@ -1874,6 +1911,7 @@ Resources:
               echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
               echo '  --advertise-addr=$ip_local \' >> /home/ec2-user/.bashrc
               echo '  --join=$JOIN_STR \' >> /home/ec2-user/.bashrc
+              echo '  --max-offset=250ms \' >> /home/ec2-user/.bashrc
               echo "  --background " >> /home/ec2-user/.bashrc
               echo " }" >> /home/ec2-user/.bashrc
               echo "CREATENODECERT() {" >> /home/ec2-user/.bashrc
@@ -1954,6 +1992,9 @@ Resources:
             - |
               #!/bin/bash -xe
               curl https://binaries.cockroachdb.com/cockroach-v${CockroachVersion}.linux-amd64.tgz | tar -xz && cp -i cockroach-v${CockroachVersion}.linux-amd64/cockroach /usr/local/bin/
+              mkdir -p /usr/local/lib/cockroach
+              cp -i cockroach-v${CockroachVersion}.linux-amd64/lib/libgeos.so /usr/local/lib/cockroach/
+              cp -i cockroach-v${CockroachVersion}.linux-amd64/lib/libgeos_c.so /usr/local/lib/cockroach/
               su ec2-user -c 'mkdir /home/ec2-user/certs; mkdir /home/ec2-user/my-safe-directory'
               echo '-----BEGIN RSA PRIVATE KEY-----' > /home/ec2-user/my-safe-directory/ca.key
               echo 'MIIEowIBAAKCAQEAvQBvZGI4uUlVHD4REnyofo9D6JWQY13kSIkuOUur49paFkIf' >> /home/ec2-user/my-safe-directory/ca.key
@@ -2036,6 +2077,7 @@ Resources:
               echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
               echo '  --advertise-addr=$ip_local \' >> /home/ec2-user/.bashrc
               echo '  --join=$JOIN_STR \' >> /home/ec2-user/.bashrc
+              echo '  --max-offset=250ms \' >> /home/ec2-user/.bashrc
               echo "  --background " >> /home/ec2-user/.bashrc
               echo " }" >> /home/ec2-user/.bashrc
               echo "CREATENODECERT() {" >> /home/ec2-user/.bashrc
@@ -2141,6 +2183,17 @@ Outputs:
     Value: !Ref subnet6Public
     Export:
       Name: !Sub "${AWS::StackName}-PubSubnet03"
+  PubRouteTable:
+    Description: The ID of the public route table
+    Value: !Ref routeTable02Public
+    Export:
+      Name: !Sub "${AWS::StackName}-PubRouteTable"
+  PriRouteTable:
+    Description: The ID of the private route table
+    Value: !Ref routeTable01Private
+    Export:
+      Name: !Sub "${AWS::StackName}-PriRouteTable"
+
   # PublicSubnet01WouldBe:
   #   Description:  This is what the Private IP Would be
   #   # Get the CIDR range of the 1st public subnet, then generate 16 CIDRs (for the whole range) with a /32 and select the 4th IP address
