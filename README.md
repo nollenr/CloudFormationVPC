@@ -95,6 +95,8 @@ The security groups only allow your IP to access the EC2 instances, so although 
 |NumberOfNodes|The number of nodes (3, 6, or 9) to create in the VPC.  The nodes will be evenly distributed between the VpcAzs.|3|
 |VolumeType|The type of volume (gp2 or gp3) that you would like attached to the instances|gp2|
 |VolumeSize|The size of the volume, in GB, that should be attached to the instance.  Minimum size is 8GB.|600|
+|InstallHAProxy|Choosing 'Yes' will install and configure an HAProxy Instance.|YES|
+|HAProxyInstanceType|This is the instance type that will be deployed if "InstallHAProxy".|t3.small|
 
 If you're going to execute this template in multiple regions, be sure to choose non-overlaping CIDR blocks for each region.  For example:
 

@@ -54,12 +54,15 @@ Parameters:
     Default: "us-west-2a,us-west-2b,us-west-2c"
   CockroachVersion:
     Type: String
-    Default: "22.2.3"
+    Default: "22.2.5"
     Description: Cockroach Version to install
     AllowedValues:
+    - "22.2.5"
+    - "22.2.4"
     - "22.2.3"
     - "22.2.2"
     - "22.2.1"
+    - "22.1.14"
     - "22.1.13"
     - "22.1.12"
     - "22.1.11"
@@ -72,6 +75,7 @@ Parameters:
     - "22.1.4"
     - "22.1.2"
     - "22.1.0"
+    - "21.2.17"
     - "21.2.16"
     - "21.2.14"
     - "21.2.13"
@@ -204,17 +208,97 @@ Parameters:
   Installpsql:
     Description:  "Choosing 'YES' to this option will install psql (postgresql11) on all nodes allowing you to run psql, or connect to cockroach via a URL."
     Type: String
+    Default: "NO"
+    AllowedValues:
+    - "YES"
+    - "NO"
+  InstallHAProxy:
+    Description: "Choose 'YES' to this option will install an EC2 instance running HA Proxy with all the necessary configuration to connect to the Cockroach Database."
+    Type: String
     Default: "YES"
     AllowedValues:
     - "YES"
     - "NO"
+  HAProxyInstanceType:
+    Type: String
+    Default: t3.small
+    Description: "HA Proxy Instance type. (Only used if InstallHAProxy is 'YES')"
+    AllowedValues:
+    - t2.micro
+    - t3a.small
+    - t3.small
+    - t3a.medium
+    - t3.medium
+    - t3a.large
+    - c5a.large
+    - t3.large
+    - c5.large
+    - c6i.large
+    - c5ad.large
+    - m5a.large
+    - m6a.large
+    - t2.large
+    - c5d.large
+    - m5.large
+    - m6i.large
+    - c4.large
+    - m4.large
+    - m5ad.large
+    - c5n.large
+    - m5d.large
+    - r5a.large
+    - m5n.large
+    - r5.large
+    - r6i.large
+    - c1.medium
+    - r5ad.large
+    - m3.large
+    - r4.large
+    - m5dn.large
+    - r5d.large
+    - r5b.large
+    - r5n.large
+    - t3a.xlarge
+    - c5a.xlarge
+    - i3.large
+    - m5zn.large
+    - r3.large
+    - t3.xlarge
+    - r5dn.large
+    - c5.xlarge
+    - c6i.xlarge
+    - c5ad.xlarge
+    - c5d.2xlarge
+    - c5d.4xlarge
+    - c5d.9xlarge
+    - m5.xlarge
+    - m5.2xlarge
+    - m5.4xlarge
+    - m5.8xlarge
+    - m5a.xlarge
+    - m5a.2xlarge
+    - m5a.4xlarge
+    - m5a.8xlarge
+    - m6a.large
+    - m6a.xlarge
+    - m6a.2xlarge
+    - m6a.4xlarge
+    - m6a.8xlarge
+    - m6i.large
+    - m6i.xlarge
+    - m6i.2xlarge
+    - m6i.4xlarge
+    - m6i.8xlarge
 
 Conditions: 
   UseNewJoinString: !Equals [!Ref ExistingJoinString, NONE]
   InstallPostgres: !Equals [!Ref Installpsql, "YES"]
   RunInitCommand: !Equals [!Ref RunInit, "YES"]
+  CreateHAProxy: !Equals [!Ref InstallHAProxy, "YES"]
   Create6Nodes: !Or [!Equals [!Ref NumberOfNodes, 6], !Equals [!Ref NumberOfNodes, 9] ]
   Create9Nodes: !Equals [!Ref NumberOfNodes, 9]
+  # Helpful for debugging -- change one of the "YES" values to "NO" and this will create the infrasturcture but no instances.
+  CreateNodes: !Equals ["YES", "YES"]
 
 Resources:
   CreateVPC:
@@ -491,6 +575,10 @@ Resources:
 # ------------------------------------------------------
 # Create the public IP Addresses for Each of the Nodes 
 # up to 9 separate IP addresses
+# ENIs need to be created for all of the possible CRDB
+# nodes even if they're not going to be used in case
+# we want to create the HAProxy instance.  This is a 
+# limitation of the way CloudFormation works.
 # ------------------------------------------------------
   CRDBIPNode01:
     DependsOn: 
@@ -553,7 +641,7 @@ Resources:
       - Key: Name
         Value: CRDBIPNode03
   CRDBIPNode04:
-    Condition: Create6Nodes
+    # Condition: Create6Nodes
     DependsOn: 
     - subnet2Public
     - InstanceSecurityGroup01
@@ -574,7 +662,7 @@ Resources:
       - Key: Name
         Value: CRDBIPNode04
   CRDBIPNode05:
-    Condition: Create6Nodes
+    # Condition: Create6Nodes
     DependsOn: 
     - subnet4Public
     - InstanceSecurityGroup01
@@ -595,7 +683,7 @@ Resources:
       - Key: Name
         Value: CRDBIPNode05  
   CRDBIPNode06:
-    Condition: Create6Nodes
+    # Condition: Create6Nodes
     DependsOn: 
     - subnet6Public
     - InstanceSecurityGroup01
@@ -616,7 +704,7 @@ Resources:
       - Key: Name
         Value: CRDBIPNode06
   CRDBIPNode07:
-    Condition: Create9Nodes
+    # Condition: Create9Nodes
     DependsOn: 
     - subnet2Public
     - InstanceSecurityGroup01
@@ -637,7 +725,7 @@ Resources:
       - Key: Name
         Value: CRDBIPNode07
   CRDBIPNode08:
-    Condition: Create9Nodes
+    # Condition: Create9Nodes
     DependsOn: 
     - subnet4Public
     - InstanceSecurityGroup01
@@ -658,7 +746,7 @@ Resources:
       - Key: Name
         Value: CRDBIPNode08  
   CRDBIPNode09:
-    Condition: Create9Nodes
+    # Condition: Create9Nodes
     DependsOn: 
     - subnet6Public
     - InstanceSecurityGroup01
@@ -678,8 +766,31 @@ Resources:
       Tags:
       - Key: Name
         Value: CRDBIPNode09
+  HAPROXYIP:
+    # Condition: CreateHAProxy
+    # I am always going to generate the HAProxy EMI so that I can add the IP to the node certs (so that verify-full will work)
+    DependsOn: 
+    - subnet2Public
+    - InstanceSecurityGroup01
+    - InstanceSecurityGroup02
+    Type: AWS::EC2::NetworkInterface
+    Properties:
+      PrivateIpAddress: !Join 
+      - '.' 
+      - - !Select [0, !Split ['.', !Select [0, !Cidr [ !Select [ 0, !Cidr [ !Ref VpcCidrParameter, 6, 5 ]], 16, 1] ] ] ]
+        - !Select [1, !Split ['.', !Select [0, !Cidr [ !Select [ 0, !Cidr [ !Ref VpcCidrParameter, 6, 5 ]], 16, 1] ] ] ]
+        - !Select [2, !Split ['.', !Select [0, !Cidr [ !Select [ 0, !Cidr [ !Ref VpcCidrParameter, 6, 5 ]], 16, 1] ] ] ]
+        - "7"  
+      SubnetId: !Ref subnet2Public
+      GroupSet:
+      - !Ref InstanceSecurityGroup01
+      - !Ref InstanceSecurityGroup02
+      Tags:
+      - Key: Name
+        Value: HAProxyIP
 
   CRDBNode01:
+    Condition: CreateNodes
     DependsOn: 
     - CRDBIPNode01
     - CRDBIPNode02
@@ -792,6 +903,7 @@ Resources:
               echo '  $ip_public \' >> /home/ec2-user/.bashrc
               echo "  localhost \\" >> /home/ec2-user/.bashrc
               echo "  127.0.0.1 \\" >> /home/ec2-user/.bashrc
+              echo "  ${Private0} \\" >> /home/ec2-user/.bashrc
               echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
               echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
               echo "}" >> /home/ec2-user/.bashrc
@@ -828,10 +940,12 @@ Resources:
             - Private1: !GetAtt CRDBIPNode01.PrimaryPrivateIpAddress
               Private2: !GetAtt CRDBIPNode02.PrimaryPrivateIpAddress
               Private3: !GetAtt CRDBIPNode03.PrimaryPrivateIpAddress
+              Private0: !GetAtt HAPROXYIP.PrimaryPrivateIpAddress
       NetworkInterfaces:
       - DeviceIndex: '0'
         NetworkInterfaceId: !Ref CRDBIPNode01
   CRDBNode02:
+    Condition: CreateNodes
     DependsOn: 
     - CRDBIPNode01
     - CRDBIPNode02
@@ -945,6 +1059,7 @@ Resources:
               echo '  $ip_public \' >> /home/ec2-user/.bashrc
               echo "  localhost \\" >> /home/ec2-user/.bashrc
               echo "  127.0.0.1 \\" >> /home/ec2-user/.bashrc
+              echo "  ${Private0} \\" >> /home/ec2-user/.bashrc
               echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
               echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
               echo "}" >> /home/ec2-user/.bashrc
@@ -981,6 +1096,7 @@ Resources:
             - Private1: !GetAtt CRDBIPNode01.PrimaryPrivateIpAddress
               Private2: !GetAtt CRDBIPNode02.PrimaryPrivateIpAddress
               Private3: !GetAtt CRDBIPNode03.PrimaryPrivateIpAddress
+              Private0: !GetAtt HAPROXYIP.PrimaryPrivateIpAddress
       NetworkInterfaces:
       - DeviceIndex: '0'
         NetworkInterfaceId: !Ref CRDBIPNode02
@@ -988,18 +1104,22 @@ Resources:
   # to wait for the previous 2 nodes to complete.  Since you cannot put a conditional in a "Depends On", the following will cause the
   # process to wait for the 1st 2 nodes to complete, but only if we want to run the init command.
   CRDBNode01Ready:
+    Condition: CreateNodes
     Type: AWS::CloudFormation::WaitConditionHandle
     Metadata: 
       FirstNodeReady: !If [RunInitCommand, !Ref CRDBNode01, ""]
   CRDBNode02Ready:
+    Condition: CreateNodes
     Type: AWS::CloudFormation::WaitConditionHandle
     Metadata: 
       SecondNodeReady: !If [RunInitCommand, !Ref CRDBNode02, ""]
   CRDBNode03Ready:
+    Condition: CreateNodes
     Type: AWS::CloudFormation::WaitConditionHandle
     Metadata: 
       SecondNodeReady: !If [RunInitCommand, !Ref CRDBNode03, ""]
   CRDBNode03:
+    Condition: CreateNodes
     DependsOn:
     - CRDBIPNode01
     - CRDBIPNode02
@@ -1115,6 +1235,7 @@ Resources:
               echo '  $ip_public \' >> /home/ec2-user/.bashrc
               echo "  localhost \\" >> /home/ec2-user/.bashrc
               echo "  127.0.0.1 \\" >> /home/ec2-user/.bashrc
+              echo "  ${Private0} \\" >> /home/ec2-user/.bashrc
               echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
               echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
               echo "}" >> /home/ec2-user/.bashrc
@@ -1151,11 +1272,13 @@ Resources:
             - Private1: !GetAtt CRDBIPNode01.PrimaryPrivateIpAddress
               Private2: !GetAtt CRDBIPNode02.PrimaryPrivateIpAddress
               Private3: !GetAtt CRDBIPNode03.PrimaryPrivateIpAddress
+              Private0: !GetAtt HAPROXYIP.PrimaryPrivateIpAddress
       NetworkInterfaces:
       - DeviceIndex: '0'
         NetworkInterfaceId: !Ref CRDBIPNode03
 
   CRDBNode04:
+    Condition: CreateNodes
     Condition: Create6Nodes
     DependsOn: 
     - CRDBIPNode04
@@ -1272,6 +1395,7 @@ Resources:
               echo '  $ip_public \' >> /home/ec2-user/.bashrc
               echo "  localhost \\" >> /home/ec2-user/.bashrc
               echo "  127.0.0.1 \\" >> /home/ec2-user/.bashrc
+              echo "  ${Private0} \\" >> /home/ec2-user/.bashrc
               echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
               echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
               echo "}" >> /home/ec2-user/.bashrc
@@ -1311,11 +1435,13 @@ Resources:
               Private4: !GetAtt CRDBIPNode04.PrimaryPrivateIpAddress
               Private5: !GetAtt CRDBIPNode05.PrimaryPrivateIpAddress
               Private6: !GetAtt CRDBIPNode06.PrimaryPrivateIpAddress
+              Private0: !GetAtt HAPROXYIP.PrimaryPrivateIpAddress
       NetworkInterfaces:
       - DeviceIndex: '0'
         NetworkInterfaceId: !Ref CRDBIPNode04
 
   CRDBNode05:
+    Condition: CreateNodes
     Condition: Create6Nodes
     DependsOn: 
     - CRDBIPNode05
@@ -1432,6 +1558,7 @@ Resources:
               echo '  $ip_public \' >> /home/ec2-user/.bashrc
               echo "  localhost \\" >> /home/ec2-user/.bashrc
               echo "  127.0.0.1 \\" >> /home/ec2-user/.bashrc
+              echo "  ${Private0} \\" >> /home/ec2-user/.bashrc
               echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
               echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
               echo "}" >> /home/ec2-user/.bashrc
@@ -1471,11 +1598,13 @@ Resources:
               Private4: !GetAtt CRDBIPNode04.PrimaryPrivateIpAddress
               Private5: !GetAtt CRDBIPNode05.PrimaryPrivateIpAddress
               Private6: !GetAtt CRDBIPNode06.PrimaryPrivateIpAddress
+              Private0: !GetAtt HAPROXYIP.PrimaryPrivateIpAddress
       NetworkInterfaces:
       - DeviceIndex: '0'
         NetworkInterfaceId: !Ref CRDBIPNode05
 
   CRDBNode06:
+    Condition: CreateNodes
     Condition: Create6Nodes
     DependsOn: 
     - CRDBIPNode06
@@ -1592,6 +1721,7 @@ Resources:
               echo '  $ip_public \' >> /home/ec2-user/.bashrc
               echo "  localhost \\" >> /home/ec2-user/.bashrc
               echo "  127.0.0.1 \\" >> /home/ec2-user/.bashrc
+              echo "  ${Private0} \\" >> /home/ec2-user/.bashrc
               echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
               echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
               echo "}" >> /home/ec2-user/.bashrc
@@ -1631,11 +1761,13 @@ Resources:
               Private4: !GetAtt CRDBIPNode04.PrimaryPrivateIpAddress
               Private5: !GetAtt CRDBIPNode05.PrimaryPrivateIpAddress
               Private6: !GetAtt CRDBIPNode06.PrimaryPrivateIpAddress
+              Private0: !GetAtt HAPROXYIP.PrimaryPrivateIpAddress
       NetworkInterfaces:
       - DeviceIndex: '0'
         NetworkInterfaceId: !Ref CRDBIPNode06
 
   CRDBNode07:
+    Condition: CreateNodes
     Condition: Create9Nodes
     DependsOn: 
     - CRDBIPNode07
@@ -1755,6 +1887,7 @@ Resources:
               echo '  $ip_public \' >> /home/ec2-user/.bashrc
               echo "  localhost \\" >> /home/ec2-user/.bashrc
               echo "  127.0.0.1 \\" >> /home/ec2-user/.bashrc
+              echo "  ${Private0} \\" >> /home/ec2-user/.bashrc
               echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
               echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
               echo "}" >> /home/ec2-user/.bashrc
@@ -1797,11 +1930,13 @@ Resources:
               Private7: !GetAtt CRDBIPNode07.PrimaryPrivateIpAddress  
               Private8: !GetAtt CRDBIPNode08.PrimaryPrivateIpAddress  
               Private9: !GetAtt CRDBIPNode09.PrimaryPrivateIpAddress  
+              Private0: !GetAtt HAPROXYIP.PrimaryPrivateIpAddress
       NetworkInterfaces:
       - DeviceIndex: '0'
         NetworkInterfaceId: !Ref CRDBIPNode07
 
   CRDBNode08:
+    Condition: CreateNodes
     Condition: Create9Nodes
     DependsOn: 
     - CRDBIPNode08
@@ -1920,6 +2055,7 @@ Resources:
               echo '  $ip_public \' >> /home/ec2-user/.bashrc
               echo "  localhost \\" >> /home/ec2-user/.bashrc
               echo "  127.0.0.1 \\" >> /home/ec2-user/.bashrc
+              echo "  ${Private0} \\" >> /home/ec2-user/.bashrc
               echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
               echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
               echo "}" >> /home/ec2-user/.bashrc
@@ -1962,11 +2098,13 @@ Resources:
               Private7: !GetAtt CRDBIPNode07.PrimaryPrivateIpAddress  
               Private8: !GetAtt CRDBIPNode08.PrimaryPrivateIpAddress  
               Private9: !GetAtt CRDBIPNode09.PrimaryPrivateIpAddress  
+              Private0: !GetAtt HAPROXYIP.PrimaryPrivateIpAddress
       NetworkInterfaces:
       - DeviceIndex: '0'
         NetworkInterfaceId: !Ref CRDBIPNode08
 
   CRDBNode09:
+    Condition: CreateNodes
     Condition: Create9Nodes
     DependsOn: 
     - CRDBIPNode09
@@ -2086,6 +2224,7 @@ Resources:
               echo '  $ip_public \' >> /home/ec2-user/.bashrc
               echo "  localhost \\" >> /home/ec2-user/.bashrc
               echo "  127.0.0.1 \\" >> /home/ec2-user/.bashrc
+              echo "  ${Private0} \\" >> /home/ec2-user/.bashrc
               echo "  --certs-dir=certs \\" >> /home/ec2-user/.bashrc
               echo "  --ca-key=my-safe-directory/ca.key" >> /home/ec2-user/.bashrc
               echo "}" >> /home/ec2-user/.bashrc
@@ -2128,10 +2267,89 @@ Resources:
               Private7: !GetAtt CRDBIPNode07.PrimaryPrivateIpAddress  
               Private8: !GetAtt CRDBIPNode08.PrimaryPrivateIpAddress  
               Private9: !GetAtt CRDBIPNode09.PrimaryPrivateIpAddress 
+              Private0: !GetAtt HAPROXYIP.PrimaryPrivateIpAddress
       NetworkInterfaces:
       - DeviceIndex: '0'
         NetworkInterfaceId: !Ref CRDBIPNode09
-
+  HAProxyNode:
+    Condition: CreateHAProxy
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      KeyName: !Ref KeyPairName
+      Tags:
+      - Key: Name
+        Value: !Join ['-', [!Ref 'ClusterName', 'HAProxy']]
+      InstanceType: !Ref HAProxyInstanceType
+      ImageId: !Ref CRDBAMIID
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvda
+          Ebs:
+            VolumeSize: 8
+            VolumeType: 'gp2'
+            DeleteOnTermination: 'true'
+      NetworkInterfaces:
+      - DeviceIndex: '0'
+        NetworkInterfaceId: !Ref HAPROXYIP
+      UserData:
+        Fn::Base64:
+          Fn::Sub: 
+            - |
+              #!/bin/bash -xe
+              echo 'global' > /home/ec2-user/haproxy.cfg
+              echo '  maxconn 4096' >> /home/ec2-user/haproxy.cfg
+              echo '' >> /home/ec2-user/haproxy.cfg
+              echo 'defaults' >> /home/ec2-user/haproxy.cfg
+              echo '    mode                tcp' >> /home/ec2-user/haproxy.cfg
+              echo '' >> /home/ec2-user/haproxy.cfg
+              echo '    # Timeout values should be configured for your specific use.' >> /home/ec2-user/haproxy.cfg
+              echo '    # See: https://cbonte.github.io/haproxy-dconv/1.8/configuration.html#4-timeout%20connect' >> /home/ec2-user/haproxy.cfg
+              echo '' >> /home/ec2-user/haproxy.cfg
+              echo '    # With the timeout connect 5 secs,' >> /home/ec2-user/haproxy.cfg
+              echo '    # if the backend server is not responding, haproxy will make a total' >> /home/ec2-user/haproxy.cfg
+              echo '    # of 3 connection attempts waiting 5s each time before giving up on the server,' >> /home/ec2-user/haproxy.cfg
+              echo '    # for a total of 15 seconds.' >> /home/ec2-user/haproxy.cfg
+              echo '    retries             2' >> /home/ec2-user/haproxy.cfg
+              echo '    timeout connect     5s' >> /home/ec2-user/haproxy.cfg
+              echo '' >> /home/ec2-user/haproxy.cfg
+              echo '    # timeout client and server govern the maximum amount of time of TCP inactivity.' >> /home/ec2-user/haproxy.cfg
+              echo '    # The server node may idle on a TCP connection either because it takes time to' >> /home/ec2-user/haproxy.cfg
+              echo '    # execute a query before the first result set record is emitted, or in case of' >> /home/ec2-user/haproxy.cfg
+              echo '    # some trouble on the server. So these timeout settings should be larger than the' >> /home/ec2-user/haproxy.cfg
+              echo '    # time to execute the longest (most complex, under substantial concurrent workload)' >> /home/ec2-user/haproxy.cfg
+              echo '    # query, yet not too large so truly failed connections are lingering too long' >> /home/ec2-user/haproxy.cfg
+              echo '    # (resources associated with failed connections should be freed reasonably promptly).' >> /home/ec2-user/haproxy.cfg
+              echo '    timeout client      10m' >> /home/ec2-user/haproxy.cfg
+              echo '    timeout server      10m' >> /home/ec2-user/haproxy.cfg
+              echo '' >> /home/ec2-user/haproxy.cfg
+              echo '    # TCP keep-alive on client side. Server already enables them.' >> /home/ec2-user/haproxy.cfg
+              echo '    option              clitcpka' >> /home/ec2-user/haproxy.cfg
+              echo '' >> /home/ec2-user/haproxy.cfg
+              echo 'listen psql' >> /home/ec2-user/haproxy.cfg
+              echo '    bind :26257' >> /home/ec2-user/haproxy.cfg
+              echo '    mode tcp' >> /home/ec2-user/haproxy.cfg
+              echo '    balance roundrobin' >> /home/ec2-user/haproxy.cfg
+              echo '    option httpchk GET /health?ready=1' >> /home/ec2-user/haproxy.cfg
+              echo '    server cockroach1 ${Private1}:26257 check port 8080' >> /home/ec2-user/haproxy.cfg
+              echo '    server cockroach2 ${Private2}:26257 check port 8080' >> /home/ec2-user/haproxy.cfg
+              echo '    server cockroach3 ${Private3}:26257 check port 8080' >> /home/ec2-user/haproxy.cfg
+              if [[ '${NumberOfNodes}' = 6 || '${NumberOfNodes}' = 9 ]]; then echo '    server cockroach4 ${Private4}:26257 check port 8080' >> /home/ec2-user/haproxy.cfg; fi
+              if [[ '${NumberOfNodes}' = 6 || '${NumberOfNodes}' = 9 ]]; then echo '    server cockroach5 ${Private5}:26257 check port 8080' >> /home/ec2-user/haproxy.cfg; fi
+              if [[ '${NumberOfNodes}' = 6 || '${NumberOfNodes}' = 9 ]]; then echo '    server cockroach6 ${Private6}:26257 check port 8080' >> /home/ec2-user/haproxy.cfg; fi
+              if [[ '${NumberOfNodes}' = 9 ]]; then echo '    server cockroach7 ${Private7}:26257 check port 8080' >> /home/ec2-user/haproxy.cfg; fi
+              if [[ '${NumberOfNodes}' = 9 ]]; then echo '    server cockroach8 ${Private8}:26257 check port 8080' >> /home/ec2-user/haproxy.cfg; fi
+              if [[ '${NumberOfNodes}' = 9 ]]; then echo '    server cockroach9 ${Private9}:26257 check port 8080' >> /home/ec2-user/haproxy.cfg; fi
+              chown ec2-user:ec2-user /home/ec2-user/haproxy.cfg
+              echo "Installing HAProxy"; yum -y install haproxy
+              echo "Starting HAProxy as ec2-user"; su ec2-user -lc 'haproxy -f haproxy.cfg > haproxy.log 2>&1 &'
+            - Private1: !GetAtt CRDBIPNode01.PrimaryPrivateIpAddress
+              Private2: !GetAtt CRDBIPNode02.PrimaryPrivateIpAddress
+              Private3: !GetAtt CRDBIPNode03.PrimaryPrivateIpAddress
+              Private4: !GetAtt CRDBIPNode04.PrimaryPrivateIpAddress
+              Private5: !GetAtt CRDBIPNode05.PrimaryPrivateIpAddress
+              Private6: !GetAtt CRDBIPNode06.PrimaryPrivateIpAddress  
+              Private7: !GetAtt CRDBIPNode07.PrimaryPrivateIpAddress  
+              Private8: !GetAtt CRDBIPNode08.PrimaryPrivateIpAddress  
+              Private9: !GetAtt CRDBIPNode09.PrimaryPrivateIpAddress 
 Outputs:
   StackVPC:
     Description: The ID of the VPC
