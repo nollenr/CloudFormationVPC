@@ -957,7 +957,6 @@ Resources:
       - Key: Name
         Value: !Join ['-', ['CRDB-Node-02', !Ref 'ClusterName']]
       InstanceType: !Ref InstanceType
-      InstanceType: !Ref InstanceType
       ImageId: !Ref CRDBAMIID
       BlockDeviceMappings:
         - DeviceName: /dev/xvda
@@ -1133,7 +1132,6 @@ Resources:
       - Key: Name
         Value: !Join ['-', ['CRDB-Node-03', !Ref 'ClusterName']]
       InstanceType: !Ref InstanceType
-      InstanceType: !Ref InstanceType
       ImageId: !Ref CRDBAMIID
       BlockDeviceMappings:
         - DeviceName: /dev/xvda
@@ -1289,7 +1287,6 @@ Resources:
       Tags:
       - Key: Name
         Value: !Join ['-', ['CRDB-Node-04', !Ref 'ClusterName']]
-      InstanceType: !Ref InstanceType
       InstanceType: !Ref InstanceType
       ImageId: !Ref CRDBAMIID
       BlockDeviceMappings:
@@ -1453,7 +1450,6 @@ Resources:
       - Key: Name
         Value: !Join ['-', ['CRDB-Node-05', !Ref 'ClusterName']]
       InstanceType: !Ref InstanceType
-      InstanceType: !Ref InstanceType
       ImageId: !Ref CRDBAMIID
       BlockDeviceMappings:
         - DeviceName: /dev/xvda
@@ -1616,7 +1612,6 @@ Resources:
       - Key: Name
         Value: !Join ['-', ['CRDB-Node-06', !Ref 'ClusterName']]
       InstanceType: !Ref InstanceType
-      InstanceType: !Ref InstanceType
       ImageId: !Ref CRDBAMIID
       BlockDeviceMappings:
         - DeviceName: /dev/xvda
@@ -1778,7 +1773,6 @@ Resources:
       Tags:
       - Key: Name
         Value: !Join ['-', ['CRDB-Node-07', !Ref 'ClusterName']]
-      InstanceType: !Ref InstanceType
       InstanceType: !Ref InstanceType
       ImageId: !Ref CRDBAMIID
       BlockDeviceMappings:
@@ -2115,7 +2109,6 @@ Resources:
       Tags:
       - Key: Name
         Value: !Join ['-', ['CRDB-Node-09', !Ref 'ClusterName']]
-      InstanceType: !Ref InstanceType
       InstanceType: !Ref InstanceType
       ImageId: !Ref CRDBAMIID
       BlockDeviceMappings:
